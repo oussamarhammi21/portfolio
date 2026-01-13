@@ -1,7 +1,7 @@
 import path from "path";
 import react from "@vitejs/plugin-react";
-import {defineConfig} from "vite";
-import {nodePolyfills} from "vite-plugin-node-polyfills";
+import { defineConfig } from "vite";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 export default defineConfig({
   plugins: [
@@ -17,5 +17,19 @@ export default defineConfig({
   },
   optimizeDeps: {
     exclude: ['js-big-decimal']
+  },
+  // AJOUTEZ CETTE CONFIGURATION POUR VERCEL
+  build: {
+    outDir: 'dist',
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
+      }
+    }
+  },
+  // IMPORTANT pour le router
+  server: {
+    historyApiFallback: true
   }
 });
