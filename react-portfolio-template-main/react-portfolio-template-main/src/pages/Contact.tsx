@@ -22,7 +22,7 @@ export default function Contact(): JSX.Element {
   const links = [
     {
       title: "LinkedIn",
-      url: "https://www.linkedin.com/in/oussama-rhammi/",
+      url: "https://linkedin.com/in/oussama-rhammi-252177106",
       icon: <SiLinkedin />,
     },
   ];

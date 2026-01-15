@@ -19,7 +19,6 @@ import { TbBrandRust } from "react-icons/tb";
 import { GiArtificialIntelligence, GiGraduateCap } from "react-icons/gi";
 import { MdSecurity, MdDeveloperMode, MdWork, MdSchool } from "react-icons/md";
 import { FaGamepad, FaMobileAlt, FaUniversity } from "react-icons/fa";
-import { SiCplusplus, SiCsharp, SiJavascript, SiPython, SiReact } from "react-icons/si";
 
 export default function AboutMe() {
   // Calculate total professional experience
@@ -74,7 +73,7 @@ export default function AboutMe() {
     { 
       icon: <FiGlobe size={16} />, 
       label: "Languages", 
-      value: "Trilingual",
+      value: "3",
       color: "text-cyan-600 dark:text-cyan-400"
     },
   ];
@@ -158,7 +157,7 @@ export default function AboutMe() {
     {
       institution: "University of Sherbrooke",
       degree: "Bachelor of Science in Computer Science",
-      period: "Expected Graduation: May 2025",
+      period: "Expected Graduation: May 2026",
       icon: <FaUniversity className="text-2xl text-blue-600 dark:text-blue-400" />,
       details: "Specialization in Cybersecurity, Advanced coursework in AI, Software Engineering, and Computer Graphics"
     },
@@ -223,7 +222,7 @@ export default function AboutMe() {
                     <FiMapPin className="text-blue-600 dark:text-blue-400 text-lg sm:text-xl flex-shrink-0" />
                     <div className="min-w-0">
                       <p className="font-semibold text-gray-900 dark:text-white">Status</p>
-                      <p className="text-gray-600 dark:text-gray-400 break-words">Graduating May 2025</p>
+                      <p className="text-gray-600 dark:text-gray-400 break-words">Graduating May 2026</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -263,32 +262,100 @@ export default function AboutMe() {
           )}
 
           {/* Professional Summary */}
-          <div className="max-w-4xl mx-auto mb-14 sm:mb-16 px-2 sm:px-0">
-            <HeroHighlight className="w-full p-4 sm:p-6 lg:p-8 text-justify text-gray-800 dark:text-gray-200 leading-relaxed bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm rounded-2xl border border-gray-200 dark:border-gray-700 shadow-xl">
-              <div className="space-y-4 sm:space-y-6">
-                <p className="text-base sm:text-lg break-words">
-                  I am a <Highlight>trilingual Computer Science student</Highlight> at the University of Sherbrooke with a comprehensive technical background spanning <Highlight>game engine development, full-stack web applications, cybersecurity, and artificial intelligence</Highlight>. My education includes both a <Highlight>Cégep technical diploma (3yrs)</Highlight> in computer programming and a <Highlight>Bachelor's degree in Computer Science</Highlight>, providing me with both practical and theoretical expertise.
-                </p>
-                
-                <p className="text-sm sm:text-base break-words">
-                  Through <Highlight>three professional internships</Highlight> at industry-leading companies, I have developed expertise in <Highlight>C++ game engine development at Ubisoft Montreal</Highlight>, <Highlight>C#/.NET application development at Humanware</Highlight>, and <Highlight>IT project coordination in healthcare settings at CHUS</Highlight>. I have hands-on experience with <Highlight>Active Directory, security architecture, AI model design, and multiple programming paradigms</Highlight> including functional programming with Racket and assembly with armv8.
+          <div className="max-w-5xl mx-auto mb-14 sm:mb-16 px-2 sm:px-0">
+            <HeroHighlight
+              className="
+                w-full
+                rounded-2xl
+                border border-gray-200 dark:border-gray-700
+                bg-gradient-to-br from-white to-gray-50
+                dark:from-gray-800 dark:to-gray-900
+                shadow-xl
+                p-4 sm:p-6 lg:p-8
+              "
+            >
+              <div className="space-y-6">
+
+                {/* Headline - Version compacte */}
+                <div className="text-center space-y-2">
+                  <h3 className="
+                    text-lg sm:text-xl font-bold
+                    tracking-tight
+                    text-gray-800 dark:text-white
+                    text-center
+                    mx-auto
+                    line-clamp-2
+                  ">
+                    🚀 SOFTWARE ENGINEER – MULTI-DOMAIN PROFILE
+                  </h3>
+
+                  <div className="flex flex-wrap justify-center gap-1.5 max-w-3xl mx-auto">
+                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300">
+                      Software Dev
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300">
+                      Cybersecurity
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900 dark:text-emerald-300">
+                      Game & Systems
+                    </span>
+                  </div>
+                </div>
+
+                {/* Core Summary - Version plus concise */}
+                <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 text-center leading-snug">
+                  CS graduate with <Highlight>diverse technical background</Highlight> across enterprise software, healthcare IT, cybersecurity, AI, and game development.
                 </p>
 
-                <p className="text-sm sm:text-base break-words">
-                  My <Highlight>academic background</Highlight> includes advanced coursework in algorithms, data structures, computer graphics (OpenGL), cybersecurity, artificial intelligence, and software engineering. I have developed strong <Highlight>analytical, problem-solving, and project management skills</Highlight> through both academic projects and real-world industry challenges.
-                </p>
+                {/* Value Blocks - Grille plus compacte */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div className="p-4 rounded-xl bg-blue-50 dark:bg-blue-900/20">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FiCode className="text-blue-600 dark:text-blue-400 text-lg" />
+                      <p className="font-semibold text-sm text-gray-800 dark:text-white">
+                        Software Engineering
+                      </p>
+                    </div>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed">
+                      Full-stack & backend development, production-ready systems.
+                    </p>
+                  </div>
 
-                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 p-4 sm:p-6 rounded-xl border border-emerald-200 dark:border-emerald-800 my-6 sm:my-8">
-                  <p className="font-semibold text-gray-800 dark:text-gray-200 text-center text-sm sm:text-base lg:text-lg italic break-words">
-                    "Seeking <Highlight>challenging software development opportunities</Highlight> where I can apply my diverse technical skills in game engine programming, cybersecurity, AI development, and full-stack engineering to contribute to innovative projects in a dynamic team environment."
+                  <div className="p-4 rounded-xl bg-purple-50 dark:bg-purple-900/20">
+                    <div className="flex items-center gap-2 mb-2">
+                      <MdSecurity className="text-purple-600 dark:text-purple-400 text-lg" />
+                      <p className="font-semibold text-sm text-gray-800 dark:text-white">
+                        Systems & Security
+                      </p>
+                    </div>
+                    <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                      Active Directory, offensive/defensive security, pentesting.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20">
+                    <div className="flex items-center gap-2 mb-2">
+                      <FiUsers className="text-emerald-600 dark:text-emerald-400 text-lg" />
+                      <p className="font-semibold text-sm text-gray-800 dark:text-white">
+                        Collaboration & Impact
+                      </p>
+                    </div>
+                    <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed">
+                      Multidisciplinary teams, projects impacting thousands of users.
+                    </p>
+                  </div>
+                </div>
+
+                {/* CTA - Version compacte */}
+                <div className="pt-4 border-t border-gray-200 dark:border-gray-700 text-center">
+                  <p className="font-semibold text-base text-gray-900 dark:text-white mb-1">
+                    <Highlight>Available May 2026</Highlight> • Trilingual • Relocation
+                  </p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                    Software Engineering • Full-Stack • Cybersecurity • AI • Systems
                   </p>
                 </div>
 
-                <div className="pt-4 sm:pt-6 border-t border-gray-200 dark:border-gray-700">
-                  <p className="font-medium text-gray-900 dark:text-gray-100 text-center text-sm sm:text-base break-words">
-                    Available for full-time positions starting May 2025. Open to opportunities in software engineering, game development, cybersecurity, AI/ML, and full-stack development.
-                  </p>
-                </div>
               </div>
             </HeroHighlight>
           </div>

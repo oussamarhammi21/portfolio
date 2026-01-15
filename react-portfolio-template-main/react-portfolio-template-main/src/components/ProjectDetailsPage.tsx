@@ -126,11 +126,7 @@ function VideoCard({ video, index }: { video: VideoItem; index: number }) {
   const [isFullscreenPlaying, setIsFullscreenPlaying] = useState(false);
   const [showFullscreenControls, setShowFullscreenControls] = useState(true);
 
-  // SIMPLE: Tout clic sur la carte ouvre le plein écran
-  const handleCardClick = () => {
-    enterFullscreen();
-  };
-
+  // Gestion du survol pour la miniature
   const handleMouseEnter = () => {
     setIsHovered(true);
     
@@ -154,29 +150,33 @@ function VideoCard({ video, index }: { video: VideoItem; index: number }) {
     }
   };
 
+  // Entrer en plein écran
   const enterFullscreen = () => {
     setIsFullscreen(true);
     setShowFullscreenControls(true);
-    document.body.style.overflow = 'hidden'; // Empêcher le scroll
+    document.body.style.overflow = 'hidden';
     
-    // Masquer les contrôles après 3 secondes
+    // Démarrer la vidéo après un court délai pour laisser le DOM se mettre à jour
     setTimeout(() => {
-      if (isFullscreen) {
-        setShowFullscreenControls(false);
+      if (fullscreenVideoRef.current) {
+        fullscreenVideoRef.current.play().catch(e => console.log("Play prevented:", e));
+        setIsFullscreenPlaying(true);
       }
-    }, 3000);
+    }, 100);
   };
 
+  // Quitter le plein écran
   const exitFullscreen = () => {
     setIsFullscreen(false);
-    document.body.style.overflow = 'auto'; // Réactiver le scroll
+    setShowFullscreenControls(false);
+    document.body.style.overflow = 'auto';
     
     if (fullscreenVideoRef.current) {
       fullscreenVideoRef.current.pause();
       setIsFullscreenPlaying(false);
     }
     
-    // Arrêter la vidéo miniature aussi
+    // Arrêter la vidéo miniature
     if (videoRef.current) {
       videoRef.current.pause();
       videoRef.current.currentTime = 0;
@@ -185,8 +185,9 @@ function VideoCard({ video, index }: { video: VideoItem; index: number }) {
     }
   };
 
+  // Toggle play/pause en plein écran
   const toggleFullscreenPlay = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Empêcher la fermeture
+    e.stopPropagation();
     if (fullscreenVideoRef.current) {
       if (isFullscreenPlaying) {
         fullscreenVideoRef.current.pause();
@@ -198,45 +199,111 @@ function VideoCard({ video, index }: { video: VideoItem; index: number }) {
     }
   };
 
+  // Gestion des événements clavier
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isFullscreen) {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isFullscreen) return;
+      
+      switch (e.key) {
+        case 'Escape':
+          exitFullscreen();
+          break;
+        case ' ':
+          e.preventDefault();
+          if (fullscreenVideoRef.current) {
+            if (isFullscreenPlaying) {
+              fullscreenVideoRef.current.pause();
+            } else {
+              fullscreenVideoRef.current.play();
+            }
+          }
+          break;
+        case 'ArrowLeft':
+          e.preventDefault();
+          if (fullscreenVideoRef.current) {
+            fullscreenVideoRef.current.currentTime -= 10;
+          }
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          if (fullscreenVideoRef.current) {
+            fullscreenVideoRef.current.currentTime += 10;
+          }
+          break;
+        case 'f':
+        case 'F':
+          e.preventDefault();
+          if (fullscreenVideoRef.current && document.fullscreenElement) {
+            document.exitFullscreen();
+          } else if (fullscreenVideoRef.current) {
+            fullscreenVideoRef.current.requestFullscreen();
+          }
+          break;
+        case 'm':
+        case 'M':
+          e.preventDefault();
+          if (fullscreenVideoRef.current) {
+            fullscreenVideoRef.current.muted = !fullscreenVideoRef.current.muted;
+          }
+          break;
+      }
+    };
+
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement && isFullscreen) {
+        // L'utilisateur a quitté le fullscreen natif, on quitte notre modal aussi
         exitFullscreen();
       }
     };
 
-    const handleFullscreenClick = () => {
-      // Montrer les contrôles quand on clique dans le modal
-      if (isFullscreen) {
-        setShowFullscreenControls(true);
-        
-        // Masquer à nouveau après 3 secondes
-        setTimeout(() => {
-          if (isFullscreen) {
-            setShowFullscreenControls(false);
-          }
-        }, 3000);
-      }
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('fullscreenchange', handleFullscreenChange);
+    };
+  }, [isFullscreen, isFullscreenPlaying]);
+
+  // Timer pour cacher les contrôles en plein écran
+  useEffect(() => {
+    if (!isFullscreen) return;
+    
+    const timer = setTimeout(() => {
+      setShowFullscreenControls(false);
+    }, 3000);
+
+    const resetTimer = () => {
+      clearTimeout(timer);
+      setShowFullscreenControls(true);
+      
+      // Redémarrer le timer après avoir montré les contrôles
+      const newTimer = setTimeout(() => {
+        setShowFullscreenControls(false);
+      }, 3000);
+      
+      return () => clearTimeout(newTimer);
     };
 
-    document.addEventListener('keydown', handleEscape);
-    document.addEventListener('click', handleFullscreenClick);
-    
+    window.addEventListener('mousemove', resetTimer);
+    window.addEventListener('click', resetTimer);
+
     return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.removeEventListener('click', handleFullscreenClick);
+      clearTimeout(timer);
+      window.removeEventListener('mousemove', resetTimer);
+      window.removeEventListener('click', resetTimer);
     };
   }, [isFullscreen]);
 
   return (
     <>
-      {/* Carte vidéo - TOUT CLIC ouvre le plein écran */}
+      {/* Carte vidéo */}
       <div 
         ref={containerRef}
         className="group relative aspect-video bg-gray-900 rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 cursor-pointer"
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
-        onClick={handleCardClick} // Tout clic sur la carte ouvre le plein écran
+        onClick={enterFullscreen}
       >
         {/* Video Player miniature */}
         <video
@@ -247,12 +314,14 @@ function VideoCard({ video, index }: { video: VideoItem; index: number }) {
           loop
           playsInline
           preload="metadata"
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
         >
           <source src={video.url} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
 
-        {/* Overlay avec informations - pas de clic séparé, fait partie de la carte */}
+        {/* Overlay au survol */}
         <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-4 transition-opacity duration-300 ${
           isHovered ? 'opacity-100' : 'opacity-0'
         }`}>
@@ -271,15 +340,13 @@ function VideoCard({ video, index }: { video: VideoItem; index: number }) {
           </div>
         </div>
 
-        {/* Play Indicator - juste visuel, pas cliquable séparément */}
+        {/* Play Indicator au survol */}
         <div 
           className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
             isHovered ? 'opacity-100' : 'opacity-0'
           }`}
         >
-          <div 
-            className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center"
-          >
+          <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
             {isPlaying ? (
               <Pause className="w-8 h-8 text-white" />
             ) : (
@@ -298,7 +365,7 @@ function VideoCard({ video, index }: { video: VideoItem; index: number }) {
             <div className="flex items-center gap-2">
               <div className={`w-2 h-2 rounded-full ${isPlaying ? 'bg-green-400' : 'bg-gray-400'}`}></div>
               <span className="text-xs text-gray-300">
-                {isPlaying ? 'Playing' : 'Click to expand'}
+                {isPlaying ? 'Playing' : 'Hover to preview'}
               </span>
               <Maximize2 className="w-4 h-4 text-gray-300 ml-2" />
             </div>
@@ -306,47 +373,46 @@ function VideoCard({ video, index }: { video: VideoItem; index: number }) {
         </div>
       </div>
 
-      {/* Modal plein écran */}
+      {/* Modal plein écran amélioré */}
       {isFullscreen && (
         <div 
           className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm"
           style={{ animation: 'zoomIn 0.3s ease-out' }}
-          onClick={exitFullscreen} // Cliquer n'importe où ferme le modal
+          onClick={exitFullscreen}
         >
           {/* Conteneur vidéo plein écran */}
           <div 
             className="relative w-full h-full flex items-center justify-center p-4"
-            onClick={(e) => e.stopPropagation()} // Empêcher la fermeture si on clique sur la vidéo
+            onClick={(e) => e.stopPropagation()}
           >
-            {/* Vidéo en plein écran */}
+            {/* Vidéo avec contrôles natifs */}
             <div className="relative w-full max-w-6xl aspect-video bg-black rounded-xl overflow-hidden shadow-2xl">
               <video
                 ref={fullscreenVideoRef}
-                className="w-full h-full object-contain"
+                className="w-full h-full"
                 poster={video.poster}
-                muted={false}
-                loop
+                controls={false} // On désactive les contrôles natifs pour utiliser les nôtres
                 playsInline
-                autoPlay
                 onPlay={() => setIsFullscreenPlaying(true)}
                 onPause={() => setIsFullscreenPlaying(false)}
+                onEnded={() => setIsFullscreenPlaying(false)}
               >
                 <source src={video.url} type="video/mp4" />
                 Your browser does not support the video tag.
               </video>
 
-              {/* Contrôles personnalisés en plein écran */}
+              {/* Nos contrôles personnalisés */}
               <div className={`absolute inset-0 transition-opacity duration-300 ${
                 showFullscreenControls ? 'opacity-100' : 'opacity-0'
               }`}>
-                {/* Overlay sombre pour les contrôles */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/80"></div>
+                {/* Overlay sombre */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/80"></div>
                 
                 {/* Bouton Play/Pause au centre */}
                 <button
                   onClick={toggleFullscreenPlay}
                   className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-4 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-all duration-200 hover:scale-110"
-                  title={isFullscreenPlaying ? "Pause" : "Play"}
+                  title={isFullscreenPlaying ? "Pause (Space)" : "Play (Space)"}
                 >
                   {isFullscreenPlaying ? (
                     <Pause className="w-12 h-12 text-white" />
@@ -355,40 +421,150 @@ function VideoCard({ video, index }: { video: VideoItem; index: number }) {
                   )}
                 </button>
 
-                {/* Bouton fermer en haut à droite */}
+                {/* Bouton plein écran natif */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (fullscreenVideoRef.current) {
+                      if (document.fullscreenElement) {
+                        document.exitFullscreen();
+                      } else {
+                        fullscreenVideoRef.current.requestFullscreen();
+                      }
+                    }
+                  }}
+                  className="absolute top-4 right-16 p-3 bg-white/20 backdrop-blur-sm hover:bg-white/30 rounded-full transition-all duration-200 hover:scale-110"
+                  title="Toggle Fullscreen (F)"
+                >
+                  <Maximize2 className="w-6 h-6 text-white" />
+                </button>
+
+                {/* Bouton fermer */}
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     exitFullscreen();
                   }}
                   className="absolute top-4 right-4 p-3 bg-red-600 hover:bg-red-700 rounded-full transition-all duration-200 hover:scale-110 shadow-lg"
-                  title="Close"
+                  title="Close (ESC)"
                 >
                   <X className="w-6 h-6 text-white" />
                 </button>
 
-                {/* Info en bas */}
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <h3 className="text-2xl font-bold text-white mb-2">{video.title}</h3>
-                  <p className="text-lg text-gray-200">{video.description}</p>
-                  <div className="mt-4 flex items-center gap-4">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-3 h-3 rounded-full ${isFullscreenPlaying ? 'bg-green-400' : 'bg-yellow-400'}`}></div>
-                      <span className="text-sm text-gray-300">
-                        {isFullscreenPlaying ? 'Now playing' : 'Paused'}
+                {/* Contrôles en bas */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 to-transparent">
+                  {/* Timeline personnalisée */}
+                  <div 
+                    className="w-full h-1 bg-gray-600 mb-4 cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (fullscreenVideoRef.current) {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const percent = (e.clientX - rect.left) / rect.width;
+                        fullscreenVideoRef.current.currentTime = percent * fullscreenVideoRef.current.duration;
+                      }
+                    }}
+                  >
+                    {fullscreenVideoRef.current && !isNaN(fullscreenVideoRef.current.duration) && (
+                      <div 
+                        className="h-full bg-blue-500 transition-all duration-100"
+                        style={{
+                          width: `${(fullscreenVideoRef.current.currentTime / fullscreenVideoRef.current.duration) * 100}%`
+                        }}
+                      />
+                    )}
+                  </div>
+
+                  {/* Contrôles de temps et boutons */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (fullscreenVideoRef.current) {
+                            fullscreenVideoRef.current.currentTime -= 10;
+                          }
+                        }}
+                        className="text-white hover:text-gray-300 transition-colors px-2 py-1 rounded hover:bg-white/10"
+                        title="Rewind 10s (←)"
+                      >
+                        -10s
+                      </button>
+                      
+                      <span className="text-white text-sm font-mono bg-black/50 px-3 py-1 rounded">
+                        {fullscreenVideoRef.current && !isNaN(fullscreenVideoRef.current.currentTime) 
+                          ? formatTime(fullscreenVideoRef.current.currentTime)
+                          : "0:00"
+                        } / 
+                        {fullscreenVideoRef.current && !isNaN(fullscreenVideoRef.current.duration)
+                          ? formatTime(fullscreenVideoRef.current.duration)
+                          : "0:00"
+                        }
                       </span>
+                      
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (fullscreenVideoRef.current) {
+                            fullscreenVideoRef.current.currentTime += 10;
+                          }
+                        }}
+                        className="text-white hover:text-gray-300 transition-colors px-2 py-1 rounded hover:bg-white/10"
+                        title="Forward 10s (→)"
+                      >
+                        +10s
+                      </button>
                     </div>
-                    <span className="text-sm text-gray-400">
-                      Click anywhere to close • Press ESC to close
-                    </span>
+
+                    <div className="flex items-center gap-4">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (fullscreenVideoRef.current) {
+                            fullscreenVideoRef.current.playbackRate = 
+                              fullscreenVideoRef.current.playbackRate === 2 ? 1 : 2;
+                          }
+                        }}
+                        className="text-white hover:text-gray-300 transition-colors text-sm px-3 py-1 rounded hover:bg-white/10"
+                        title="Toggle speed (1x/2x)"
+                      >
+                        {fullscreenVideoRef.current?.playbackRate === 2 ? '2x' : '1x'}
+                      </button>
+                      
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (fullscreenVideoRef.current) {
+                            fullscreenVideoRef.current.muted = !fullscreenVideoRef.current.muted;
+                          }
+                        }}
+                        className="text-white hover:text-gray-300 transition-colors px-3 py-1 rounded hover:bg-white/10"
+                        title="Toggle mute (M)"
+                      >
+                        {fullscreenVideoRef.current?.muted ? '🔇' : '🔊'}
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Info vidéo */}
+                  <div className="mt-4">
+                    <h3 className="text-xl font-bold text-white">{video.title}</h3>
+                    <p className="text-gray-300">{video.description}</p>
+                    <div className="mt-2 text-xs text-gray-400 flex flex-wrap gap-4">
+                      <span>← → : Seek 10 seconds</span>
+                      <span>Space : Play/Pause</span>
+                      <span>F : Toggle fullscreen</span>
+                      <span>ESC : Close</span>
+                      <span>M : Mute/Unmute</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Indicateur que la vidéo est cliquable */}
+              {/* Indicateur pour montrer les contrôles */}
               {!showFullscreenControls && (
-                <div className="absolute bottom-4 left-4 bg-black/50 text-white px-3 py-1 rounded-full text-sm">
-                  Click to show controls
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-full text-sm backdrop-blur-sm animate-pulse">
+                  Move mouse to show controls
                 </div>
               )}
             </div>
@@ -399,6 +575,12 @@ function VideoCard({ video, index }: { video: VideoItem; index: number }) {
   );
 }
 
+// Fonction utilitaire pour formater le temps
+function formatTime(seconds: number): string {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
 export default function ProjectDetailsPage() {
   const { id } = useParams<{ id: string }>();
   const mainVideoRef = useRef<HTMLVideoElement>(null);
@@ -462,39 +644,25 @@ export default function ProjectDetailsPage() {
             
             {/* Main Video Player */}
             {project.mainVideoUrl && (
-              <div className="mb-8 relative group">
-                <div className="aspect-video bg-gray-900 rounded-xl overflow-hidden shadow-2xl">
-                  <video 
-                    ref={mainVideoRef}
-                    controls
-                    className="w-full h-full"
-                    poster="/assets/lab-system/calendar-poster.jpg"
-                    onPlay={() => setIsMainVideoPlaying(true)}
-                    onPause={() => setIsMainVideoPlaying(false)}
-                  >
-                    <source src={project.mainVideoUrl} type="video/mp4" />
-                    Your browser does not support the video tag.
-                  </video>
-                </div>
-                
-                {/* Custom play/pause button overlay */}
-                <div 
-                  className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer"
-                  onClick={toggleMainVideo}
-                >
-                  <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center hover:bg-white/30 transition-colors duration-200">
-                    {isMainVideoPlaying ? (
-                      <Pause className="w-10 h-10 text-white" />
-                    ) : (
-                      <Play className="w-10 h-10 text-white" />
-                    )}
-                  </div>
-                </div>
-                
-                <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">
-                  Demo: Calendar functionality and reservation workflow
-                </p>
-              </div>
+                          <div className="mb-8 relative group">
+                            <div className="aspect-video bg-gray-900 rounded-xl overflow-hidden shadow-2xl">
+                              <video 
+                                ref={mainVideoRef}
+                                controls
+                                className="w-full h-full"
+                                poster="/assets/lab-system/calendar-poster.jpg"
+                                onPlay={() => setIsMainVideoPlaying(true)}
+                                onPause={() => setIsMainVideoPlaying(false)}
+                              >
+                                <source src={project.mainVideoUrl} type="video/mp4" />
+                                Your browser does not support the video tag.
+                              </video>
+                            </div>
+                            
+                            <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-2">
+                              Demo: Calendar functionality and reservation workflow
+                            </p>
+                          </div>
             )}
 
             {/* Video Gallery - TOUT CLIC sur la carte ouvre le plein écran */}
