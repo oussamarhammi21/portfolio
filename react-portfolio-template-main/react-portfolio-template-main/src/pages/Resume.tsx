@@ -1,65 +1,108 @@
-"use client";
-
 import { useState, useEffect } from "react";
+import { Card } from "@/components/ui/card";
+import { CardBody } from "@/components/ui/3d-card";
+import { Separator } from "@/components/ui/separator";
+import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 
 type Lang = "fr" | "en";
 
-const Resume = () => {
-    const pdfs: Record<Lang, string> = {
-        fr: "/Rhammi_Oussama2025_FR.pdf",
-        en: "/Rhammi_Oussama2025_EN.pdf",
-    };
+export default function Resume() {
+  const pdfs: Record<Lang, string> = {
+    fr: "/Rhammi_Oussama2025_FR.pdf",
+    en: "/Rhammi_Oussama2025_EN.pdf",
+  };
 
-    const [lang, setLang] = useState<Lang>("fr");
+  const [lang, setLang] = useState<Lang | null>(null);
 
-    useEffect(() => {
-        const userLang: Lang = navigator.language.startsWith("fr") ? "fr" : "en";
-        setLang(userLang);
-    }, []);
+  useEffect(() => {
+    const userLang: Lang = navigator.language.startsWith("fr") ? "fr" : "en";
+    setLang(userLang);
+  }, []);
 
-    return (
-        <div className="flex flex-col items-center mt-10 px-4 gap-6">
+  const activeLang = lang ?? "en";
 
-            <h1 className="text-2xl font-semibold">
-                {lang === "fr" ? "Mon CV" : "My Resume"}
+  return (
+    <div className="flex justify-center items-center">
+      <Card className="flex flex-col items-center sm:my-5 max-w-4xl w-full">
+        <CardBody className="w-full p-8 sm:mx-10 z-20">
+
+          {/* Header */}
+          <div className="text-center mb-6">
+            <h1 className="text-neutral-500 dark:text-neutral-400 font-semibold tracking-[1em] text-lg sm:text-xl">
+              RESUME
             </h1>
+          </div>
 
-            <div className="flex gap-2 bg-gray-100 p-1 rounded-lg shadow-sm">
+          {/* Lang Toggle */}
+          <div className="flex justify-center mb-6">
+            <div className="flex gap-1 bg-neutral-100 dark:bg-neutral-900 p-1 rounded-xl border border-neutral-200 dark:border-neutral-800">
+              {(["fr", "en"] as Lang[]).map((l) => (
                 <button
-                    onClick={() => setLang("fr")}
-                    className={`px-4 py-1 rounded-md ${
-                        lang === "fr" ? "bg-blue-600 text-white" : ""
-                    }`}
+                  key={l}
+                  onClick={() => setLang(l)}
+                  className={`px-5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                    activeLang === l
+                      ? "bg-white dark:bg-neutral-800 text-black dark:text-white shadow-sm"
+                      : "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"
+                  }`}
                 >
-                    Français
+                  {l === "fr" ? "Français" : "English"}
                 </button>
-
-                <button
-                    onClick={() => setLang("en")}
-                    className={`px-4 py-1 rounded-md ${
-                        lang === "en" ? "bg-blue-600 text-white" : ""
-                    }`}
-                >
-                    English
-                </button>
+              ))}
             </div>
+          </div>
 
-            <iframe
-                src={pdfs[lang]}
-                title="PDF Viewer"
-                className="w-full max-w-5xl h-[80vh] rounded-xl shadow-lg border"
-            />
+          <Separator className="mb-6" />
 
+          {/* PDF Viewer */}
+          {lang ? (
+            <div className="w-full rounded-xl overflow-hidden border border-neutral-200 dark:border-neutral-800 shadow-md mb-6">
+              <iframe
+                src={pdfs[activeLang]}
+                title="Resume PDF"
+                className="w-full h-[75vh]"
+              />
+            </div>
+          ) : (
+            <div className="w-full h-[75vh] rounded-xl border border-neutral-200 dark:border-neutral-800 flex items-center justify-center mb-6">
+              <p className="text-neutral-400 text-sm animate-pulse">Loading...</p>
+            </div>
+          )}
+
+          {/* Mobile fallback */}
+          <p className="text-center text-xs text-neutral-400 dark:text-neutral-500 mb-4">
+            {activeLang === "fr"
+              ? "Si le PDF ne s'affiche pas,"
+              : "If the PDF doesn't load,"}{" "}
             <a
-                href={pdfs[lang]}
-                download
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              href={pdfs[activeLang]}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-neutral-700 dark:hover:text-neutral-300 transition-colors"
             >
-                {lang === "fr" ? "Télécharger le CV" : "Download Resume"}
+              {activeLang === "fr" ? "cliquez ici" : "click here"}
             </a>
+          </p>
 
-        </div>
-    );
-};
+          <Separator className="mb-6" />
 
-export default Resume;
+          {/* Download Button */}
+          <div className="flex justify-center">
+            <a href={pdfs[activeLang]} download>
+              <HoverBorderGradient
+                containerClassName="rounded-2xl text-sm"
+                as="button"
+                className="dark:bg-black bg-white text-black dark:text-white flex items-center gap-2"
+              >
+                <span>
+                  {activeLang === "fr" ? "Télécharger le CV" : "Download Resume"}
+                </span>
+              </HoverBorderGradient>
+            </a>
+          </div>
+
+        </CardBody>
+      </Card>
+    </div>
+  );
+}
