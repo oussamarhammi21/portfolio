@@ -1,22 +1,38 @@
 import { HoverBorderGradient } from "./ui/hover-border-gradient";
 
+type Lang = "fr" | "en";
+
+const pdfs: Record<Lang, string> = {
+  fr: "/Rhammi_Oussama2025_FR.pdf",
+  en: "/Rhammi_Oussama2025_EN.pdf",
+};
+
+const filenames: Record<Lang, string> = {
+  fr: "Rhammi_Oussama2025_FR.pdf",
+  en: "Rhammi_Oussama2025_EN.pdf",
+};
+
 export default function ResumeButton() {
-  const pdfUrl = "/Rhammi_Oussama2025E.pdf";
+  const handleDownload = async () => {
+    const lang: Lang = navigator.language.startsWith("fr") ? "fr" : "en";
+    const response = await fetch(pdfs[lang]);
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = filenames[lang];
+    a.click();
+    window.URL.revokeObjectURL(blobUrl);
+  };
+
   return (
-    <a href={pdfUrl} download>
-      {/* <button className="relative inline-flex h-12 overflow-hidden rounded-full p-[1px] focus:outline-none focus:ring-2 focus:ring-emerald-900 focus:ring-offset-2 focus:ring-offset-slate-50">
-                <span className="absolute inset-[-1000%] animate-[spin_2s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#A7F3D0_0%,#10B981_50%,#A7F3D0_100%)]" />
-                <span className="inline-flex h-full w-full cursor-pointer items-center justify-center rounded-full bg-slate-950 px-3 py-1 text-sm font-medium text-white backdrop-blur-3xl">
-                    Download Resume
-                </span>
-            </button> */}
-      <HoverBorderGradient
-        containerClassName="rounded-2xl text-sm"
-        as="button"
-        className="dark:bg-black bg-white text-black dark:text-white flex items-center"
-      >
-        <span>Download Resume</span>
-      </HoverBorderGradient>
-    </a>
+    <HoverBorderGradient
+      containerClassName="rounded-2xl text-sm"
+      as="button"
+      onClick={handleDownload}
+      className="dark:bg-black bg-white text-black dark:text-white flex items-center"
+    >
+      <span>Download Resume</span>
+    </HoverBorderGradient>
   );
 }
