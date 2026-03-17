@@ -12,6 +12,11 @@ export default function Resume() {
     en: "/Rhammi_Oussama2025_EN.pdf",
   };
 
+  const filenames: Record<Lang, string> = {
+    fr: "Rhammi_Oussama2025_FR.pdf",
+    en: "Rhammi_Oussama2025_EN.pdf",
+  };
+
   const [lang, setLang] = useState<Lang | null>(null);
 
   useEffect(() => {
@@ -20,6 +25,17 @@ export default function Resume() {
   }, []);
 
   const activeLang = lang ?? "en";
+
+  const handleDownload = async () => {
+    const response = await fetch(pdfs[activeLang]);
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = blobUrl;
+    a.download = filenames[activeLang];
+    a.click();
+    window.URL.revokeObjectURL(blobUrl);
+  };
 
   return (
     <div className="flex justify-center items-center">
@@ -88,17 +104,16 @@ export default function Resume() {
 
           {/* Download Button */}
           <div className="flex justify-center">
-            <a href={pdfs[activeLang]} download>
-              <HoverBorderGradient
-                containerClassName="rounded-2xl text-sm"
-                as="button"
-                className="dark:bg-black bg-white text-black dark:text-white flex items-center gap-2"
-              >
-                <span>
-                  {activeLang === "fr" ? "Télécharger le CV" : "Download Resume"}
-                </span>
-              </HoverBorderGradient>
-            </a>
+            <HoverBorderGradient
+              containerClassName="rounded-2xl text-sm"
+              as="button"
+              onClick={handleDownload}
+              className="dark:bg-black bg-white text-black dark:text-white flex items-center gap-2"
+            >
+              <span>
+                {activeLang === "fr" ? "Télécharger le CV" : "Download Resume"}
+              </span>
+            </HoverBorderGradient>
           </div>
 
         </CardBody>
