@@ -146,7 +146,7 @@ export default function Stats(): JSX.Element {
                     <TableCell className="font-medium text-left">
                       Nationality
                     </TableCell>
-                    <TableCell className="text-left">Morrocan</TableCell>
+                    <TableCell className="text-left">Canadian</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>

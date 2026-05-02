@@ -157,7 +157,7 @@ export default function AboutMe() {
     {
       institution: "University of Sherbrooke",
       degree: "Bachelor of Science in Computer Science",
-      period: "Expected Graduation: May 2026",
+      period: "Graduated: May 2026",
       icon: <FaUniversity className="text-2xl text-blue-600 dark:text-blue-400" />,
       details: "Specialization in Cybersecurity, Advanced coursework in AI, Software Engineering, and Computer Graphics"
     },
@@ -222,7 +222,7 @@ export default function AboutMe() {
                     <FiMapPin className="text-blue-600 dark:text-blue-400 text-lg sm:text-xl flex-shrink-0" />
                     <div className="min-w-0">
                       <p className="font-semibold text-gray-900 dark:text-white">Status</p>
-                      <p className="text-gray-600 dark:text-gray-400 break-words">Graduating May 2026</p>
+                      <p className="text-gray-600 dark:text-gray-400 break-words">Graduated May 2026</p>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">

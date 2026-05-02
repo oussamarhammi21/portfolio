@@ -18,6 +18,7 @@ import AlgorithmComplexityAnalyzerPage from "@/pages/devtools/AlgorithmComplexit
 import ProjectDetailsPage from "@/components/ProjectDetailsPage"; // Importer la page de détails
 import ProjectsSection from "@/components/ProjectSection";
 import SuperInfiniteCardsDetailsPage from "@/components/SuperInfiniteCardsDetailsPage";
+import FoldioDetailsPage from "@/components/FoldioDetailsPage";
 
 const router = createBrowserRouter([
   {
@@ -99,6 +100,10 @@ const router = createBrowserRouter([
         {
         path: "/projects/2",
         element: <SuperInfiniteCardsDetailsPage />,
+      },
+      {
+        path: "/projects/foldio",
+        element: <FoldioDetailsPage />,
       },
     ],
   },

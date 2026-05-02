@@ -1,4 +1,4 @@
-import { SiAngular, SiDotnet, SiGithub, SiGoogleplay, SiQuarkus } from "react-icons/si";
+import { SiAngular, SiDotnet, SiFastapi, SiGithub, SiGoogleplay, SiNextdotjs, SiQuarkus } from "react-icons/si";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import {
@@ -11,7 +11,7 @@ import {
 } from "./ui/card";
 import { GoLinkExternal } from "react-icons/go";
 import { CardContainer } from "./ui/3d-card";
-import { FaDatabase, FaUsers, FaUserShield } from "react-icons/fa";
+import { FaBrain, FaDatabase, FaLeaf, FaUsers, FaUserShield } from "react-icons/fa";
 
 interface ProjectCardProps {
   title: string;
@@ -147,7 +147,53 @@ const projects = [
     duration: "University Capstone Project • 2024",
     liveUrl: "/projects/1"
   },
+{
+id: "foldio",
+title: "Foldio",
+description: "AI-enhanced document management platform — query your files in natural language via a secure RAG architecture.",
+techStack: [
+  "Next.js",
+  "FastAPI",
+  "Python",
+  "PostgreSQL",
+  "RAG",
+  "Docling",
+  "Cloudflare R2",
+],
+imageUrl: "/assets/foldio.png",
+icons: [
+  <SiNextdotjs key="next" />,
+  <SiFastapi key="fastapi" />,
+  <FaBrain key="rag" />,
+  <FaLeaf key="foldio" />
+],
+features: [
+  "RAG architecture with semantic search",
+  "Multi-tenant with role-based access control",
+  "Self-hosted LLM included in free tier",
+  "Secure cloud storage (Cloudflare R2)",
+  "Automatic text extraction via Docling"
+],
+role: "Full-Stack Developer",
+duration: "Personnel projet  • 2025",
+liveUrl: "/projects/foldio"
+},
   {
+    title: "Personal Portfolio",
+    description: "A personal portfolio site portfolio site",
+    techStack: [
+      "React.js",
+      "Tailwind CSS",
+      "shadcn/ui",
+      "TypeScript",
+      "Acernity",
+      "Vercel",
+    ],
+    imageUrl: "/assets/portfolio-thumb.png",
+    live: true,
+    liveUrl: "https://rhammiouss.vercel.app/",
+  },
+{
   id: "super-cartes-infinies",
   title: "Super Infinite Cards",
   description: "Hearthstone-style card game with real-time multiplayer features",
@@ -183,21 +229,6 @@ const projects = [
    liveUrl: "/projects/2",
   
 },
-  {
-    title: "Personal Portfolio",
-    description: "A personal portfolio site portfolio site",
-    techStack: [
-      "React.js",
-      "Tailwind CSS",
-      "shadcn/ui",
-      "TypeScript",
-      "Acernity",
-      "Vercel",
-    ],
-    imageUrl: "/assets/portfolio-thumb.png",
-    live: true,
-    liveUrl: "https://rhammiouss.vercel.app/",
-  },
 ];
 
 export default function ProjectsSection() {
