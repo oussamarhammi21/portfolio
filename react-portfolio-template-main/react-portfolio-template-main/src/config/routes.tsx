@@ -22,6 +22,7 @@ const AlgorithmComplexityAnalyzerPage = lazy(() => import("@/pages/devtools/Algo
 const ProjectDetailsPage = lazy(() => import("@/components/ProjectDetailsPage"));
 const SuperInfiniteCardsDetailsPage = lazy(() => import("@/components/SuperInfiniteCardsDetailsPage"));
 const FoldioDetailsPage = lazy(() => import("@/components/FoldioDetailsPage"));
+const PrestoDetailsPage = lazy(() => import("@/components/PrestoDetailsPage"));
 
 const page = (element: JSX.Element) => (
   <Suspense
@@ -56,6 +57,7 @@ const router = createBrowserRouter([
       { path: "/projects/1", element: page(<ProjectDetailsPage />) },
       { path: "/projects/2", element: page(<SuperInfiniteCardsDetailsPage />) },
       { path: "/projects/foldio", element: page(<FoldioDetailsPage />) },
+      { path: "/projects/presto", element: page(<PrestoDetailsPage />) },
       { path: "*", element: page(<NotFoundPage />) },
     ],
   },

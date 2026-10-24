@@ -596,7 +596,7 @@ export default function ProjectDetailsPage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Navigation */}
           <div className="mb-8">
-            <Link to="/projects">
+            <Link to="/#projects">
               <Button variant="ghost" className="mb-6">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Projects

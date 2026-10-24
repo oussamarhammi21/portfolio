@@ -1,4 +1,4 @@
-import { SiAngular, SiDotnet, SiFastapi, SiGithub, SiGoogleplay, SiNextdotjs, SiQuarkus } from "react-icons/si";
+import { SiAngular, SiDotnet, SiFastapi, SiGithub, SiGoogleplay, SiNextdotjs, SiPwa, SiQuarkus, SiReact, SiSupabase } from "react-icons/si";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import {
@@ -120,9 +120,31 @@ function ProjectCard(props: ProjectCardProps) {
 
 const projects = [
   {
+    id: "installation-presto",
+    title: "Installation Presto",
+    description: "Business management PWA I built and use every day to run my TV-mounting service: online requests, instant quotes, jobs, inventory and partner accounting.",
+    techStack: [
+      "React 19",
+      "TypeScript",
+      "Vite",
+      "Supabase",
+      "PostgreSQL",
+      "PWA",
+      "Vercel",
+    ],
+    icons: [
+      <SiReact key="react" />,
+      <SiSupabase key="supabase" />,
+      <SiPwa key="pwa" />,
+    ],
+    role: "Co-founder & Full-Stack Developer",
+    duration: "Personal business • 2026 – Present",
+    liveUrl: "/projects/presto",
+  },
+  {
   id: "lab-management-system", // ID pour le routing
-    title: "GRCB Civil Engineering Platform",
-    description: "Full-stack Quarkus & Angular application for GRCB research group",
+    title: "GRCB Laboratory Management Platform",
+    description: "Full-stack platform for the university's Cement and Concrete Research Group: equipment reservations, inventory and access control. Started as a capstone, now being adopted by the university.",
     techStack: [
       "Java 17",
       "Quarkus",
@@ -130,8 +152,8 @@ const projects = [
       "PostgreSQL",
       "Keycloak",
       "TypeScript",
-      "Oracle Cloud",
-      "REST API"
+      "WebSocket",
+      "SSO / RBAC"
     ],
     imageUrl: "/assets/logoProjet1.jpg",
     icons: [
@@ -148,7 +170,7 @@ const projects = [
       "Role-based access control"
     ],
     role: "Full-Stack Developer",
-    duration: "University Capstone Project • 2024",
+    duration: "Capstone → adopted by the university • 2024 – Present",
     liveUrl: "/projects/1"
   },
 {

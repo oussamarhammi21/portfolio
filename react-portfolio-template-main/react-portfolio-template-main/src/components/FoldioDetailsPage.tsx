@@ -58,7 +58,7 @@ export default function FoldioDetailsPage() {
 
         {/* Nav */}
         <div className="mb-8">
-          <Link to="/projects">
+          <Link to="/#projects">
             <Button variant="ghost" className="mb-6">
               <ArrowLeft className="mr-2 h-4 w-4" />
               Back to Projects

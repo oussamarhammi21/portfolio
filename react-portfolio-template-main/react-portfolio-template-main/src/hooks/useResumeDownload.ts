@@ -1,13 +1,13 @@
 type Lang = "fr" | "en";
 
 export const pdfs: Record<Lang, string> = {
-  fr: "/Rhammi_Oussama2025_FR.pdf",
-  en: "/Rhammi_Oussama2025_EN.pdf",
+  fr: "/Rhammi_Oussama_CV_FR.pdf",
+  en: "/Rhammi_Oussama_CV_EN.pdf",
 };
 
 export const filenames: Record<Lang, string> = {
-  fr: "Rhammi_Oussama2025_FR.pdf",
-  en: "Rhammi_Oussama2025_EN.pdf",
+  fr: "Rhammi_Oussama_CV_FR.pdf",
+  en: "Rhammi_Oussama_CV_EN.pdf",
 };
 
 export function getBrowserLang(): Lang {

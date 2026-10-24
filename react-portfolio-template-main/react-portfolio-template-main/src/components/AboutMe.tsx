@@ -91,10 +91,10 @@ export default function AboutMe() {
       color: "from-blue-100 to-blue-50 dark:from-blue-900/20 dark:to-blue-800/10"
     },
     { 
-      title: "Cybersecurity", 
-      skills: ["Active Directory", "DNS/GPO", "Cryptography", "Penetration Testing", "System Security", "Network Defense"],
+      title: "Cybersecurity & Governance",
+      skills: ["NIST CSF / 800-53", "ISO 27001/27002", "Risk Management", "Active Directory", "SSO / Keycloak", "Penetration Testing"],
       icon: <MdSecurity className="text-2xl text-red-600 dark:text-red-400" />,
-      description: "Cybersecurity specialization with practical experience",
+      description: "Security governance at Santé Québec, backed by a cybersecurity specialization",
       color: "from-red-100 to-red-50 dark:from-red-900/20 dark:to-red-800/10"
     },
     { 
@@ -185,7 +185,7 @@ export default function AboutMe() {
               PROFESSIONAL PROFILE
             </h1>
             <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg lg:text-xl max-w-3xl mx-auto break-words">
-              Software Developer | Data Analyst | Cybersecurity Specialist | AI Enthusiast
+              Full-Stack Developer | Systems Analyst | Security & Governance
             </p>
           </div>
 
@@ -198,7 +198,7 @@ export default function AboutMe() {
                     Rhammi Oussama
                   </h2>
                   <p className="text-gray-700 dark:text-gray-300 text-sm sm:text-base lg:text-lg mb-3 sm:mb-4 break-words">
-                    Tringual Computer Science Student | University of Sherbrooke | 3 Professional Internships
+                    Computer Science Graduate | Security Governance Analyst at Santé Québec | 3 Internships
                   </p>
                   <div className="flex flex-wrap justify-center lg:justify-start gap-2 sm:gap-3">
                     <span className="px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 text-xs sm:text-sm font-medium rounded-full shadow-sm">
@@ -345,7 +345,7 @@ export default function AboutMe() {
                 {/* CTA - Version compacte */}
                 <div className="pt-4 border-t border-gray-200 dark:border-gray-700 text-center">
                   <p className="font-semibold text-base text-gray-900 dark:text-white mb-1">
-                    <Highlight>Available May 2026</Highlight> • Trilingual • Relocation
+                    <Highlight>Open to opportunities</Highlight> • Trilingual • Relocation
                   </p>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
                     Software Engineering • Full-Stack • Cybersecurity • AI • Systems
