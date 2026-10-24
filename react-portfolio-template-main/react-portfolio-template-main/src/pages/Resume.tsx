@@ -39,7 +39,7 @@ export default function Resume() {
                       : "text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white"
                   }`}
                 >
-                  {l === "fr" ? "Français" : "English"}
+                  {l === "fr" ? "French" : "English"}
                 </button>
               ))}
             </div>
@@ -74,7 +74,7 @@ export default function Resume() {
               onClick={() => downloadResume(activeLang)}
               className="dark:bg-black bg-white text-black dark:text-white flex items-center gap-2"
             >
-              <span>{activeLang === "fr" ? "Télécharger le CV" : "Download Resume"}</span>
+              <span>Download Resume</span>
             </HoverBorderGradient>
           </div>
 

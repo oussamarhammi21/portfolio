@@ -23,7 +23,7 @@ export default defineConfig({
     sourcemap: false,
   },
   server: {
-    // Pré-compile la page d'accueil dès le démarrage de `npm run dev`
+    // Pre-transform the home page as soon as `npm run dev` starts
     warmup: {
       clientFiles: ["./src/main.tsx", "./src/pages/Home.tsx"],
     },

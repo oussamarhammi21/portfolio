@@ -45,7 +45,7 @@ export default function ResumeButton() {
               className="w-full text-left px-4 py-2.5 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors flex items-center gap-2"
             >
               <span>{l === "fr" ? "🇫🇷" : "🇬🇧"}</span>
-              <span>{l === "fr" ? "Français" : "English"}</span>
+              <span>{l === "fr" ? "French" : "English"}</span>
             </button>
           ))}
         </div>

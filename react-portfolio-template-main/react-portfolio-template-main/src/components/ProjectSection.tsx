@@ -106,7 +106,7 @@ function ProjectCard(props: ProjectCardProps) {
 
   if (!liveUrl) return cardContent;
 
-  // Pages de détail internes : même onglet. Liens externes : nouvel onglet.
+  // Internal detail pages open in the same tab, external links in a new one
   return liveUrl.startsWith("/") ? (
     <Link to={liveUrl} className="block h-full">
       {cardContent}
@@ -132,6 +132,7 @@ const projects = [
       "PWA",
       "Vercel",
     ],
+    imageUrl: "/assets/tarif/thumb.jpg",
     icons: [
       <SiReact key="react" />,
       <SiSupabase key="supabase" />,

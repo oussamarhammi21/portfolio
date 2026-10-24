@@ -24,6 +24,14 @@ const presto = {
   role: "Co-founder & Full-Stack Developer",
   duration: "Personal project • 2026 – Present",
   liveUrl: "https://www.installationpresto.ca/",
+  video: "/assets/tarif/demo.mp4",
+  poster: "/assets/tarif/poster.jpg",
+  screens: [
+    { src: "/assets/tarif/request.jpg", title: "Request page", desc: "A one-minute form, no account needed" },
+    { src: "/assets/tarif/options.jpg", title: "Options", desc: "Mounts and extras from the business settings" },
+    { src: "/assets/tarif/time.jpg", title: "Scheduling", desc: "A date and one or more time slots" },
+    { src: "/assets/tarif/sent.jpg", title: "Confirmation", desc: "The price comes back by text" },
+  ],
   backendStack: ["Supabase (PostgreSQL)", "Supabase Auth", "Supabase Storage", "Vercel"],
   frontendStack: ["React 19", "TypeScript", "Vite", "PWA (vite-plugin-pwa)", "i18n FR / EN"],
   features: [
@@ -94,6 +102,42 @@ export default function PrestoDetailsPage() {
                 <ExternalLink className="ml-2 h-4 w-4" />
               </a>
             </Button>
+          </div>
+        </div>
+
+        {/* Video */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-200">Project Showcase</h2>
+          <div className="aspect-video bg-gray-900 rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10">
+            <video controls playsInline preload="metadata" poster={presto.poster} className="w-full h-full">
+              <source src={presto.video} type="video/mp4" />
+            </video>
+          </div>
+          <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-3 italic">
+            The client side: a request sent from the public page in 20 seconds. Demo data, all names are fictional.
+          </p>
+        </div>
+
+        {/* Screens */}
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-200">Public Request Page</h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {presto.screens.map((sc) => (
+              <figure key={sc.src} className="flex flex-col items-center text-center">
+                <a href={sc.src} target="_blank" rel="noopener noreferrer" className="block w-full max-w-[240px]">
+                  <img
+                    src={sc.src}
+                    alt={sc.title}
+                    loading="lazy"
+                    className="w-full rounded-[1.75rem] border-[6px] border-gray-800 shadow-xl transition-transform hover:scale-[1.02]"
+                  />
+                </a>
+                <figcaption className="mt-3">
+                  <div className="font-semibold text-gray-800 dark:text-gray-200">{sc.title}</div>
+                  <div className="text-sm text-gray-500 dark:text-gray-400">{sc.desc}</div>
+                </figcaption>
+              </figure>
+            ))}
           </div>
         </div>
 

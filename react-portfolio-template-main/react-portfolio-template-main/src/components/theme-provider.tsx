@@ -29,7 +29,7 @@ export function ThemeProvider({
   const [theme, setTheme] = useState<Theme>(() => {
     try {
       const stored = localStorage.getItem(storageKey);
-      // On ne garde que les choix explicites du bouton ; "system" ou une vieille valeur → défaut
+      // Only keep an explicit choice from the toggle; "system" or a stale value falls back to the default
       return stored === "light" || stored === "dark" ? stored : defaultTheme;
     } catch {
       return defaultTheme;

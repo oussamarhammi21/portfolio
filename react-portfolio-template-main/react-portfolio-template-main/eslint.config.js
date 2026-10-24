@@ -25,7 +25,7 @@ export default tseslint.config(
     },
   },
   {
-    // Code copié depuis shadcn / aceternity / magicui : on ne le réécrit pas
+    // Code copied from shadcn / aceternity / magicui: not rewritten
     files: [
       "src/components/ui/**",
       "src/components/magicui/**",
@@ -42,7 +42,7 @@ export default tseslint.config(
     },
   },
   {
-    // Fichiers de config, pas des composants : l'avertissement Fast Refresh ne s'applique pas
+    // Config files, not components: the Fast Refresh warning does not apply
     files: ["src/config/routes.tsx", "src/components/theme-provider.tsx"],
     rules: { "react-refresh/only-export-components": "off" },
   },

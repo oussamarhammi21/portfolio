@@ -72,6 +72,8 @@ const TimelineItem: React.FC<TimelineItemProps> = ({
                   src={logoPath}
                   alt={`${company} logo`}
                   className="h-8 w-8 rounded object-contain"
+                  // Hide the logo instead of showing a broken image if the file is missing
+                  onError={(e) => (e.currentTarget.style.display = "none")}
                 />
               )}
             </div>
@@ -146,6 +148,7 @@ const timelineData: TimelineData[] = [
   {
     title: "Security Governance Analyst – Systems & Information Security",
     company: "Santé Québec",
+    logoPath: "/assets/sante-quebec.png",
     description:
       "Security governance for Canada's largest public healthcare network (30 institutions, 325,000+ staff), across complex multi-site information systems used by thousands of clinical and administrative users.",
     from: "07/2026",

@@ -2,10 +2,10 @@ import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import Home from "@/pages/Home";
 import { NewNavbar } from "@/components/NewNavbar";
-// Contact fait partie de la page d'accueil, donc import classique
+// Contact is part of the home page, so it is imported statically
 import Contact from "@/pages/Contact";
 
-// Pages chargées uniquement quand on les visite
+// Pages loaded only when visited
 const Stats = lazy(() => import("@/pages/Stats"));
 const Resume = lazy(() => import("@/pages/Resume"));
 const JavaQA = lazy(() => import("@/pages/JavaQA"));

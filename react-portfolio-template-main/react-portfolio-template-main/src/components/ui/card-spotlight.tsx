@@ -4,7 +4,7 @@ import {motion, useMotionTemplate, useMotionValue} from "framer-motion";
 import React, {lazy, MouseEvent as ReactMouseEvent, Suspense, useState} from "react";
 import {cn} from "@/lib/utils";
 
-// Three.js (~800 kB) est chargé seulement au premier survol d'une carte
+// Three.js (~800 kB) is only loaded the first time a card is hovered
 const CanvasRevealEffect = lazy(() =>
   import("@/components/ui/canvas-reveal-effect").then((m) => ({ default: m.CanvasRevealEffect }))
 );
