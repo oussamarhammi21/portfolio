@@ -6,44 +6,45 @@ import {
   FaClipboardList,
   FaGlobe,
   FaHandshake,
-  FaMobileAlt,
+  FaSlidersH,
 } from "react-icons/fa";
 import { SiReact, SiSupabase } from "react-icons/si";
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 
 const presto = {
-  title: "Installation Presto",
-  subtitle: "Business management PWA for my TV-mounting service",
-  longDescription: `Installation Presto is the TV-mounting business I run with two partners. I built its whole
-    software side: a public bilingual request page where clients describe their job and upload a photo of
-    their wall, and an installable management app we use every day to price jobs in seconds, send the quote
-    in the client's language, track every job, manage our mount inventory, and split profits fairly between
-    partners. It has been used in production for every job since launch.`,
+  title: "Tarif – Service Business Manager",
+  subtitle: "Configurable management PWA for small service teams · in production at Installation Presto",
+  longDescription: `A generic management app for small service businesses run by a few partners. Everything is
+    configured from a settings page: company name, partners and their join dates, how the margin is split,
+    default prices, inventory, extras, travel zones and the quote messages in French and English. It covers the
+    whole cycle: a public request page for clients, an inbox, a quote builder, job tracking and full partner
+    accounting. Its first deployment is Installation Presto, the TV-mounting business I co-founded,
+    where it has been used for every job since launch.`,
   role: "Co-founder & Full-Stack Developer",
-  duration: "Personal business • 2026 – Present",
+  duration: "Personal project • 2026 – Present",
   liveUrl: "https://www.installationpresto.ca/",
   backendStack: ["Supabase (PostgreSQL)", "Supabase Auth", "Supabase Storage", "Vercel"],
   frontendStack: ["React 19", "TypeScript", "Vite", "PWA (vite-plugin-pwa)", "i18n FR / EN"],
   features: [
-    { icon: <FaGlobe />, title: "Public Request Page", desc: "Bilingual form where clients pick TV size, mount and extras, choose a date and upload a photo of their wall.", color: "blue" },
-    { icon: <FaCalculator />, title: "Instant Quotes", desc: "Price grid with mounts, extras and travel zones. The client message is generated in the language the client used.", color: "emerald" },
-    { icon: <FaClipboardList />, title: "Job Tracking", desc: "Every job with revenue, cost, margin, who worked on it and who collected the payment.", color: "purple" },
-    { icon: <FaBoxes />, title: "Inventory", desc: "Mount stock with purchase history, cost computed automatically from purchases, and low-stock alerts.", color: "amber" },
-    { icon: <FaHandshake />, title: "Partner Accounting", desc: "Configurable work share, shared tools and stock, and a running balance telling who owes whom.", color: "rose" },
-    { icon: <FaMobileAlt />, title: "Installable PWA", desc: "Works like a native app on our phones, with an icon badge showing pending requests.", color: "cyan" },
+    { icon: <FaSlidersH />, title: "Fully Configurable", desc: "Company, partners, margin split, default prices, inventory, extras, travel zones and message templates are all set in the app. Config can be exported and imported.", color: "purple" },
+    { icon: <FaGlobe />, title: "Public Request Page", desc: "Bilingual form where clients describe the job, pick options and a time slot, and upload a photo. Requests land in an inbox with an app-icon badge.", color: "blue" },
+    { icon: <FaCalculator />, title: "Quote Builder", desc: "Price lines, extras, travel and free lines with live margin. The client message is generated from templates in the client's language.", color: "emerald" },
+    { icon: <FaClipboardList />, title: "Jobs & Payouts", desc: "Each job records who was on site and who collected the money; each partner's share is computed automatically.", color: "cyan" },
+    { icon: <FaHandshake />, title: "Partner Accounting", desc: "Cash in and out, expenses by category, transfers between partners and a running balance of who owes whom.", color: "rose" },
+    { icon: <FaBoxes />, title: "Inventory & Assets", desc: "Stock with purchase history, cost computed from purchases and low-stock alerts. Tools and unsold stock are tracked as shared assets.", color: "amber" },
   ],
   challenges: [
-    "Three partners editing the same data from their phones at the same time",
+    "Making one app fit any small service business without code changes",
+    "Several partners editing the same data from their phones at the same time",
     "Staying usable on a job site with a weak or no connection",
     "Splitting profits fairly when partners join later and tools are bought by different people",
-    "Keeping the request flow simple enough for clients on mobile, in French or English",
   ],
   solutions: [
+    "Everything business-specific lives in a versioned, exportable configuration edited from the settings page",
     "Optimistic concurrency: each save checks a version number and reloads instead of overwriting a partner's work",
     "Local cache shown instantly at startup, with debounced background sync to Supabase",
-    "Pure, framework-free calculation module: work share per job, shared pot, entry dates per partner",
-    "Short step-by-step form, wall photo compressed client-side before upload to Supabase Storage",
+    "Framework-free calculation module: work share per job, shared pot, join dates, tools kept out of job costs",
   ],
 };
 
@@ -73,7 +74,7 @@ export default function PrestoDetailsPage() {
 
         {/* Header */}
         <div className="mb-10">
-          <h1 className="text-4xl font-bold mb-2 text-gray-900 dark:text-white">{presto.title}</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-gray-900 dark:text-white">{presto.title}</h1>
           <p className="text-xl text-emerald-600 dark:text-emerald-400 mb-4">{presto.subtitle}</p>
           <p className="text-lg text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
             {presto.longDescription}

@@ -121,8 +121,8 @@ function ProjectCard(props: ProjectCardProps) {
 const projects = [
   {
     id: "installation-presto",
-    title: "Installation Presto",
-    description: "Business management PWA I built and use every day to run my TV-mounting service: online requests, instant quotes, jobs, inventory and partner accounting.",
+    title: "Tarif – Service Business Manager",
+    description: "Configurable PWA for small service teams: public request page, quotes, jobs, inventory and partner accounting. In production at Installation Presto, my TV-mounting business.",
     techStack: [
       "React 19",
       "TypeScript",
@@ -138,7 +138,7 @@ const projects = [
       <SiPwa key="pwa" />,
     ],
     role: "Co-founder & Full-Stack Developer",
-    duration: "Personal business • 2026 – Present",
+    duration: "Personal project • 2026 – Present",
     liveUrl: "/projects/presto",
   },
   {
