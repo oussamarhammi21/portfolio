@@ -15,7 +15,7 @@ export default function Stats(): JSX.Element {
     const fetchGithub = async () => {
       try {
         const response = await axios.get(
-          "https://api.github.com/repos/oussamarhammi21/portfolio"
+          "https://api.github.com/repos/oussamarhammi21"
         );
         setGitHubData(response.data);
       } catch (error) {
@@ -63,50 +63,6 @@ export default function Stats(): JSX.Element {
               </Table>
             </div>
 
-            {/* Stats about site */}
-            {gitHubData && (
-              <div className="mt-8">
-                <h2 className="text-lg mb-4 font-bold uppercase tracking-widest">
-                  Some stats about this site
-                </h2>
-                <Table className="w-full">
-                  <TableBody>
-                    <TableRow className="min-w-full">
-                      <TableCell className="font-medium text-left">
-                        Open issues
-                      </TableCell>
-                      <TableCell className="text-left">
-                        {gitHubData.open_issues}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="min-w-full">
-                      <TableCell className="font-medium text-left">
-                        Stars this repository has on github
-                      </TableCell>
-                      <TableCell className="text-left">
-                        {gitHubData.stargazers_count}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="min-w-full">
-                      <TableCell className="font-medium text-left">
-                        Number of forks
-                      </TableCell>
-                      <TableCell className="text-left">
-                        {gitHubData.forks_count}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow className="min-w-full">
-                      <TableCell className="font-medium text-left">
-                        Last updated at
-                      </TableCell>
-                      <TableCell className="text-left">
-                        {formatDate(gitHubData?.updated_at ?? "")}
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </div>
-            )}
             <div className="mt-10">
               <h2 className="text-lg mb-4 font-bold uppercase tracking-widest">
                 GitHub Contribution Calendar</h2>

@@ -105,12 +105,7 @@ export default function PrestoDetailsPage() {
               <span className="font-semibold text-emerald-700 dark:text-emerald-300">Duration:</span>
               <span className="ml-2 text-gray-700 dark:text-gray-300">{presto.duration}</span>
             </div>
-            <Button asChild>
-              <a href={presto.liveUrl} target="_blank" rel="noopener noreferrer">
-                Visit the live site
-                <ExternalLink className="ml-2 h-4 w-4" />
-              </a>
-            </Button>
+
           </div>
         </div>
 
