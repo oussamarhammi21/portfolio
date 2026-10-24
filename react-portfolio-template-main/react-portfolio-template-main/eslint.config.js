@@ -41,4 +41,9 @@ export default tseslint.config(
       "react-refresh/only-export-components": "off",
     },
   },
+  {
+    // Fichiers de config, pas des composants : l'avertissement Fast Refresh ne s'applique pas
+    files: ["src/config/routes.tsx", "src/components/theme-provider.tsx"],
+    rules: { "react-refresh/only-export-components": "off" },
+  },
 );

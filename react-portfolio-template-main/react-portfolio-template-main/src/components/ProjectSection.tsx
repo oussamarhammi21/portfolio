@@ -12,12 +12,14 @@ import {
 import { GoLinkExternal } from "react-icons/go";
 import { CardContainer } from "./ui/3d-card";
 import { FaBrain, FaDatabase, FaLeaf, FaUsers, FaUserShield } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 interface ProjectCardProps {
   title: string;
   description: string;
   techStack: string[];
-  imageUrl: string;
+  imageUrl?: string;
+  icons?: JSX.Element[];
   github?: string;
   liveUrl?: string;
   playstore?: string;
@@ -31,6 +33,7 @@ function ProjectCard(props: ProjectCardProps) {
     description,
     techStack,
     imageUrl,
+    icons,
     live,
     github,
     liveUrl,
@@ -41,12 +44,17 @@ function ProjectCard(props: ProjectCardProps) {
     <CardContainer className="inter-var h-full">
       <Card className="max-w-sm w-full h-full shadow-md hover:shadow-lg transition-shadow duration-300 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:border-white/[0.2] border-black/[0.1] flex flex-col">
         <CardHeader className="flex-shrink-0">
-          <img
-            src={imageUrl}
-            alt={title}
-            className="w-full h-auto object-cover rounded-2xl mb-4"
-          />
-          <br />
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt={title}
+              className="w-full h-auto object-cover rounded-2xl mb-4"
+            />
+          ) : (
+            <div className="w-full aspect-video rounded-2xl mb-4 flex items-center justify-center gap-4 text-4xl text-gray-700 dark:text-gray-300 bg-gradient-to-br from-emerald-100 to-blue-100 dark:from-gray-800 dark:to-gray-900">
+              {icons}
+            </div>
+          )}
           {duration && <div className="text-xs text-muted-foreground">{duration}</div>}
           <CardTitle className="flex items-center gap-2">
             {title}
@@ -88,36 +96,32 @@ function ProjectCard(props: ProjectCardProps) {
               </a>
             </Button>
           )}
-          {liveUrl && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-emerald-500"
-              asChild
-            >
-              <a href={liveUrl} target="_blank" rel="noopener noreferrer">
-                <GoLinkExternal />
-              </a>
-            </Button>
+          {liveUrl && !liveUrl.startsWith("/") && (
+            <GoLinkExternal className="text-emerald-500" />
           )}
         </CardFooter>
       </Card>
     </CardContainer>
   );
 
-  return liveUrl ? (
-    <a href={liveUrl} target="_blank" rel="noopener noreferrer">
+  if (!liveUrl) return cardContent;
+
+  // Pages de détail internes : même onglet. Liens externes : nouvel onglet.
+  return liveUrl.startsWith("/") ? (
+    <Link to={liveUrl} className="block h-full">
+      {cardContent}
+    </Link>
+  ) : (
+    <a href={liveUrl} target="_blank" rel="noopener noreferrer" className="block h-full">
       {cardContent}
     </a>
-  ) : (
-    cardContent
   );
 }
 
 const projects = [
   {
   id: "lab-management-system", // ID pour le routing
-    title: "GRCB civil engineering Plateform",
+    title: "GRCB Civil Engineering Platform",
     description: "Full-stack Quarkus & Angular application for GRCB research group",
     techStack: [
       "Java 17",
@@ -129,7 +133,7 @@ const projects = [
       "Oracle Cloud",
       "REST API"
     ],
-    imageUrl: "/assets/logoProjet1.jpg", // ADD_IMAGE_HERE
+    imageUrl: "/assets/logoProjet1.jpg",
     icons: [
       <SiQuarkus key="quarkus" />,
       <SiAngular key="angular" />,
@@ -175,12 +179,12 @@ features: [
   "Automatic text extraction via Docling"
 ],
 role: "Full-Stack Developer",
-duration: "Personnel projet  • 2025",
+duration: "Personal project • 2025",
 liveUrl: "/projects/foldio"
 },
   {
     title: "Personal Portfolio",
-    description: "A personal portfolio site portfolio site",
+    description: "My personal portfolio site",
     techStack: [
       "React.js",
       "Tailwind CSS",
@@ -209,7 +213,6 @@ liveUrl: "/projects/foldio"
     "JWT Authentication",
     "xUnit"
   ],
-  imageUrl: "/assets/sci-thumb.png",
   icons: [
     <SiAngular key="angular" />,
     <SiDotnet key="dotnet" />,
@@ -225,7 +228,7 @@ liveUrl: "/projects/foldio"
     "Full admin panel with ASP.NET MVC"
   ],
   role: "Full-Stack Developer",
-  duration: "PostSecondary Capstone Project • 2023",
+  duration: "Post-secondary Capstone Project • 2023",
    liveUrl: "/projects/2",
   
 },
@@ -248,6 +251,7 @@ export default function ProjectsSection() {
                 description={project.description}
                 techStack={project.techStack}
                 imageUrl={project.imageUrl}
+                icons={project.icons}
                 liveUrl={project.liveUrl}
                 live={project.live}
                 duration={project.duration}

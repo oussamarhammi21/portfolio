@@ -2,10 +2,11 @@ import { lazy, Suspense } from "react";
 import { createBrowserRouter } from "react-router-dom";
 import Home from "@/pages/Home";
 import { NewNavbar } from "@/components/NewNavbar";
+// Contact fait partie de la page d'accueil, donc import classique
+import Contact from "@/pages/Contact";
 
 // Pages chargées uniquement quand on les visite
 const Stats = lazy(() => import("@/pages/Stats"));
-const Contact = lazy(() => import("@/pages/Contact"));
 const Resume = lazy(() => import("@/pages/Resume"));
 const JavaQA = lazy(() => import("@/pages/JavaQA"));
 const NotFoundPage = lazy(() => import("@/pages/NotFound"));

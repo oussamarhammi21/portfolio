@@ -2,7 +2,7 @@
 import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { ArrowLeft } from "lucide-react";
-import { SiAngular,} from "react-icons/si";
+import { SiAngular } from "react-icons/si";
 import { FaGamepad, FaChartLine, FaComments, FaEye, FaServer } from "react-icons/fa";
 
 const projectDetails = {

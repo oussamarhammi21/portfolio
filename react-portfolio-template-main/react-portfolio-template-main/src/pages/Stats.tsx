@@ -15,7 +15,7 @@ export default function Stats(): JSX.Element {
     const fetchGithub = async () => {
       try {
         const response = await axios.get(
-          "https://api.github.com/repos/oussamarhammi21/"
+          "https://api.github.com/repos/oussamarhammi21/portfolio"
         );
         setGitHubData(response.data);
       } catch (error) {
@@ -73,12 +73,6 @@ export default function Stats(): JSX.Element {
                   <TableBody>
                     <TableRow className="min-w-full">
                       <TableCell className="font-medium text-left">
-                        Lines of code powering this website (includes components)
-                      </TableCell>
-                      <TableCell className="text-left">16500(approx.)</TableCell>
-                    </TableRow>
-                    <TableRow className="min-w-full">
-                      <TableCell className="font-medium text-left">
                         Open issues
                       </TableCell>
                       <TableCell className="text-left">
@@ -98,7 +92,7 @@ export default function Stats(): JSX.Element {
                         Number of forks
                       </TableCell>
                       <TableCell className="text-left">
-                        {gitHubData.network_count}
+                        {gitHubData.forks_count}
                       </TableCell>
                     </TableRow>
                     <TableRow className="min-w-full">

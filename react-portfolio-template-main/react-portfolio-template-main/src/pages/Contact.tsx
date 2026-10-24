@@ -1,4 +1,3 @@
-
 import { FlipWords } from "@/components/ui/flip-words";
 import LinkCard from "@/components/LinkCard";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";

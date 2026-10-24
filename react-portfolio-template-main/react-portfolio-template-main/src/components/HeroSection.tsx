@@ -10,10 +10,11 @@ import {
 } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import FloatingImage from "@/components/MyImage";
-const mainImage = "/assets/android-chrome-512x512.png";
-const altMainImage = "/assets/photo.jpg";
 import ResumeButton from "./DownloadResumeBtn";
 import { settings } from "@/config/settings";
+
+const mainImage = "/assets/android-chrome-512x512.png";
+const altMainImage = "/assets/photo.jpg";
 
 export default function HeroSection(): JSX.Element {
   const [animatedStats, setAnimatedStats] = useState({
@@ -79,7 +80,7 @@ export default function HeroSection(): JSX.Element {
       icon: <FiAward size={20} />,
       color: "text-emerald-600",
       bgColor: "bg-emerald-50 dark:bg-emerald-900/20",
-      href: " ",
+      href: "https://www.linkedin.com/in/oussama-rhammi-252177106/details/certifications/",
       external: true,
     },
     {
