@@ -1,5 +1,6 @@
 // components/PrestoDetailsPage.tsx
 import { ArrowLeft, ExternalLink } from "lucide-react";
+import { useState } from "react";
 import {
   FaBoxes,
   FaCalculator,
@@ -10,6 +11,7 @@ import {
 } from "react-icons/fa";
 import { SiReact, SiSupabase } from "react-icons/si";
 import { Link } from "react-router-dom";
+import ImageLightbox from "./ImageLightbox";
 import { Button } from "./ui/button";
 
 const presto = {
@@ -27,10 +29,15 @@ const presto = {
   video: "/assets/tarif/demo.mp4",
   poster: "/assets/tarif/poster.jpg",
   screens: [
-    { src: "/assets/tarif/request.jpg", title: "Request page", desc: "A one-minute form, no account needed" },
-    { src: "/assets/tarif/options.jpg", title: "Options", desc: "Mounts and extras from the business settings" },
-    { src: "/assets/tarif/time.jpg", title: "Scheduling", desc: "A date and one or more time slots" },
-    { src: "/assets/tarif/sent.jpg", title: "Confirmation", desc: "The price comes back by text" },
+    { src: "/assets/tarif/requests.jpg", title: "Requests", desc: "Every detail of a client request, one tap to price it" },
+    { src: "/assets/tarif/quote.jpg", title: "Quote", desc: "Live margin and a ready-to-send message in the client's language" },
+    { src: "/assets/tarif/jobs.jpg", title: "Jobs", desc: "Who was on site, who collected the payment, each partner's share" },
+    { src: "/assets/tarif/money.jpg", title: "Money", desc: "Cash in and out, and who owes whom" },
+    { src: "/assets/tarif/partners.jpg", title: "Partner balances", desc: "What each partner earned, paid and is owed" },
+    { src: "/assets/tarif/settings.jpg", title: "Settings", desc: "Partners, work share and default prices" },
+    { src: "/assets/tarif/inventory.jpg", title: "Inventory", desc: "Stock, purchase history and alert thresholds" },
+    { src: "/assets/tarif/public.jpg", title: "Public request page", desc: "The one-minute form clients fill in" },
+    { src: "/assets/tarif/sent.jpg", title: "Request sent", desc: "The price comes back by text" },
   ],
   backendStack: ["Supabase (PostgreSQL)", "Supabase Auth", "Supabase Storage", "Vercel"],
   frontendStack: ["React 19", "TypeScript", "Vite", "PWA (vite-plugin-pwa)", "i18n FR / EN"],
@@ -66,6 +73,8 @@ const colorMap: Record<string, string> = {
 };
 
 export default function PrestoDetailsPage() {
+  const [openImage, setOpenImage] = useState<number | null>(null);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-black py-10">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -114,24 +123,30 @@ export default function PrestoDetailsPage() {
             </video>
           </div>
           <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-3 italic">
-            The client side: a request sent from the public page in 20 seconds. Demo data, all names are fictional.
+            A tour of the app in 45 seconds: requests, quotes, jobs, money, settings and the public request page.
+            Demo data: names and amounts are fictional. The management app runs in French; its UI was translated to English for this demo.
           </p>
         </div>
 
         {/* Screens */}
         <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-200">Public Request Page</h2>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {presto.screens.map((sc) => (
+          <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-200">Screens</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
+            {presto.screens.map((sc, idx) => (
               <figure key={sc.src} className="flex flex-col items-center text-center">
-                <a href={sc.src} target="_blank" rel="noopener noreferrer" className="block w-full max-w-[240px]">
+                <button
+                  type="button"
+                  onClick={() => setOpenImage(idx)}
+                  aria-label={`Enlarge: ${sc.title}`}
+                  className="block w-full max-w-[200px] rounded-[1.75rem] focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+                >
                   <img
                     src={sc.src}
                     alt={sc.title}
                     loading="lazy"
-                    className="w-full rounded-[1.75rem] border-[6px] border-gray-800 shadow-xl transition-transform hover:scale-[1.02]"
+                    className="w-full rounded-[1.75rem] border-[6px] border-gray-800 shadow-xl transition-transform hover:scale-[1.03] cursor-zoom-in"
                   />
-                </a>
+                </button>
                 <figcaption className="mt-3">
                   <div className="font-semibold text-gray-800 dark:text-gray-200">{sc.title}</div>
                   <div className="text-sm text-gray-500 dark:text-gray-400">{sc.desc}</div>
@@ -139,6 +154,7 @@ export default function PrestoDetailsPage() {
               </figure>
             ))}
           </div>
+          <ImageLightbox images={presto.screens} index={openImage} onIndexChange={setOpenImage} />
         </div>
 
         {/* Tech Stack */}
