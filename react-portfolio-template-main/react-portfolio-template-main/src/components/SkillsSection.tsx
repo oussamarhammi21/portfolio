@@ -1,40 +1,71 @@
+import { useRef, useState } from "react";
+import { BiCodeBlock } from "react-icons/bi";
+import { BsFiletypeXml } from "react-icons/bs";
+import { DiMsqlServer } from "react-icons/di";
 import {
-  SiCplusplus, 
-  SiSharp,
-  SiDotnet,
-  SiQuarkus,
-  SiOpengl,
-  SiPostgresql,
-  SiOracle,
-  SiFlutter,
+  FaAdjust,
+  FaBookOpen,
+  FaBrain,
+  FaChartBar,
+  FaClock,
+  FaCloud,
+  FaCode,
+  FaCog,
+  FaCogs,
+  FaDatabase,
+  FaJava,
+  FaLanguage,
+  FaLayerGroup,
+  FaLightbulb,
+  FaPalette,
+  FaProjectDiagram,
+  FaRobot,
+  FaStream,
+  FaSync,
+  FaTheaterMasks,
+  FaTools,
+  FaUsers,
+  FaUsersCog,
+} from "react-icons/fa";
+import { GoCopilot } from "react-icons/go";
+import { MdArchitecture, MdDesignServices } from "react-icons/md";
+import { PiOpenAiLogo } from "react-icons/pi";
+import {
   SiAndroid,
-  SiIos,
   SiAndroidstudio,
   SiApachemaven,
   SiAxios,
+  SiCplusplus,
   SiCss3,
   SiDocker,
+  SiDotnet,
   SiFigma,
   SiFirebase,
+  SiFlutter,
   SiGit,
-  SiGithub,
   SiGithubactions,
   SiGooglecloud,
   SiGradle,
   SiHibernate,
   SiHtml5,
   SiIntellijidea,
+  SiIos,
   SiJavascript,
   SiJunit5,
   SiLangchain,
   SiMysql,
   SiNextdotjs,
   SiNodedotjs,
+  SiOpengl,
+  SiOracle,
+  SiPostgresql,
   SiPostman,
   SiPython,
+  SiQuarkus,
   SiReact,
   SiRedis,
   SiSelenium,
+  SiSharp,
   SiSpring,
   SiSpringboot,
   SiSwagger,
@@ -45,68 +76,12 @@ import {
   SiVite,
   SiYaml,
 } from "react-icons/si";
-import {
-  FaUsersCog,
-  FaLanguage,
-  FaLightbulb,
-  FaClock,
-  FaAdjust,
-  FaJava,
-  FaCode,
-  FaRobot,
-  FaDatabase,
-  FaCloud,
-  FaBookOpen,
-  FaPalette,
-  FaCog,
-  FaTools,
-  FaCogs,
-  FaProjectDiagram,
-  FaLayerGroup,
-  FaBrain,
-  FaChartBar,
-  FaUsers,
-  FaSync,
-  FaStream,
-  FaTheaterMasks,
-} from "react-icons/fa";
 import { VscAzure, VscVscode } from "react-icons/vsc";
-import { BsFiletypeXml } from "react-icons/bs";
-import { DiMsqlServer } from "react-icons/di";
-import { GoCopilot } from "react-icons/go";
-import { BiCodeBlock } from "react-icons/bi";
-import { MdDesignServices, MdArchitecture } from "react-icons/md";
-import { CardSpotlight } from "./ui/card-spotlight";
-import { useState, useRef } from "react";
 import { skillsData, type Skill } from "../config/skillsData";
-import { PiOpenAiLogo } from "react-icons/pi";
 import SkillDetails from "./SkillDetails";
+import { CardSpotlight } from "./ui/card-spotlight";
 
-// Tooltip component
-interface TooltipProps {
-  children: React.ReactNode;
-  content: React.ReactNode;
-}
 
-const Tooltip = ({ children, content }: TooltipProps) => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  return (
-    <div
-      className="relative inline-block"
-      onMouseEnter={() => setIsVisible(true)}
-      onMouseLeave={() => setIsVisible(false)}
-    >
-      {children}
-      {isVisible && (
-        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-black text-white text-xs rounded-lg shadow-xl z-50 border border-gray-600">
-          <div className="w-60 break-words">{content}</div>
-          <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-black"></div>
-        </div>
-      )}
-    </div>
-  );
-};
 
 // Proficiency utility functions
 const getProficiencyLevel = (level: Skill["level"]): number => {
@@ -122,11 +97,6 @@ const getProficiencyLevel = (level: Skill["level"]): number => {
     default:
       return 1;
   }
-};
-
-const getProficiencyWidth = (level: Skill["level"]): string => {
-  const levelNum = getProficiencyLevel(level);
-  return `${(levelNum / 4) * 100}%`;
 };
 
 // Circular Proficiency Indicator Component

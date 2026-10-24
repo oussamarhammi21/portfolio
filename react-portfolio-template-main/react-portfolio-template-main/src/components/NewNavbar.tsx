@@ -10,8 +10,7 @@ import {
   NavItems,
 } from "@/components/ui/resizable-navbar";
 import { useEffect, useState } from "react";
-import { Outlet } from "react-router-dom";
-import ResumeButton from "./DownloadResumeBtn";
+import { Outlet, useLocation } from "react-router-dom";
 import { Switch } from "./ui/switch";
 import { useTheme } from "./theme-provider";
 import { motion, AnimatePresence } from "motion/react";
@@ -28,6 +27,8 @@ interface NavItem {
 
 export function NewNavbar() {
   const { theme, setTheme } = useTheme();
+  
+  const location = useLocation();
 
   const isDark = theme === "dark";
 
@@ -91,7 +92,7 @@ export function NewNavbar() {
         }, 100); // small delay after route loads
       }
     }
-  }, [location]);
+    }, [location.pathname, location.hash]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (

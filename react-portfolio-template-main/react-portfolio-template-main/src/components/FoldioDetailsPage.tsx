@@ -1,10 +1,10 @@
 // components/FoldioDetailsPage.tsx
-import { Link } from "react-router-dom";
-import { useRef, useState } from "react";
-import { Button } from "./ui/button";
 import { ArrowLeft } from "lucide-react";
-import { SiNextdotjs, SiFastapi, SiPostgresql } from "react-icons/si";
-import { FaBrain, FaServer, FaShieldAlt, FaUsers, FaFileAlt, FaCloud } from "react-icons/fa";
+import { useRef } from "react";
+import { FaBrain, FaCloud, FaFileAlt, FaServer, FaShieldAlt, FaUsers } from "react-icons/fa";
+import { SiFastapi, SiNextdotjs, SiPostgresql } from "react-icons/si";
+import { Link } from "react-router-dom";
+import { Button } from "./ui/button";
 
 const foldio = {
   title: "Foldio",
@@ -51,7 +51,6 @@ const colorMap: Record<string, string> = {
 
 export default function FoldioDetailsPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-black py-10">
@@ -93,8 +92,6 @@ export default function FoldioDetailsPage() {
               ref={videoRef}
               controls
               className="w-full h-full"
-              onPlay={() => setIsPlaying(true)}
-              onPause={() => setIsPlaying(false)}
             >
               <source src={foldio.mainVideoUrl} type="video/mp4" />
             </video>

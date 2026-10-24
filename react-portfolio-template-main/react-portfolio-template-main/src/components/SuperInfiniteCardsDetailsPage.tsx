@@ -1,9 +1,9 @@
 // components/SuperInfiniteCardsDetailsPage.tsx
-import { useParams, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
 import { ArrowLeft } from "lucide-react";
-import { SiGithub, SiAngular, SiDotnet, SiPostgresql } from "react-icons/si";
-import { FaGamepad, FaChartLine, FaComments, FaEye, FaServer, FaDatabase, FaUsers } from "react-icons/fa";
+import { SiAngular,} from "react-icons/si";
+import { FaGamepad, FaChartLine, FaComments, FaEye, FaServer } from "react-icons/fa";
 
 const projectDetails = {
   id: "super-cartes-infinies",
@@ -98,7 +98,6 @@ const getImageDescription = (index: number) => {
 };
 
 export default function SuperInfiniteCardsDetailsPage() {
-  const { id } = useParams<{ id: string }>();
   const project = projectDetails;
 
   return (

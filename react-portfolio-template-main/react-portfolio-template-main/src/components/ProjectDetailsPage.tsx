@@ -1,10 +1,10 @@
 // components/ProjectDetailsPage.tsx
-import { useParams, Link } from "react-router-dom";
-import { useRef, useState, useEffect } from "react";
+import { ArrowLeft, Maximize2, Pause, Play, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { FaBoxOpen, FaCalendarAlt, FaServer, FaTools, FaUserShield } from "react-icons/fa";
+import { SiAngular, SiKeycloak, SiPostgresql, SiQuarkus } from "react-icons/si";
+import { Link } from "react-router-dom";
 import { Button } from "./ui/button";
-import { ArrowLeft, Play, Pause, X, Maximize2 } from "lucide-react";
-import { SiGithub, SiQuarkus, SiAngular, SiPostgresql, SiKeycloak } from "react-icons/si";
-import { FaCalendarAlt, FaTools, FaBoxOpen, FaUserShield, FaServer, FaDatabase } from "react-icons/fa";
 
 interface ProjectDetail {
   id: string;
@@ -21,7 +21,7 @@ interface ProjectDetail {
   duration: string;
   github?: string;
   liveUrl?: string;
-  videos: VideoItem[]; // Tableau de vidéos
+  videos: VideoItem[]; // Tableau de vidéos 
   mainVideoUrl?: string;
 }
 
@@ -116,7 +116,7 @@ const styles = `
 }
 `;
 
-function VideoCard({ video, index }: { video: VideoItem; index: number }) {
+function VideoCard({ video }: { video: VideoItem }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const fullscreenVideoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -582,23 +582,10 @@ function formatTime(seconds: number): string {
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 }
 export default function ProjectDetailsPage() {
-  const { id } = useParams<{ id: string }>();
   const mainVideoRef = useRef<HTMLVideoElement>(null);
-  const [isMainVideoPlaying, setIsMainVideoPlaying] = useState(false);
   
   const project = projectDetails;
 
-  const toggleMainVideo = () => {
-    if (mainVideoRef.current) {
-      if (isMainVideoPlaying) {
-        mainVideoRef.current.pause();
-        setIsMainVideoPlaying(false);
-      } else {
-        mainVideoRef.current.play();
-        setIsMainVideoPlaying(true);
-      }
-    }
-  };
 
   return (
     <>
@@ -651,8 +638,6 @@ export default function ProjectDetailsPage() {
                                 controls
                                 className="w-full h-full"
                                 poster="/assets/lab-system/calendar-poster.jpg"
-                                onPlay={() => setIsMainVideoPlaying(true)}
-                                onPause={() => setIsMainVideoPlaying(false)}
                               >
                                 <source src={project.mainVideoUrl} type="video/mp4" />
                                 Your browser does not support the video tag.
@@ -668,7 +653,7 @@ export default function ProjectDetailsPage() {
             {/* Video Gallery - TOUT CLIC sur la carte ouvre le plein écran */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {project.videos.map((video, index) => (
-                <VideoCard key={index} video={video} index={index} />
+                <VideoCard key={index} video={video} />
               ))}
             </div>
 

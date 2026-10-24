@@ -3,21 +3,15 @@ import { TextGenerateEffect } from "@/components/ui/text-generate-effect";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
-  FiDownload,
   FiMail,
-  FiGithub,
-  FiLinkedin,
-  FiChevronDown,
   FiBriefcase,
   FiUsers,
-  FiTool,
-  FiCode,
   FiAward,
 } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import FloatingImage from "@/components/MyImage";
-import mainImage from "../../public/assets/android-chrome-512x512.png";
-import altMainImage from "../../public/assets/photo.jpg";
+const mainImage = "/assets/android-chrome-512x512.png";
+const altMainImage = "/assets/photo.jpg";
 import ResumeButton from "./DownloadResumeBtn";
 import { settings } from "@/config/settings";
 
@@ -176,7 +170,7 @@ export default function HeroSection(): JSX.Element {
           </div>
 
           {/* Interactive Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8 text-center">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-8 text-center">
             {stats.map((stat, index) => (
               <a
                 key={index}
@@ -200,7 +194,6 @@ export default function HeroSection(): JSX.Element {
               </a>
             ))}
           </div>
-          <div></div>
         </div>
       </div>
     </>

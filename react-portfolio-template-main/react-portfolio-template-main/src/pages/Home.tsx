@@ -7,9 +7,8 @@ import ExperienceSection from "@/components/Experience";
 import Contact from "./Contact";
 import ToolsForDev from "@/components/DevToolsSection";
 import HeroSection from "@/components/HeroSection";
-import CodeQuote from "@/components/CodeQuote";
 import { SiFuturelearn } from "react-icons/si";
-import { GiBreakingChain, GiGroundbreaker } from "react-icons/gi";
+import { GiGroundbreaker } from "react-icons/gi";
 
 export default function Home(): JSX.Element {
   return (
@@ -20,8 +19,6 @@ export default function Home(): JSX.Element {
         <ExperienceSection />
         <SkillsSection />
         <ProjectsSection />
-
-        <CodeQuote />
 
         <TextReveal>
           I learn

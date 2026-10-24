@@ -23,7 +23,7 @@ const calculateDuration = (from: string, to: string): string => {
       ? [new Date().getMonth() + 1, new Date().getFullYear()]
       : to.split("/").map(Number);
 
-  let totalMonths = (toYear - fromYear) * 12 + (toMonth - fromMonth) + 1;
+  const totalMonths = (toYear - fromYear) * 12 + (toMonth - fromMonth) + 1;
   const years = Math.floor(totalMonths / 12);
   const months = totalMonths % 12;
 

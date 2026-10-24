@@ -4,18 +4,14 @@ import { settings } from "@/config/settings";
 import { 
   FiMapPin, 
   FiCalendar, 
-  FiAward, 
-  FiBriefcase, 
   FiCode, 
   FiDatabase,
   FiGlobe,
   FiUsers,
-  FiLock,
   FiCpu,
   FiLayers,
   FiServer
 } from "react-icons/fi";
-import { TbBrandRust } from "react-icons/tb";
 import { GiArtificialIntelligence, GiGraduateCap } from "react-icons/gi";
 import { MdSecurity, MdDeveloperMode, MdWork, MdSchool } from "react-icons/md";
 import { FaGamepad, FaMobileAlt, FaUniversity } from "react-icons/fa";
@@ -189,7 +185,7 @@ export default function AboutMe() {
               PROFESSIONAL PROFILE
             </h1>
             <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg lg:text-xl max-w-3xl mx-auto break-words">
-              Software Developer | Game Engine Programmer | Cybersecurity Specialist | AI Enthusiast
+              Software Developer | Data Analyst | Cybersecurity Specialist | AI Enthusiast
             </p>
           </div>
 

@@ -15,21 +15,17 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  optimizeDeps: {
-    exclude: ['js-big-decimal']
+   optimizeDeps: {
+    exclude: ["js-big-decimal"],
   },
-  // AJOUTEZ CETTE CONFIGURATION POUR VERCEL
   build: {
-    outDir: 'dist',
+    outDir: "dist",
     sourcemap: false,
-    rollupOptions: {
-      output: {
-        manualChunks: undefined
-      }
-    }
   },
-  // IMPORTANT pour le router
   server: {
-    historyApiFallback: true
-  }
+    // Pré-compile la page d'accueil dès le démarrage de `npm run dev`
+    warmup: {
+      clientFiles: ["./src/main.tsx", "./src/pages/Home.tsx"],
+    },
+  },
 });

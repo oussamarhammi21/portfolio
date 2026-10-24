@@ -5,7 +5,7 @@ import { GiLogicGateXor } from "react-icons/gi";
 import { PiHashStraightFill } from "react-icons/pi";
 import { LuFileJson } from "react-icons/lu";
 import { SiJsonwebtokens } from "react-icons/si";
-import { MdQrCode, MdQrCodeScanner, MdConstruction } from "react-icons/md";
+import { MdQrCode, MdQrCodeScanner } from "react-icons/md";
 import { BiTime } from "react-icons/bi";
 import { CometCard } from "./ui/comet-card";
 import { Badge } from "./ui/badge";

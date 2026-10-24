@@ -1,4 +1,4 @@
-import React from "react";
+
 import { FlipWords } from "@/components/ui/flip-words";
 import LinkCard from "@/components/LinkCard";
 import { BackgroundBeamsWithCollision } from "@/components/ui/background-beams-with-collision";
@@ -6,16 +6,7 @@ import { Card } from "@/components/ui/card";
 import { CardBody } from "@/components/ui/3d-card";
 import { Link } from "react-router-dom";
 import {
-  SiFacebook,
-  SiGeeksforgeeks,
-  SiGithub,
-  SiInstagram,
-  SiLeetcode,
   SiLinkedin,
-  SiMedium,
-  SiSnapchat,
-  SiX,
-  SiYoutube,
 } from "react-icons/si";
 
 export default function Contact(): JSX.Element {
