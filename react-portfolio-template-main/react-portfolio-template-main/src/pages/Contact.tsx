@@ -56,20 +56,21 @@ export default function Contact(): JSX.Element {
     <div id="contact" className="pt-5">
       <SectionHeader id="contact" title={t({ en: "Contact", fr: "Contact" })} />
       <BackgroundBeamsWithCollision className="w-full h-auto z-10 rounded-2xl">
-        <Card className="border-none bg-transparent py-14 sm:py-20 w-full">
+        <Card className="border-none bg-transparent py-10 sm:py-14 w-full">
           <CardBody className="w-full h-auto z-20 px-4">
             <p className="leading-9 text-center">
-              {t({ en: "Feel free to get in touch at: ", fr: "N'hésite pas à m'écrire : " })}
+              {t({ en: "Feel free to get in touch at", fr: "N'hésite pas à m'écrire à" })}
               <a
                 href={`mailto:${EMAIL}`}
-                className="font-medium underline underline-offset-4 transition-colors hover:text-emerald-500 break-all"
+                className="block sm:inline sm:ml-2 font-medium underline underline-offset-4 transition-colors hover:text-emerald-500 whitespace-nowrap"
               >
                 {EMAIL}
               </a>
-              <br />
-              <FlipWords key={lang} words={jokes} duration={2000} />
             </p>
-            <div className="flex flex-wrap justify-center gap-4 py-10">
+            <div className="mt-2 min-h-[2.25rem] text-center">
+              <FlipWords key={lang} words={jokes} duration={2000} />
+            </div>
+            <div className="flex flex-wrap justify-center gap-4 py-8">
               {links.map((l) => (
                 <LinkCard key={l.title} title={l.title} url={l.url} icon={l.icon} />
               ))}

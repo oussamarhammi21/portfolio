@@ -12,6 +12,7 @@ import { Fragment, useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "motion/react";
 import LanguageToggle from "./LanguageToggle";
+import CursorGlow from "./CursorGlow";
 import { useI18n } from "@/i18n/LanguageProvider";
 
 interface NavItem {
@@ -59,6 +60,7 @@ export function NewNavbar() {
 
   return (
     <div className="relative w-full">
+      <CursorGlow />
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded focus:bg-emerald-600 focus:px-3 focus:py-2 focus:text-white"

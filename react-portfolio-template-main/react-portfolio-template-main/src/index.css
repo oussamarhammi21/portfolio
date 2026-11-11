@@ -101,8 +101,13 @@ section[id], div[id] {
   * {
     @apply border-border;
   }
+  /* The page color lives on <html> so the cursor glow (behind the content) stays visible */
+  html {
+    @apply bg-background;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background: transparent;
   }
 }
 
@@ -112,8 +117,25 @@ section[id], div[id] {
   font-weight: normal;
   font-style: normal;
 }
+/* Text: Manrope. Titles: Bricolage Grotesque. Code only: JetBrains Mono. */
 body {
-  font-family: 'JetBrains Mono', sans-serif;
+  font-family: 'Manrope Variable', ui-sans-serif, system-ui, sans-serif;
+  font-feature-settings: "ss01";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+h1, h2, h3, h4, .font-display {
+  font-family: 'Bricolage Grotesque Variable', 'Manrope Variable', ui-sans-serif, sans-serif;
+  letter-spacing: -0.02em;
+  overflow-wrap: break-word;
+}
+code, pre, kbd, samp, textarea.font-mono, .font-mono {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+/* Long words (emails, URLs, tech names) wrap instead of overflowing their card */
+p, li, dd, dt {
+  overflow-wrap: break-word;
 }
 
 @theme inline {

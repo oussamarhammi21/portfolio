@@ -8,7 +8,7 @@ import { experience, formatDuration, formatPeriod, monthsBetween, type Experienc
 function TimelineItem({ job }: { job: ExperienceItem }) {
   const { t, lang } = useI18n();
   return (
-    <div className="relative w-full h-full group pt-7">
+    <div className="relative w-full h-full flex flex-col group pt-7">
       {/* Horizontal timeline: dotted line + pulsing dot */}
       <div className="absolute top-[5px] left-0 -right-6 border-t-2 border-dotted border-gray-300 dark:border-gray-600" />
       <div className="absolute top-0 left-6">
@@ -18,11 +18,11 @@ function TimelineItem({ job }: { job: ExperienceItem }) {
         </span>
       </div>
 
-      <div className="relative h-[calc(100%-1.75rem)] rounded-2xl border p-2 md:p-3 group-hover:border-emerald-200 dark:group-hover:border-emerald-700 transition-colors duration-300">
+      <div className="relative flex-1 rounded-2xl border p-2 md:p-3 group-hover:border-emerald-200 dark:group-hover:border-emerald-700 transition-colors duration-300">
         {settings.experience.showGlowingEffect && (
           <GlowingEffect spread={20} glow={true} disabled={false} proximity={50} inactiveZone={0.01} />
         )}
-        <div className="relative flex h-full flex-col gap-3 overflow-hidden rounded-xl p-4 md:p-5">
+        <div className="relative flex h-full flex-col gap-3 rounded-xl p-4 md:p-5">
           <div className="flex items-center justify-between gap-3">
             <p className="text-lg text-gray-700 dark:text-gray-400">{job.company}</p>
             {settings.experience.showCompanyLogos && job.logoPath && (
@@ -37,7 +37,7 @@ function TimelineItem({ job }: { job: ExperienceItem }) {
           </div>
           <h3 className="font-bold text-emerald-600 -mt-2">
             {settings.experience.showAnimations ? (
-              <TextAnimate key={lang} animation="blurInUp" by="character" once>
+              <TextAnimate key={lang} animation="blurInUp" by="word" once>
                 {t(job.title)}
               </TextAnimate>
             ) : (

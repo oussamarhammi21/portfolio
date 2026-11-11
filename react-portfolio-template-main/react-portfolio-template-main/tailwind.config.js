@@ -19,6 +19,11 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ['"Manrope Variable"', "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ['"Bricolage Grotesque Variable"', '"Manrope Variable"', "ui-sans-serif", "sans-serif"],
+        mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

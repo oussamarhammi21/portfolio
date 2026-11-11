@@ -121,11 +121,11 @@ export default function AboutMe() {
   return (
     <div className="pt-10 mb-6" id="about">
       {/* Header */}
-      <div className="text-center mb-6 px-2">
+      <div className="mb-6">
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
           {t({ en: "PROFESSIONAL PROFILE", fr: "PROFIL PROFESSIONNEL" })}
         </h2>
-        <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg lg:text-xl">
+        <p className="text-gray-600 dark:text-gray-400 text-base sm:text-lg">
           {t({ en: "Full-Stack Developer | Systems Analyst | Security & Governance", fr: "Développeur full-stack | Analyste de systèmes | Sécurité et gouvernance" })}
         </p>
       </div>
@@ -250,7 +250,7 @@ export default function AboutMe() {
       </Slider>
 
       {/* Expertise */}
-      <div className="text-center mt-10 mb-2">
+      <div className="mt-12 mb-2">
         <h3 className="text-2xl sm:text-3xl font-bold text-gray-800 dark:text-gray-200 mb-2">
           {t({ en: "Areas of Expertise", fr: "Domaines d'expertise" })}
         </h3>
