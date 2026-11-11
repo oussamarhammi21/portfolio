@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
-import { FiArrowUpRight } from "react-icons/fi";
 import { SiAngular, SiDotnet } from "react-icons/si";
+import { FaDatabase, FaUsers } from "react-icons/fa";
+import { GoLinkExternal } from "react-icons/go";
 import { Badge } from "./ui/badge";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/card";
+import { CardContainer } from "./ui/3d-card";
 import Slider, { SectionHeader } from "./Slider";
 import { useI18n } from "@/i18n/LanguageProvider";
 import { projects, statusLabel, type ProjectItem, type ProjectStatus } from "@/content/projects";
@@ -17,80 +20,82 @@ const statusColor: Record<ProjectStatus, string> = {
 
 function ProjectCard({ project }: { project: ProjectItem }) {
   const { t } = useI18n();
-  const external = project.href && !project.href.startsWith("/");
+  const external = !!project.href && !project.href.startsWith("/");
 
-  const body = (
-    <article className="group h-full flex flex-col overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/60 shadow-sm hover:shadow-lg hover:border-emerald-300 dark:hover:border-emerald-700 transition-all">
-      <div className="aspect-video overflow-hidden bg-gradient-to-br from-emerald-100 to-blue-100 dark:from-neutral-800 dark:to-neutral-900">
-        {project.imageUrl ? (
-          <img
-            src={project.imageUrl}
-            alt={project.title}
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <div className="h-full w-full grid place-items-center text-4xl text-neutral-600 dark:text-neutral-300">
-            <span className="flex gap-4">
+  const card = (
+    <CardContainer className="inter-var h-full w-full" containerClassName="py-4 h-full">
+      <Card className="w-full h-full shadow-md hover:shadow-lg transition-shadow duration-300 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:border-white/[0.2] border-black/[0.1] flex flex-col">
+        <CardHeader className="flex-shrink-0">
+          {project.imageUrl ? (
+            <img
+              src={project.imageUrl}
+              alt={project.title}
+              loading="lazy"
+              draggable={false}
+              className="w-full aspect-video object-cover rounded-2xl mb-4"
+            />
+          ) : (
+            <div className="w-full aspect-video rounded-2xl mb-4 flex items-center justify-center gap-4 text-4xl text-gray-700 dark:text-gray-300 bg-gradient-to-br from-emerald-100 to-blue-100 dark:from-gray-800 dark:to-gray-900">
               <SiAngular />
               <SiDotnet />
+              <FaDatabase />
+              <FaUsers />
+            </div>
+          )}
+          <div className="flex items-center justify-between gap-2 text-xs text-muted-foreground">
+            <span>{t(project.period)}</span>
+            <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+              <span className={cn("h-2 w-2 rounded-full", statusColor[project.status])} />
+              {t(statusLabel[project.status])}
             </span>
           </div>
-        )}
-      </div>
-
-      <div className="flex flex-1 flex-col p-5">
-        <div className="flex items-center justify-between gap-2 text-xs text-neutral-500">
-          <span>{t(project.period)}</span>
-          <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
-            <span className={cn("h-2 w-2 rounded-full", statusColor[project.status])} />
-            {t(statusLabel[project.status])}
-          </span>
-        </div>
-        <h3 className="mt-2 flex items-center gap-1 text-lg font-bold text-neutral-900 dark:text-white">
-          {project.title}
-          {project.href && (
-            <FiArrowUpRight className="text-neutral-400 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-emerald-500" />
+          <CardTitle className="flex items-center gap-2">{project.title}</CardTitle>
+          <CardDescription className="line-clamp-3">{t(project.description)}</CardDescription>
+        </CardHeader>
+        <CardContent className="flex-grow">
+          <div className="flex flex-wrap gap-2">
+            {project.techStack.map((tech) => (
+              <Badge key={tech} variant="outline" className="font-normal rounded-2xl">
+                {tech}
+              </Badge>
+            ))}
+          </div>
+        </CardContent>
+        <CardFooter className="flex justify-end flex-shrink-0 mt-auto">
+          {external ? (
+            <GoLinkExternal className="text-emerald-500" aria-label={t({ en: "Opens in a new tab", fr: "S'ouvre dans un nouvel onglet" })} />
+          ) : (
+            <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium opacity-0 group-hover/card:opacity-100 transition-opacity">
+              {t({ en: "See details →", fr: "Voir les détails →" })}
+            </span>
           )}
-        </h3>
-        <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed line-clamp-4">
-          {t(project.description)}
-        </p>
-        <div className="mt-auto pt-4 flex flex-wrap gap-1.5">
-          {project.techStack.map((tech) => (
-            <Badge key={tech} variant="outline" className="font-normal rounded-full">
-              {tech}
-            </Badge>
-          ))}
-        </div>
-      </div>
-      {external && <span className="sr-only">{t({ en: "(opens in a new tab)", fr: "(s'ouvre dans un nouvel onglet)" })}</span>}
-    </article>
+        </CardFooter>
+      </Card>
+    </CardContainer>
   );
 
-  if (!project.href) return body;
+  if (!project.href) return card;
   return external ? (
     <a href={project.href} target="_blank" rel="noopener noreferrer" className="block h-full">
-      {body}
+      {card}
     </a>
   ) : (
     <Link to={project.href} className="block h-full">
-      {body}
+      {card}
     </Link>
   );
 }
 
 export default function ProjectsSection() {
   const { t } = useI18n();
-
   return (
-    <section id="projects" aria-labelledby="projects-title" className="py-12">
+    <div className="pt-5 mb-6" id="projects">
       <SectionHeader
         id="projects"
         title={t({ en: "Projects", fr: "Projets" })}
         subtitle={t({
-          en: "What I built, with what, and where it stands today. Open a card for the details.",
-          fr: "Ce que j'ai bâti, avec quoi, et où ça en est. Ouvre une carte pour les détails.",
+          en: "A showcase of my work, the technologies I used and the problems I solved.",
+          fr: "Un aperçu de mes réalisations, des technologies utilisées et des problèmes réglés.",
         })}
       />
       <Slider label={t({ en: "Projects", fr: "Projets" })}>
@@ -98,6 +103,6 @@ export default function ProjectsSection() {
           <ProjectCard key={p.id} project={p} />
         ))}
       </Slider>
-    </section>
+    </div>
   );
 }

@@ -8,6 +8,8 @@ import { SiJsonwebtokens } from "react-icons/si";
 import { MdQrCode, MdQrCodeScanner } from "react-icons/md";
 import { BiTime } from "react-icons/bi";
 import { Badge } from "./ui/badge";
+import { Card, CardContent, CardHeader } from "./ui/card";
+import { CometCard } from "./ui/comet-card";
 import { Input } from "./ui/input";
 import Slider, { SectionHeader } from "./Slider";
 import { useI18n, type Bi } from "@/i18n/LanguageProvider";
@@ -23,7 +25,7 @@ const categoryLabel: Record<Category, Bi> = {
   utilities: { en: "Utilities", fr: "Utilitaires" },
 };
 
-const iconClass = "text-3xl text-emerald-600";
+const iconClass = "text-4xl text-emerald-600";
 
 const tools: { name: Bi; description: Bi; link: string; icon: JSX.Element; category: Category; tags: string[]; beta?: boolean }[] = [
   {
@@ -96,21 +98,28 @@ const tools: { name: Bi; description: Bi; link: string; icon: JSX.Element; categ
 function ToolCard({ tool }: { tool: (typeof tools)[number] }) {
   const { t } = useI18n();
   return (
-    <Link
-      to={tool.link}
-      className="group relative h-full flex flex-col items-center text-center gap-2 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/60 p-5 shadow-sm hover:border-emerald-300 dark:hover:border-emerald-700 hover:shadow-md transition-all"
-    >
-      {tool.beta && (
-        <Badge className="absolute top-2 right-2 bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100 text-[10px]">
-          Beta
-        </Badge>
-      )}
-      <span className="transition-transform group-hover:scale-110">{tool.icon}</span>
-      <span className="font-semibold text-sm leading-tight group-hover:text-emerald-600">{t(tool.name)}</span>
-      <span className="text-xs text-neutral-500 dark:text-neutral-400">{t(tool.description)}</span>
-      <Badge variant="secondary" className="mt-auto text-[10px]">
-        {t(categoryLabel[tool.category])}
-      </Badge>
+    <Link to={tool.link} className="block h-full text-center" title={`${t(tool.name)} - ${t(tool.description)}`} draggable={false}>
+      <CometCard className="h-full">
+        <Card className="shadow-sm hover:text-emerald-600 transition-all duration-300 border-neutral-200 dark:border-neutral-800 h-full group relative flex flex-col min-h-[200px]">
+          {tool.beta && (
+            <Badge className="absolute top-2 right-2 bg-orange-100 text-orange-800 dark:bg-orange-900 hover:bg-orange-200 dark:text-orange-100 text-xs">
+              Beta
+            </Badge>
+          )}
+          <CardHeader className="font-semibold flex flex-col items-center justify-center gap-2 p-6 flex-shrink-0">
+            <div className="transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">{tool.icon}</div>
+            <span className="text-center font-semibold leading-tight">{t(tool.name)}</span>
+          </CardHeader>
+          <CardContent className="px-6 pb-4 flex-grow flex flex-col justify-between">
+            <p className="text-xs text-gray-500 dark:text-gray-400 text-center mb-2 flex-grow">{t(tool.description)}</p>
+            <div className="flex justify-center mt-auto">
+              <Badge variant="secondary" className="text-xs">
+                {t(categoryLabel[tool.category])}
+              </Badge>
+            </div>
+          </CardContent>
+        </Card>
+      </CometCard>
     </Link>
   );
 }
@@ -124,27 +133,27 @@ export default function ToolsForDev({ variant = "grid" }: { variant?: "slider" |
   const header = (
     <SectionHeader
       id="devtools"
-      title={t({ en: "Dev tools", fr: "Outils pour développeurs" })}
+      title={t({ en: "Dev tools", fr: "Outils dev" })}
       subtitle={t({
-        en: "Free tools that run in your browser. Nothing you paste is sent anywhere.",
-        fr: "Outils gratuits qui roulent dans ton navigateur. Rien de ce que tu colles n'est envoyé ailleurs.",
+        en: "A collection of essential tools to boost your development workflow. Everything runs in your browser.",
+        fr: "Une collection d'outils pratiques pour accélérer ton développement. Tout roule dans ton navigateur.",
       })}
     />
   );
 
   if (variant === "slider") {
     return (
-      <section id="devtools" aria-labelledby="devtools-title" className="py-12">
+      <div id="devtools" className="pt-5 mb-6">
         {header}
         <Slider
           label={t({ en: "Dev tools", fr: "Outils pour développeurs" })}
-          itemClassName="basis-[70%] sm:basis-[calc((100%-2rem)/3)] lg:basis-[calc((100%-3rem)/4)]"
+          itemClassName="basis-[70%] sm:basis-[calc((100%-3rem)/3)] lg:basis-[calc((100%-4.5rem)/4)]"
         >
           {tools.map((tool) => (
             <ToolCard key={tool.link} tool={tool} />
           ))}
         </Slider>
-      </section>
+      </div>
     );
   }
 
@@ -194,7 +203,7 @@ export default function ToolsForDev({ variant = "grid" }: { variant?: "slider" |
       {filtered.length === 0 ? (
         <p className="py-12 text-center text-neutral-500">{t({ en: "No tool found", fr: "Aucun outil trouvé" })}</p>
       ) : (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 border-l-2 border-dotted border-emerald-300 pl-6 py-3">
           {filtered.map((tool) => (
             <ToolCard key={tool.link} tool={tool} />
           ))}
