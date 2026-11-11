@@ -11,7 +11,6 @@ const EMAIL = "oussamarhammi2020@hotmail.com";
 
 const links = [
   { title: "LinkedIn", url: "https://linkedin.com/in/oussama-rhammi-252177106", icon: <SiLinkedin /> },
-  { title: "GitHub", url: "https://github.com/oussamarhammi21", icon: <SiGithub /> },
 ];
 
 export default function Contact(): JSX.Element {
