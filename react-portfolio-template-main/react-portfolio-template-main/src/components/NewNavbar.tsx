@@ -41,7 +41,6 @@ export function NewNavbar() {
         { name: t({ en: "Resume", fr: "CV" }), link: "/resume" },
         { name: t({ en: "Dev tools", fr: "Outils dev" }), link: "/devtools" },
         { name: "Stats", link: "/stats" },
-        { name: t({ en: "Binary search visualizer", fr: "Visualiseur de recherche binaire" }), link: "https://binary-search-visualizer-mauve.vercel.app/" },
         { name: t({ en: "Java Q&A", fr: "Questions Java" }), link: "/java-interview-question-answers" },
       ],
     },
