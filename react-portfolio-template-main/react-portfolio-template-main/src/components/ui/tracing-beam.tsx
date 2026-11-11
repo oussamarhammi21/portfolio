@@ -94,7 +94,7 @@ export const TracingBeam = ({
             fill="none"
             stroke="url(#gradient)"
             strokeWidth="1.25"
-            className="motion-reduce:hidden"
+            className=""
             transition={{
               duration: 10,
             }}

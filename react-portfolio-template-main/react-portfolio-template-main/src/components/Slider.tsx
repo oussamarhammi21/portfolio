@@ -83,8 +83,8 @@ export default function Slider({
 
   // Animation loop
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const base = autoPlay && !reduced ? speed : 0;
+    // Always on, even when the OS asks to reduce animations: the scroll is slow and pauses on hover
+    const base = autoPlay ? speed : 0;
     let raf = 0;
     let last = performance.now();
     let current = base; // smoothed auto speed (eases to 0 on hover)
@@ -176,13 +176,8 @@ export default function Slider({
           if (e.key === "ArrowRight") { e.preventDefault(); nudge(1); }
           if (e.key === "ArrowLeft") { e.preventDefault(); nudge(-1); }
         }}
-        // Fade the edges so the loop feels endless; vertical room for hover effects
-        style={{
-          overflowX: "clip",
-          touchAction: "pan-y",
-          maskImage: "linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent)",
-          WebkitMaskImage: "linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent)",
-        }}
+        // Clip sideways only, so hover effects keep room above and below
+        style={{ overflowX: "clip", touchAction: "pan-y" }}
         className="py-3 -my-3 cursor-grab active:cursor-grabbing select-none rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
       >
         <div ref={trackRef} className="flex gap-6 will-change-transform">
