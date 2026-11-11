@@ -51,7 +51,7 @@ export default function JSONFormatter() {
   const [mode, setMode] = useState<"beautify" | "minify">("beautify");
   const [activeTab, setActiveTab] = useState<"editor" | "tree">("editor");
   const [isLoaded, setIsLoaded] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
   // Validate and parse JSON
   const handleValidate = (input: string) => {
     try {

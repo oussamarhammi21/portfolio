@@ -1,9 +1,7 @@
 import GitHubCalendar from "react-github-calendar";
-import { useTheme } from "@/components/theme-provider";
 import { useI18n } from "@/i18n/LanguageProvider";
 
 export default function Stats(): JSX.Element {
-  const { theme } = useTheme();
   const { t } = useI18n();
 
   const rows = [
@@ -43,7 +41,7 @@ export default function Stats(): JSX.Element {
             username="oussamarhammi21"
             blockSize={11}
             blockRadius={4}
-            colorScheme={theme === "light" ? "light" : "dark"}
+            colorScheme="dark"
           />
         </div>
       </section>

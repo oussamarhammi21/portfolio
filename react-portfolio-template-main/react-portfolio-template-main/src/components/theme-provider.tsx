@@ -1,81 +1,32 @@
-import {createContext, useContext, useEffect, useState} from "react";
+import { createContext, useContext, useEffect } from "react";
 
-type Theme = "dark" | "light" | "system";
-
-type ThemeProviderProps = {
-  children: React.ReactNode;
-  defaultTheme?: Theme;
-  storageKey?: string;
-};
+/** The site is dark only. The provider keeps the same API so existing components keep working. */
+type Theme = "dark";
 
 type ThemeProviderState = {
   theme: Theme;
   setTheme: (theme: Theme) => void;
 };
 
-const initialState: ThemeProviderState = {
-  theme: "system",
-  setTheme: () => null,
-};
+const ThemeProviderContext = createContext<ThemeProviderState>({ theme: "dark", setTheme: () => null });
 
-const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
-
-export function ThemeProvider({
-  children,
-  defaultTheme = "system",
-  storageKey = "vite-ui-theme",
-  ...props
-}: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    try {
-      const stored = localStorage.getItem(storageKey);
-      // Only keep an explicit choice from the toggle; "system" or a stale value falls back to the default
-      return stored === "light" || stored === "dark" ? stored : defaultTheme;
-    } catch {
-      return defaultTheme;
-    }
-  });
-
+export function ThemeProvider({ children }: { children: React.ReactNode; defaultTheme?: string; storageKey?: string }) {
   useEffect(() => {
     const root = window.document.documentElement;
-
-    root.classList.remove("light", "dark");
-
-    if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light";
-
-      root.classList.add(systemTheme);
-      root.style.colorScheme = systemTheme;
-      return;
+    root.classList.remove("light");
+    root.classList.add("dark");
+    root.style.colorScheme = "dark";
+    try {
+      // Forget the old light / dark choice from the removed toggle
+      localStorage.removeItem("vite-ui-theme");
+    } catch {
+      /* storage unavailable */
     }
-
-    root.classList.add(theme);
-    root.style.colorScheme = theme;
-  }, [theme]);
-
-  const value = {
-    theme,
-    setTheme: (theme: Theme) => {
-      localStorage.setItem(storageKey, theme);
-      setTheme(theme);
-    },
-  };
+  }, []);
 
   return (
-    <ThemeProviderContext.Provider {...props} value={value}>
-      {children}
-    </ThemeProviderContext.Provider>
+    <ThemeProviderContext.Provider value={{ theme: "dark", setTheme: () => null }}>{children}</ThemeProviderContext.Provider>
   );
 }
 
-export const useTheme = () => {
-  const context = useContext(ThemeProviderContext);
-
-  if (context === undefined)
-    throw new Error("useTheme must be used within a ThemeProvider");
-
-  return context;
-};
+export const useTheme = () => useContext(ThemeProviderContext);

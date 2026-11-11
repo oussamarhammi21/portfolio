@@ -3,18 +3,9 @@
 
 <head>
   <meta charset="UTF-8" />
-    <script>
-    try {
-      if (localStorage.getItem("vite-ui-theme") === "light") {
-        document.documentElement.classList.replace("dark", "light");
-        document.documentElement.style.colorScheme = "light";
-      }
-    } catch (e) {}
-  </script>
   <style>
-    /* Background applied before React and the CSS load: avoids a white flash */
+    /* Dark only: background applied before React and the CSS load, no white flash */
     html, body { background: #0a0a0a; color: #fafafa; }
-    html.light, html.light body { background: #ffffff; color: #0a0a0a; }
   </style>
   <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">

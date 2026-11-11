@@ -10,8 +10,6 @@ import {
 } from "@/components/ui/resizable-navbar";
 import { Fragment, useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
-import { Switch } from "./ui/switch";
-import { useTheme } from "./theme-provider";
 import { motion, AnimatePresence } from "motion/react";
 import LanguageToggle from "./LanguageToggle";
 import { useI18n } from "@/i18n/LanguageProvider";
@@ -23,11 +21,8 @@ interface NavItem {
 }
 
 export function NewNavbar() {
-  const { theme, setTheme } = useTheme();
   const { t, lang } = useI18n();
   const location = useLocation();
-  const isDark = theme === "dark";
-  const toggleTheme = (checked: boolean) => setTheme(checked ? "dark" : "light");
 
   const [openMobileDropdown, setOpenMobileDropdown] = useState<number | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -62,8 +57,6 @@ export function NewNavbar() {
     }
   }, [location.pathname, location.hash]);
 
-  const themeLabel = t({ en: "Dark mode", fr: "Mode sombre" });
-
   return (
     <div className="relative w-full">
       <a
@@ -79,7 +72,6 @@ export function NewNavbar() {
           <NavItems items={navItems} />
           <div className="relative z-[70] flex items-center gap-3">
             <LanguageToggle />
-            <Switch checked={isDark} onCheckedChange={toggleTheme} aria-label={themeLabel} />
           </div>
         </NavBody>
 
@@ -156,10 +148,6 @@ export function NewNavbar() {
                 )}
               </div>
             ))}
-            <label className="flex w-full items-center justify-between border-t border-neutral-200 dark:border-neutral-800 pt-4 text-sm text-neutral-600 dark:text-neutral-300">
-              {themeLabel}
-              <Switch checked={isDark} onCheckedChange={toggleTheme} aria-label={themeLabel} />
-            </label>
           </MobileNavMenu>
         </MobileNav>
       </Navbar>
