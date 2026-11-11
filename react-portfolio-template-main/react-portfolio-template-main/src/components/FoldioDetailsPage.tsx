@@ -1,207 +1,76 @@
-// components/FoldioDetailsPage.tsx
-import { ArrowLeft } from "lucide-react";
-import { useRef } from "react";
 import { FaBrain, FaCloud, FaFileAlt, FaServer, FaShieldAlt, FaUsers } from "react-icons/fa";
-import { SiFastapi, SiNextdotjs, SiPostgresql } from "react-icons/si";
-import { Link } from "react-router-dom";
-import { Button } from "./ui/button";
+import ProjectDetailLayout, { type ProjectDetail } from "./ProjectDetailLayout";
 
-const foldio = {
+const foldio: ProjectDetail = {
   title: "Foldio",
-  longDescription: `Foldio is an AI-powered document management platform built for organizations 
-    that need to query their files in natural language. Built on a RAG architecture, it extracts, 
-    chunks, and semantically indexes documents so that answers are always grounded in your own content — 
-    never hallucinated. The platform supports multi-tenant workspaces with isolated environments, 
-    role-based access control, and a self-hosted LLM option for the free tier.`,
-  role: "Full-Stack Developer",
-  duration: "Personal Project • 2025",
-  backendStack: ["Python", "FastAPI", "PostgreSQL", "Docling", "pgvector", "Cloudflare R2"],
-  frontendStack: ["Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui"],
+  tagline: {
+    en: "Ask questions about your documents in plain language",
+    fr: "Posez des questions sur vos documents en langage courant",
+  },
+  description: {
+    en: [
+      "Foldio is a document platform for organizations that want to query their files in plain language. It uses a RAG architecture: documents are extracted, split and indexed by meaning, and each answer is built from passages of your own documents, with the sources shown.",
+      "Each organization has its own isolated space, with roles and access rules, and a self-hosted language model for the free tier.",
+    ],
+    fr: [
+      "Foldio est une plateforme documentaire pour les organisations qui veulent interroger leurs fichiers en langage courant. Elle repose sur une architecture RAG : les documents sont extraits, découpés et indexés selon leur sens, et chaque réponse est construite à partir de passages de vos propres documents, avec les sources affichées.",
+      "Chaque organisation a son propre espace isolé, avec des rôles et des règles d'accès, et un modèle de langage hébergé chez nous pour l'offre gratuite.",
+    ],
+  },
+  facts: [
+    { label: { en: "Role", fr: "Rôle" }, value: { en: "Full-stack developer", fr: "Développeur full-stack" } },
+    { label: { en: "Period", fr: "Période" }, value: { en: "Personal project, 2025", fr: "Projet personnel, 2025" } },
+    { label: { en: "Status", fr: "Statut" }, value: { en: "In development", fr: "En développement" } },
+  ],
+  video: {
+    src: "/assets/Foldio.mp4",
+    caption: {
+      en: "Full demo: document upload, semantic search and chat",
+      fr: "Démo complète : téléversement de documents, recherche sémantique et clavardage",
+    },
+  },
+  stack: {
+    backend: ["Python", "FastAPI", "PostgreSQL", "pgvector", "Docling", "Cloudflare R2"],
+    frontend: ["Next.js", "TypeScript", "Tailwind CSS", "shadcn/ui"],
+  },
   features: [
-    { icon: <FaBrain />, title: "RAG Pipeline", desc: "Documents are chunked and encoded as semantic vectors. The AI only receives the relevant excerpts, never the full file.", color: "purple" },
-    { icon: <FaUsers />, title: "Role-Based Access", desc: "Three roles per org: owner, folder manager, and member. Each sees a tailored interface with scoped permissions.", color: "blue" },
-    { icon: <FaShieldAlt />, title: "Data Privacy", desc: "Retrieval is handled entirely on our infrastructure. The LLM only gets what it needs to reformulate the answer.", color: "emerald" },
-    { icon: <FaCloud />, title: "Cloud Storage", desc: "Files are stored securely on Cloudflare R2 with signed URLs for time-limited access.", color: "amber" },
-    { icon: <FaFileAlt />, title: "Auto Extraction", desc: "Docling extracts and structures text from PDFs, Word documents, and presentations automatically on upload.", color: "rose" },
-    { icon: <FaServer />, title: "Self-Hosted LLM", desc: "Free tier includes a LLM hosted on our own infrastructure. Paid plans unlock access to more powerful third-party models.", color: "cyan" },
+    { icon: <FaBrain />, title: { en: "RAG pipeline", fr: "Pipeline RAG" }, desc: { en: "Documents are split into chunks and turned into vectors. The model only receives the relevant passages, never the whole file.", fr: "Les documents sont découpés en morceaux et transformés en vecteurs. Le modèle reçoit seulement les passages utiles, jamais le fichier complet." } },
+    { icon: <FaUsers />, title: { en: "Role-based access", fr: "Accès par rôle" }, desc: { en: "Three roles per organization: owner, folder manager and member, each with its own view and permissions.", fr: "Trois rôles par organisation : propriétaire, gestionnaire de dossier et membre, chacun avec sa vue et ses permissions." } },
+    { icon: <FaShieldAlt />, title: { en: "Data privacy", fr: "Confidentialité" }, desc: { en: "Search runs on our own infrastructure. The model only gets what it needs to write the answer.", fr: "La recherche roule sur notre propre infrastructure. Le modèle reçoit seulement ce qu'il faut pour rédiger la réponse." } },
+    { icon: <FaCloud />, title: { en: "Cloud storage", fr: "Stockage infonuagique" }, desc: { en: "Files are stored on Cloudflare R2 behind signed, time-limited URLs.", fr: "Les fichiers sont stockés sur Cloudflare R2 derrière des liens signés à durée limitée." } },
+    { icon: <FaFileAlt />, title: { en: "Automatic extraction", fr: "Extraction automatique" }, desc: { en: "Docling extracts and structures text from PDF, Word and PowerPoint files on upload.", fr: "Docling extrait et structure le texte des fichiers PDF, Word et PowerPoint au téléversement." } },
+    { icon: <FaServer />, title: { en: "Self-hosted model", fr: "Modèle auto-hébergé" }, desc: { en: "The free tier uses a model hosted on our infrastructure; paid plans unlock stronger third party models.", fr: "L'offre gratuite utilise un modèle hébergé chez nous; les forfaits payants donnent accès à des modèles externes plus puissants." } },
   ],
-  challenges: [
-    "Designing a multi-tenant architecture with fully isolated org data",
-    "Building a RAG pipeline that stays accurate without sending full documents to the LLM",
-    "Managing concurrent document extractions without blocking the event loop",
-    "Implementing granular permission logic across folders, roles, and confidentiality flags",
-  ],
-  solutions: [
-    "Used org-scoped queries and row-level filtering throughout the entire data layer",
-    "Chunked documents into semantic units with pgvector for retrieval before LLM call",
-    "Leveraged asyncio with semaphores and a ProcessPoolExecutor for CPU-bound Docling tasks",
-    "Built a composable filter system (_build_filter) covering owner, manager, and member roles",
-  ],
-  mainVideoUrl: "/assets/Foldio.mp4",
-};
-
-const colorMap: Record<string, string> = {
-  purple: "from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border-purple-100 dark:border-purple-800/30 text-purple-600 dark:text-purple-400",
-  blue:   "from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border-blue-100 dark:border-blue-800/30 text-blue-600 dark:text-blue-400",
-  emerald:"from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-100 dark:border-emerald-800/30 text-emerald-600 dark:text-emerald-400",
-  amber:  "from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-100 dark:border-amber-800/30 text-amber-600 dark:text-amber-400",
-  rose:   "from-rose-50 to-orange-50 dark:from-rose-900/20 dark:to-orange-900/20 border-rose-100 dark:border-rose-800/30 text-rose-600 dark:text-rose-400",
-  cyan:   "from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 border-cyan-100 dark:border-cyan-800/30 text-cyan-600 dark:text-cyan-400",
+  challenges: {
+    en: [
+      "A multi-tenant architecture with fully isolated organization data",
+      "A RAG pipeline that stays accurate without sending whole documents to the model",
+      "Many document extractions at once without blocking the server",
+      "Fine-grained permissions across folders, roles and confidential documents",
+    ],
+    fr: [
+      "Une architecture multi-organisation avec des données complètement isolées",
+      "Un pipeline RAG précis sans envoyer les documents complets au modèle",
+      "Plusieurs extractions de documents en même temps sans bloquer le serveur",
+      "Des permissions fines selon les dossiers, les rôles et les documents confidentiels",
+    ],
+  },
+  solutions: {
+    en: [
+      "Organization-scoped queries and row filtering across the whole data layer",
+      "Semantic chunks stored in pgvector and retrieved before each model call",
+      "asyncio with semaphores, plus a process pool for CPU heavy Docling jobs",
+      "A composable filter that covers owner, manager and member rules",
+    ],
+    fr: [
+      "Requêtes limitées à l'organisation et filtrage des lignes dans toute la couche de données",
+      "Morceaux sémantiques stockés dans pgvector et récupérés avant chaque appel au modèle",
+      "asyncio avec sémaphores, et un pool de processus pour les tâches Docling lourdes",
+      "Un filtre composable qui couvre les règles du propriétaire, du gestionnaire et du membre",
+    ],
+  },
 };
 
 export default function FoldioDetailsPage() {
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-black py-10">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        {/* Nav */}
-        <div className="mb-8">
-          <Link to="/#projects">
-            <Button variant="ghost" className="mb-6">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Projects
-            </Button>
-          </Link>
-        </div>
-
-        {/* Header */}
-        <div className="mb-10">
-          <h1 className="text-4xl font-bold mb-4 text-gray-900 dark:text-white">{foldio.title}</h1>
-          <p className="text-lg text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
-            {foldio.longDescription}
-          </p>
-          <div className="flex flex-wrap gap-4">
-            <div className="bg-blue-100 dark:bg-blue-900/30 px-4 py-2 rounded-lg">
-              <span className="font-semibold text-blue-700 dark:text-blue-300">Role:</span>
-              <span className="ml-2 text-gray-700 dark:text-gray-300">{foldio.role}</span>
-            </div>
-            <div className="bg-emerald-100 dark:bg-emerald-900/30 px-4 py-2 rounded-lg">
-              <span className="font-semibold text-emerald-700 dark:text-emerald-300">Duration:</span>
-              <span className="ml-2 text-gray-700 dark:text-gray-300">{foldio.duration}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Video */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-200">Project Showcase</h2>
-          <div className="aspect-video bg-gray-900 rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10">
-            <video
-              ref={videoRef}
-              controls
-              className="w-full h-full"
-            >
-              <source src={foldio.mainVideoUrl} type="video/mp4" />
-            </video>
-          </div>
-          <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-3 italic">
-            Full demo — document upload, semantic search, and chat interface
-          </p>
-        </div>
-
-        {/* Tech Stack */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-200">Technology Stack</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-              <div className="flex items-center gap-3 mb-4">
-                <FaServer className="text-2xl text-blue-600 dark:text-blue-400" />
-                <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Backend</h3>
-              </div>
-              <div className="flex flex-wrap gap-2 mb-3">
-                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium">
-                  <SiFastapi className="inline mr-1" /> FastAPI
-                </span>
-                <span className="px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 rounded-full text-sm font-medium">
-                  <SiPostgresql className="inline mr-1" /> PostgreSQL
-                </span>
-              </div>
-              <ul className="space-y-2">
-                {foldio.backendStack.map((tech, idx) => (
-                  <li key={idx} className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-blue-500 rounded-full" />
-                    <span className="text-gray-700 dark:text-gray-300">{tech}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-              <div className="flex items-center gap-3 mb-4">
-                <SiNextdotjs className="text-2xl text-gray-800 dark:text-gray-200" />
-                <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Frontend</h3>
-              </div>
-              <div className="flex flex-wrap gap-2 mb-3">
-                <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">
-                  <SiNextdotjs className="inline mr-1" /> Next.js
-                </span>
-                <span className="px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-sm font-medium">
-                  TypeScript
-                </span>
-              </div>
-              <ul className="space-y-2">
-                {foldio.frontendStack.map((tech, idx) => (
-                  <li key={idx} className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-gray-500 rounded-full" />
-                    <span className="text-gray-700 dark:text-gray-300">{tech}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Features */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-200">Key Features</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {foldio.features.map((f, idx) => {
-              const colors = colorMap[f.color].split(" ");
-              const gradientBg = `bg-gradient-to-br ${colors[0]} ${colors[1]} ${colors[2]} ${colors[3]}`;
-              const border = `border ${colors[4]} ${colors[5]}`;
-              const iconColor = colors[6];
-              return (
-                <div key={idx} className={`${gradientBg} ${border} p-5 rounded-xl`}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className={`text-xl ${iconColor}`}>{f.icon}</span>
-                    <h3 className="font-semibold text-gray-800 dark:text-gray-200">{f.title}</h3>
-                  </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{f.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Challenges & Solutions */}
-        <div className="mb-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-gradient-to-br from-rose-50 to-orange-50 dark:from-rose-900/10 dark:to-orange-900/10 p-6 rounded-xl border border-rose-100 dark:border-rose-800/30">
-            <h3 className="text-xl font-bold mb-4 text-rose-600 dark:text-rose-400">Challenges</h3>
-            <ul className="space-y-3">
-              {foldio.challenges.map((c, idx) => (
-                <li key={idx} className="flex items-start gap-3">
-                  <div className="mt-1 w-2 h-2 bg-rose-500 rounded-full flex-shrink-0" />
-                  <span className="text-gray-700 dark:text-gray-300">{c}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/10 dark:to-teal-900/10 p-6 rounded-xl border border-emerald-100 dark:border-emerald-800/30">
-            <h3 className="text-xl font-bold mb-4 text-emerald-600 dark:text-emerald-400">Solutions</h3>
-            <ul className="space-y-3">
-              {foldio.solutions.map((s, idx) => (
-                <li key={idx} className="flex items-start gap-3">
-                  <div className="mt-1 w-2 h-2 bg-emerald-500 rounded-full flex-shrink-0" />
-                  <span className="text-gray-700 dark:text-gray-300">{s}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  );
+  return <ProjectDetailLayout project={foldio} />;
 }

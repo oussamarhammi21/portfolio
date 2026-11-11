@@ -7,6 +7,34 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Animations must never create sideways scrolling on phones */
+html, body {
+  overflow-x: clip;
+}
+
+/* Sections land below the fixed navbar */
+section[id], div[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+/* Horizontal sliders: keep the swipe, hide the scrollbar */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

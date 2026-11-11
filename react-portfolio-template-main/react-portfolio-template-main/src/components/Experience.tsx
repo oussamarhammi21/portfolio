@@ -1,256 +1,80 @@
-// Timeline.tsx
-import React from "react";
-import { TextAnimate } from "./magicui/text-animate";
-import { GlowingEffect } from "./ui/glowing-effect";
-import { settings } from "@/config/settings";
+import Slider, { SectionHeader } from "./Slider";
+import { useI18n } from "@/i18n/LanguageProvider";
+import { experience, formatDuration, formatPeriod, monthsBetween } from "@/content/experience";
 
-// Define the type for each timeline entry
-interface TimelineItemProps {
-  title: string;
-  company: string;
-  description: string;
-  from: string;
-  to: string;
-  logoPath?: string;
-  technologies?: string[];
-  achievements?: string[];
-}
+export default function ExperienceSection() {
+  const { t, lang } = useI18n();
 
-const calculateDuration = (from: string, to: string): string => {
-  const [fromMonth, fromYear] = from.split("/").map(Number);
-  const [toMonth, toYear] =
-    to.toLowerCase() === "present"
-      ? [new Date().getMonth() + 1, new Date().getFullYear()]
-      : to.split("/").map(Number);
+  return (
+    <section id="experience" aria-labelledby="experience-title" className="py-12">
+      <SectionHeader
+        id="experience"
+        title={t({ en: "Experience", fr: "Expérience" })}
+        subtitle={t({ en: "From the most recent", fr: "De la plus récente à la plus ancienne" })}
+      />
 
-  const totalMonths = (toYear - fromYear) * 12 + (toMonth - fromMonth) + 1;
-  const years = Math.floor(totalMonths / 12);
-  const months = totalMonths % 12;
-
-  const yearText = years > 0 ? `${years} year${years > 1 ? "s" : ""}` : "";
-  const monthText = months > 0 ? `${months} month${months > 1 ? "s" : ""}` : "";
-  return [yearText, monthText].filter(Boolean).join(" ");
-};
-
-// Timeline item component
-const TimelineItem: React.FC<TimelineItemProps> = ({
-  title,
-  company,
-  description,
-  from,
-  to,
-  logoPath,
-  technologies,
-  achievements,
-}) => (
-  <div className="relative w-full group">
-    <div className="absolute -left-[1.95rem] top-10 transition-none">
-      <span className="relative flex h-3 w-3">
-        <span className="absolute inline-flex h-3 w-3 animate-ping rounded-2xl bg-gray-400 opacity-75 group-hover:bg-emerald-400"></span>
-        <span className="relative inline-flex h-3 w-3 rounded-2xl bg-emerald-500 group-hover:bg-emerald-400 transition-colors duration-300"></span>
-      </span>
-    </div>
-    <div className="relative h-full rounded-2xl border p-2 md:rounded-2xl md:p-3 group-hover:border-emerald-200 dark:group-hover:border-emerald-700 transition-colors duration-300">
-      {settings.experience.showGlowingEffect && (
-        <GlowingEffect
-          spread={20}
-          glow={true}
-          disabled={false}
-          proximity={50}
-          inactiveZone={0.01}
-        />
-      )}
-      <div className="border-0.75 relative flex h-full flex-col justify-between gap-6 overflow-hidden rounded-xl p-6 md:p-6 transition-shadow duration-300">
-        <div className="relative flex flex-1 flex-col justify-between gap-3">
-          <div>
-            <div className="flex items-center justify-between">
-              <p className="text-xl text-gray-700 dark:text-gray-400 mb-1">
-                {company}
-              </p>
-              {settings.experience.showCompanyLogos && logoPath && (
+      <Slider
+        label={t({ en: "Professional experience", fr: "Expérience professionnelle" })}
+        itemClassName="basis-[90%] sm:basis-[calc((100%-1rem)/2)]"
+      >
+        {experience.map((job) => (
+          <article
+            key={job.company}
+            className="h-full rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/60 p-5 sm:p-6 shadow-sm hover:border-emerald-300 dark:hover:border-emerald-700 transition-colors"
+          >
+            <header className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-sm text-neutral-500">
+                  {job.company} · {job.location}
+                </p>
+                <h3 className="mt-0.5 font-bold text-emerald-600 dark:text-emerald-400 leading-snug">{t(job.title)}</h3>
+              </div>
+              {job.logoPath && (
                 <img
-                  src={logoPath}
-                  alt={`${company} logo`}
-                  className="h-8 w-8 rounded object-contain"
-                  // Hide the logo instead of showing a broken image if the file is missing
+                  src={job.logoPath}
+                  alt=""
+                  loading="lazy"
+                  className="h-9 w-9 shrink-0 rounded object-contain bg-white"
                   onError={(e) => (e.currentTarget.style.display = "none")}
                 />
               )}
-            </div>
-            <h4 className="font-bold text-emerald-600">
-              {settings.experience.showAnimations ? (
-                <TextAnimate animation="blurInUp" by="character" once>
-                  {title}
-                </TextAnimate>
-              ) : (
-                title
+            </header>
+
+            <p className="mt-2 text-xs text-neutral-500">
+              <span className="capitalize">{formatPeriod(job.from, lang)}</span> –{" "}
+              <span>{formatPeriod(job.to, lang)}</span> · {formatDuration(monthsBetween(job.from, job.to), lang)}
+              {job.to === "present" && (
+                <span className="ml-2 inline-flex items-center gap-1 rounded-full bg-emerald-100 dark:bg-emerald-900/40 px-2 py-0.5 text-[10px] font-semibold text-emerald-700 dark:text-emerald-300">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  {t({ en: "Current", fr: "Actuel" })}
+                </span>
               )}
-            </h4>
-            <p className="mt-1 max-w-screen-sm text-sm text-gray-500">
-              {description}
             </p>
-            <span className="mt-1 block text-sm text-gray-400">
-              {from} — {to} · {calculateDuration(from, to)}
-            </span>
 
-            {/* Technologies used */}
-            {technologies && technologies.length > 0 && (
-              <div className="mt-3">
-                <p className="text-xs text-gray-500 mb-1">Technologies:</p>
-                <div className="flex flex-wrap gap-1">
-                  {technologies.map((tech, index) => (
-                    <span
-                      key={index}
-                      className="px-2 py-1 border border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-300 text-xs rounded-2xl transition-colors duration-200 hover:bg-emerald-100 dark:hover:bg-emerald-900/30"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
+            <p className="mt-3 text-sm text-neutral-700 dark:text-neutral-300">{t(job.summary)}</p>
 
-            {/* Key achievements */}
-            {achievements && achievements.length > 0 && (
-              <div className="mt-3">
-                <p className="text-xs text-gray-500 mb-1">Key Achievements:</p>
-                <ul className="text-xs text-gray-600 dark:text-gray-400">
-                  {achievements.map((achievement, index) => (
-                    <li key={index} className="flex items-start gap-1">
-                      <span className="text-emerald-500 mt-0.5">•</span>
-                      <span>{achievement}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-);
+            <ul className="mt-3 space-y-1.5">
+              {t(job.achievements).map((a) => (
+                <li key={a} className="flex gap-2 text-sm text-neutral-600 dark:text-neutral-400">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-500" />
+                  <span>{a}</span>
+                </li>
+              ))}
+            </ul>
 
-// Define the type for the array of timeline data
-interface TimelineData {
-  title: string;
-  company: string;
-  description: string;
-  from: string;
-  to: string;
-  logoPath?: string;
-  technologies?: string[];
-  achievements?: string[];
-}
-
-// Static data for the timeline
-const timelineData: TimelineData[] = [
-  {
-    title: "Security Governance Analyst – Systems & Information Security",
-    company: "Santé Québec",
-    logoPath: "/assets/sante-quebec.png",
-    description:
-      "Security governance for Canada's largest public healthcare network (30 institutions, 325,000+ staff), across complex multi-site information systems used by thousands of clinical and administrative users.",
-    from: "07/2026",
-    to: "Present",
-    technologies: [
-      "NIST CSF",
-      "NIST SP 800-53",
-      "ISO 27001/27002",
-      "Risk Management",
-      "Compliance",
-      "Requirements Analysis",
-      "Technical Documentation",
-    ],
-    achievements: [
-      "Analyze security, governance and compliance requirements for complex, multi-site digital solutions",
-      "Author security governance deliverables: management frameworks, policies, directives and procedures",
-      "Apply NIST (CSF, 800-53) and ISO 27001/27002 to structure system controls, assess risk and define compliance requirements",
-    ],
-  },
-  {
-    title: "Software Engineer Intern – UI Engine Programmer",
-    company: "Ubisoft Montreal",
-    logoPath: "/assets/ubisoft.png",
-    description:
-      "Shipped production C++ features inside Anvil/Scimitar, Ubisoft's proprietary engine powering Rainbow Six Siege and Skull and Bones.",
-    from: "05/2025",
-    to: "08/2025",
-    technologies: [
-      "C++",
-      "Anvil/Scimitar Engine",
-      "UI Frameworks",
-      "Performance Optimization",
-      "Regression Testing",
-      "CI/CD",
-    ],
-    achievements: [
-      "Shipped production C++ features in the UI framework used by Rainbow Six Siege and Skull and Bones, deployed in 30+ countries",
-      "Built an automated error-detection and reporting tool in C++ that reduced bug triage time for 200+ developers across international studios",
-      "Developed performance-optimization utilities and ran functional and regression testing on active AAA titles",
-    ],
-  },
-  {
-    title: "IT Project Coordination & Systems Analysis Intern",
-    company: "CIUSSS / CHUS – University Hospital",
-    logoPath: "/assets/chus.jpg",
-    description:
-      "Coordinated IT projects for a 20,000+ employee healthcare organization, from requirements analysis to vendor follow-up.",
-    from: "09/2024",
-    to: "12/2024",
-    technologies: [
-      "Systems Analysis",
-      "Requirements Analysis",
-      "Enterprise IT",
-      "Healthcare Compliance",
-      "Vendor Management",
-    ],
-    achievements: [
-      "Coordinated the full IT project lifecycle: requirements, vendors, resources, timelines and compliance documentation",
-      "Produced technical analyses and requirements documentation",
-      "Supported cross-functional clinical and IT teams on enterprise-scale systems",
-    ],
-  },
-  {
-    title: "Software Development Intern",
-    company: "HumanWare",
-    logoPath: "/assets/humanware.png",
-    description:
-      "Built accessibility software for low-vision users in C# within an Agile Scrum team.",
-    from: "01/2024",
-    to: "04/2024",
-    technologies: [
-      "C#",
-      ".NET",
-      "MVVM",
-      "OCR",
-      "Image Processing",
-      "Cross-platform Development",
-      "Agile/Scrum",
-    ],
-    achievements: [
-      "Integrated camera systems, OCR and real-time image processing on constrained hardware using MVVM",
-      "Delivered cross-platform features end-to-end, meeting sprint commitments",
-      "Contributed to code reviews within the Scrum team",
-    ],
-  },
-];
-
-// Main Timeline component
-const ExperienceSection: React.FC = () => (
-  <div className="pt-5" id="experience">
-    <h1 className="text-3xl font-bold mb-2">EXPERIENCE</h1>
-    <p className="text-gray-600 dark:text-gray-400 mb-6">
-      My professional journey and key accomplishments
-    </p>
-    <section className="p-3 md:p-6 bg-gradient-to-b max-w-4xl mx-auto transition-colors duration-300">
-      <div className="space-y-6 border-l-2 border-dotted border-gray-300 dark:border-gray-600 pl-6 py-3 rounded-2xl">
-        {timelineData.map((item, index) => (
-          <TimelineItem key={index} {...item} />
+            <div className="mt-4 flex flex-wrap gap-1.5">
+              {job.technologies.map((tech) => (
+                <span
+                  key={tech}
+                  className="px-2 py-0.5 border border-emerald-300 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300 text-xs rounded-full"
+                >
+                  {tech}
+                </span>
+              ))}
+            </div>
+          </article>
         ))}
-      </div>
+      </Slider>
     </section>
-  </div>
-);
-
-export default ExperienceSection;
+  );
+}

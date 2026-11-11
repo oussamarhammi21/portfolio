@@ -28,7 +28,7 @@ const page = (element: JSX.Element) => (
   <Suspense
     fallback={
       <div className="min-h-[60vh] flex items-center justify-center text-neutral-500">
-        Loading…
+        …
       </div>
     }
   >
@@ -42,7 +42,14 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home /> },
       { path: "/stats", element: page(<Stats />) },
-      { path: "/contact", element: page(<Contact />) },
+      {
+        path: "/contact",
+        element: (
+          <main className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+            <Contact />
+          </main>
+        ),
+      },
       { path: "/resume", element: page(<Resume />) },
       { path: "/java-interview-question-answers", element: page(<JavaQA />) },
       { path: "/devtools", element: page(<DevToolsPage />) },
@@ -61,6 +68,14 @@ const router = createBrowserRouter([
       { path: "*", element: page(<NotFoundPage />) },
     ],
   },
-]);
+], {
+  future: {
+    v7_relativeSplatPath: true,
+    v7_fetcherPersist: true,
+    v7_normalizeFormMethod: true,
+    v7_partialHydration: true,
+    v7_skipActionErrorRevalidation: true,
+  },
+});
 
 export default router;

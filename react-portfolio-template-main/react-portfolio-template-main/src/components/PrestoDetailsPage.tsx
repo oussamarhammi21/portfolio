@@ -1,241 +1,89 @@
-// components/PrestoDetailsPage.tsx
-import { ArrowLeft, ExternalLink } from "lucide-react";
-import { useState } from "react";
-import {
-  FaBoxes,
-  FaCalculator,
-  FaClipboardList,
-  FaGlobe,
-  FaHandshake,
-  FaSlidersH,
-} from "react-icons/fa";
-import { SiReact, SiSupabase } from "react-icons/si";
-import { Link } from "react-router-dom";
-import ImageLightbox from "./ImageLightbox";
-import { Button } from "./ui/button";
+import { FaBoxes, FaCalculator, FaClipboardList, FaGlobe, FaHandshake, FaSlidersH } from "react-icons/fa";
+import ProjectDetailLayout, { type ProjectDetail } from "./ProjectDetailLayout";
 
-const presto = {
-  title: "Tarif – Service Business Manager",
-  subtitle: "Configurable management PWA for small service teams · in production at Installation Presto",
-  longDescription: `A generic management app for small service businesses run by a few partners. Everything is
-    configured from a settings page: company name, partners and their join dates, how the margin is split,
-    default prices, inventory, extras, travel zones and the quote messages in French and English. It covers the
-    whole cycle: a public request page for clients, an inbox, a quote builder, job tracking and full partner
-    accounting. Its first deployment is Installation Presto, the TV-mounting business I co-founded,
-    where it has been used for every job since launch.`,
-  role: "Co-founder & Full-Stack Developer",
-  duration: "Personal project • 2026 – Present",
-  liveUrl: "https://www.installationpresto.ca/",
-  video: "/assets/tarif/demo.mp4",
-  poster: "/assets/tarif/poster.jpg",
+const presto: ProjectDetail = {
+  title: "Tarif",
+  tagline: {
+    en: "Management PWA for small service teams, in production at Installation Presto",
+    fr: "PWA de gestion pour petites équipes de service, en production chez Installation Presto",
+  },
+  description: {
+    en: [
+      "A management app for small service businesses run by a few partners. Everything is set from a settings page: company name, partners and their start dates, margin split, default prices, inventory, extras, travel zones and the quote messages in French and English.",
+      "It covers the whole cycle: a public request page for clients, an inbox, a quote builder, job tracking and partner accounting. Its first deployment is Installation Presto, the TV mounting business I co-founded, where it has been used for every job since launch.",
+    ],
+    fr: [
+      "Une application de gestion pour petites entreprises de service menées par quelques associés. Tout se règle dans une page de paramètres : nom de l'entreprise, associés et leur date d'arrivée, partage de la marge, prix par défaut, inventaire, extras, zones de déplacement et messages de soumission en français et en anglais.",
+      "Elle couvre tout le cycle : page de demande publique pour les clients, boîte de réception, création de soumissions, suivi des jobs et comptabilité entre associés. Son premier déploiement est Installation Presto, l'entreprise d'installation de télés que j'ai cofondée, où elle sert à chaque job depuis le lancement.",
+    ],
+  },
+  facts: [
+    { label: { en: "Role", fr: "Rôle" }, value: { en: "Co-founder and full-stack developer", fr: "Cofondateur et développeur full-stack" } },
+    { label: { en: "Period", fr: "Période" }, value: { en: "2026 to today", fr: "2026 à aujourd'hui" } },
+    { label: { en: "Status", fr: "Statut" }, value: { en: "In production", fr: "En production" } },
+  ],
+  link: { href: "https://www.installationpresto.ca/", label: { en: "Installation Presto website", fr: "Site d'Installation Presto" } },
+  video: {
+    src: "/assets/tarif/demo.mp4",
+    poster: "/assets/tarif/poster.jpg",
+    caption: {
+      en: "A 45 second tour: requests, quotes, jobs, money, settings and the public request page. Demo data: names and amounts are fictional.",
+      fr: "Une visite de 45 secondes : demandes, soumissions, jobs, argent, paramètres et page de demande publique. Données de démo : les noms et montants sont fictifs.",
+    },
+  },
   screens: [
-    { src: "/assets/tarif/requests.jpg", title: "Requests", desc: "Every detail of a client request, one tap to price it" },
-    { src: "/assets/tarif/quote.jpg", title: "Quote", desc: "Live margin and a ready-to-send message in the client's language" },
-    { src: "/assets/tarif/jobs.jpg", title: "Jobs", desc: "Who was on site, who collected the payment, each partner's share" },
-    { src: "/assets/tarif/money.jpg", title: "Money", desc: "Cash in and out, and who owes whom" },
-    { src: "/assets/tarif/partners.jpg", title: "Partner balances", desc: "What each partner earned, paid and is owed" },
-    { src: "/assets/tarif/settings.jpg", title: "Settings", desc: "Partners, work share and default prices" },
-    { src: "/assets/tarif/inventory.jpg", title: "Inventory", desc: "Stock, purchase history and alert thresholds" },
-    { src: "/assets/tarif/public.jpg", title: "Public request page", desc: "The one-minute form clients fill in" },
-    { src: "/assets/tarif/sent.jpg", title: "Request sent", desc: "The price comes back by text" },
+    { src: "/assets/tarif/requests.jpg", title: { en: "Requests", fr: "Demandes" }, desc: { en: "Every detail of a request, one tap to price it", fr: "Tous les détails d'une demande, un geste pour la chiffrer" } },
+    { src: "/assets/tarif/quote.jpg", title: { en: "Quote", fr: "Soumission" }, desc: { en: "Live margin and a ready message in the client's language", fr: "Marge en direct et message prêt dans la langue du client" } },
+    { src: "/assets/tarif/jobs.jpg", title: { en: "Jobs", fr: "Jobs" }, desc: { en: "Who was on site, who got paid, each partner's share", fr: "Qui était sur place, qui a encaissé, la part de chacun" } },
+    { src: "/assets/tarif/money.jpg", title: { en: "Money", fr: "Argent" }, desc: { en: "Cash in and out, and who owes whom", fr: "Entrées, sorties et qui doit quoi à qui" } },
+    { src: "/assets/tarif/partners.jpg", title: { en: "Partner balances", fr: "Soldes des associés" }, desc: { en: "What each partner earned, paid and is owed", fr: "Ce que chaque associé a gagné, payé et doit recevoir" } },
+    { src: "/assets/tarif/settings.jpg", title: { en: "Settings", fr: "Paramètres" }, desc: { en: "Partners, work share and default prices", fr: "Associés, part du travail et prix par défaut" } },
+    { src: "/assets/tarif/inventory.jpg", title: { en: "Inventory", fr: "Inventaire" }, desc: { en: "Stock, purchases and alert thresholds", fr: "Stock, achats et seuils d'alerte" } },
+    { src: "/assets/tarif/public.jpg", title: { en: "Public request page", fr: "Page de demande publique" }, desc: { en: "The one minute form clients fill in", fr: "Le formulaire d'une minute rempli par les clients" } },
+    { src: "/assets/tarif/sent.jpg", title: { en: "Request sent", fr: "Demande envoyée" }, desc: { en: "The price comes back by text", fr: "Le prix revient par texto" } },
   ],
-  backendStack: ["Supabase (PostgreSQL)", "Supabase Auth", "Supabase Storage", "Vercel"],
-  frontendStack: ["React 19", "TypeScript", "Vite", "PWA (vite-plugin-pwa)", "i18n FR / EN"],
+  stack: {
+    backend: ["Supabase (PostgreSQL)", "Supabase Auth", "Supabase Storage", "Vercel"],
+    frontend: ["React 19", "TypeScript", "Vite", "PWA (vite-plugin-pwa)", "i18n FR / EN"],
+  },
   features: [
-    { icon: <FaSlidersH />, title: "Fully Configurable", desc: "Company, partners, margin split, default prices, inventory, extras, travel zones and message templates are all set in the app. Config can be exported and imported.", color: "purple" },
-    { icon: <FaGlobe />, title: "Public Request Page", desc: "Bilingual form where clients describe the job, pick options and a time slot, and upload a photo. Requests land in an inbox with an app-icon badge.", color: "blue" },
-    { icon: <FaCalculator />, title: "Quote Builder", desc: "Price lines, extras, travel and free lines with live margin. The client message is generated from templates in the client's language.", color: "emerald" },
-    { icon: <FaClipboardList />, title: "Jobs & Payouts", desc: "Each job records who was on site and who collected the money; each partner's share is computed automatically.", color: "cyan" },
-    { icon: <FaHandshake />, title: "Partner Accounting", desc: "Cash in and out, expenses by category, transfers between partners and a running balance of who owes whom.", color: "rose" },
-    { icon: <FaBoxes />, title: "Inventory & Assets", desc: "Stock with purchase history, cost computed from purchases and low-stock alerts. Tools and unsold stock are tracked as shared assets.", color: "amber" },
+    { icon: <FaSlidersH />, title: { en: "Fully configurable", fr: "Entièrement configurable" }, desc: { en: "Company, partners, margin split, prices, inventory, extras, travel zones and message templates are set in the app, with export and import.", fr: "Entreprise, associés, partage de marge, prix, inventaire, extras, zones et modèles de messages se règlent dans l'app, avec export et import." } },
+    { icon: <FaGlobe />, title: { en: "Public request page", fr: "Page de demande publique" }, desc: { en: "Bilingual form where clients describe the job, pick options and a time slot and add a photo. Requests land in an inbox with a badge.", fr: "Formulaire bilingue où le client décrit le job, choisit ses options et une plage horaire et ajoute une photo. La demande arrive dans une boîte avec un badge." } },
+    { icon: <FaCalculator />, title: { en: "Quote builder", fr: "Création de soumissions" }, desc: { en: "Price lines, extras, travel and free lines with live margin. The client message comes from templates in the client's language.", fr: "Lignes de prix, extras, déplacement et lignes libres avec marge en direct. Le message au client vient de modèles dans sa langue." } },
+    { icon: <FaClipboardList />, title: { en: "Jobs and payouts", fr: "Jobs et paiements" }, desc: { en: "Each job records who was on site and who collected the money; each partner's share is computed automatically.", fr: "Chaque job note qui était sur place et qui a encaissé; la part de chaque associé est calculée automatiquement." } },
+    { icon: <FaHandshake />, title: { en: "Partner accounting", fr: "Comptabilité entre associés" }, desc: { en: "Cash in and out, expenses by category, transfers between partners and a running balance of who owes whom.", fr: "Entrées et sorties, dépenses par catégorie, transferts entre associés et solde courant de qui doit quoi." } },
+    { icon: <FaBoxes />, title: { en: "Inventory and assets", fr: "Inventaire et actifs" }, desc: { en: "Stock with purchase history, cost from purchases and low stock alerts. Tools and unsold stock are tracked as shared assets.", fr: "Stock avec historique d'achats, coût calculé à partir des achats et alertes de stock bas. Outils et stock invendu suivis comme actifs communs." } },
   ],
-  challenges: [
-    "Making one app fit any small service business without code changes",
-    "Several partners editing the same data from their phones at the same time",
-    "Staying usable on a job site with a weak or no connection",
-    "Splitting profits fairly when partners join later and tools are bought by different people",
-  ],
-  solutions: [
-    "Everything business-specific lives in a versioned, exportable configuration edited from the settings page",
-    "Optimistic concurrency: each save checks a version number and reloads instead of overwriting a partner's work",
-    "Local cache shown instantly at startup, with debounced background sync to Supabase",
-    "Framework-free calculation module: work share per job, shared pot, join dates, tools kept out of job costs",
-  ],
-};
-
-const colorMap: Record<string, string> = {
-  purple: "from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border-purple-100 dark:border-purple-800/30 text-purple-600 dark:text-purple-400",
-  blue:   "from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border-blue-100 dark:border-blue-800/30 text-blue-600 dark:text-blue-400",
-  emerald:"from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-100 dark:border-emerald-800/30 text-emerald-600 dark:text-emerald-400",
-  amber:  "from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-100 dark:border-amber-800/30 text-amber-600 dark:text-amber-400",
-  rose:   "from-rose-50 to-orange-50 dark:from-rose-900/20 dark:to-orange-900/20 border-rose-100 dark:border-rose-800/30 text-rose-600 dark:text-rose-400",
-  cyan:   "from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 border-cyan-100 dark:border-cyan-800/30 text-cyan-600 dark:text-cyan-400",
+  challenges: {
+    en: [
+      "Making one app fit any small service business without code changes",
+      "Several partners editing the same data from their phones at the same time",
+      "Staying usable on a job site with a weak or no connection",
+      "Splitting profits fairly when partners join later and tools are bought by different people",
+    ],
+    fr: [
+      "Adapter une seule app à n'importe quelle petite entreprise de service sans toucher au code",
+      "Plusieurs associés qui modifient les mêmes données depuis leur téléphone en même temps",
+      "Rester utilisable sur un chantier avec peu ou pas de réseau",
+      "Partager les profits équitablement quand des associés arrivent plus tard et que les outils sont achetés par différentes personnes",
+    ],
+  },
+  solutions: {
+    en: [
+      "Everything business specific lives in a versioned, exportable configuration edited from the settings page",
+      "Optimistic concurrency: each save checks a version number and reloads instead of overwriting a partner's work",
+      "Local cache shown instantly at startup, with debounced background sync to Supabase",
+      "A framework free calculation module: work share per job, shared pot, start dates, tools kept out of job costs",
+    ],
+    fr: [
+      "Tout ce qui est propre à l'entreprise vit dans une configuration versionnée et exportable, modifiée depuis les paramètres",
+      "Concurrence optimiste : chaque sauvegarde vérifie un numéro de version et recharge au lieu d'écraser le travail d'un associé",
+      "Cache local affiché dès l'ouverture, avec synchronisation en arrière-plan vers Supabase",
+      "Un module de calcul indépendant du framework : part du travail par job, pot commun, dates d'arrivée, outils exclus du coût des jobs",
+    ],
+  },
 };
 
 export default function PrestoDetailsPage() {
-  const [openImage, setOpenImage] = useState<number | null>(null);
-
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-black py-10">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-
-        {/* Nav */}
-        <div className="mb-8">
-          <Link to="/#projects">
-            <Button variant="ghost" className="mb-6">
-              <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Projects
-            </Button>
-          </Link>
-        </div>
-
-        {/* Header */}
-        <div className="mb-10">
-          <h1 className="text-3xl sm:text-4xl font-bold mb-2 text-gray-900 dark:text-white">{presto.title}</h1>
-          <p className="text-xl text-emerald-600 dark:text-emerald-400 mb-4">{presto.subtitle}</p>
-          <p className="text-lg text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
-            {presto.longDescription}
-          </p>
-          <div className="flex flex-wrap gap-4 items-center">
-            <div className="bg-blue-100 dark:bg-blue-900/30 px-4 py-2 rounded-lg">
-              <span className="font-semibold text-blue-700 dark:text-blue-300">Role:</span>
-              <span className="ml-2 text-gray-700 dark:text-gray-300">{presto.role}</span>
-            </div>
-            <div className="bg-emerald-100 dark:bg-emerald-900/30 px-4 py-2 rounded-lg">
-              <span className="font-semibold text-emerald-700 dark:text-emerald-300">Duration:</span>
-              <span className="ml-2 text-gray-700 dark:text-gray-300">{presto.duration}</span>
-            </div>
-
-          </div>
-        </div>
-
-        {/* Video */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-200">Project Showcase</h2>
-          <div className="aspect-video bg-gray-900 rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10">
-            <video controls playsInline preload="metadata" poster={presto.poster} className="w-full h-full">
-              <source src={presto.video} type="video/mp4" />
-            </video>
-          </div>
-          <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-3 italic">
-            A tour of the app in 45 seconds: requests, quotes, jobs, money, settings and the public request page.
-            Demo data: names and amounts are fictional. The management app runs in French; its UI was translated to English for this demo.
-          </p>
-        </div>
-
-        {/* Screens */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-200">Screens</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6">
-            {presto.screens.map((sc, idx) => (
-              <figure key={sc.src} className="flex flex-col items-center text-center">
-                <button
-                  type="button"
-                  onClick={() => setOpenImage(idx)}
-                  aria-label={`Enlarge: ${sc.title}`}
-                  className="block w-full max-w-[200px] rounded-[1.75rem] focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
-                >
-                  <img
-                    src={sc.src}
-                    alt={sc.title}
-                    loading="lazy"
-                    className="w-full rounded-[1.75rem] border-[6px] border-gray-800 shadow-xl transition-transform hover:scale-[1.03] cursor-zoom-in"
-                  />
-                </button>
-                <figcaption className="mt-3">
-                  <div className="font-semibold text-gray-800 dark:text-gray-200">{sc.title}</div>
-                  <div className="text-sm text-gray-500 dark:text-gray-400">{sc.desc}</div>
-                </figcaption>
-              </figure>
-            ))}
-          </div>
-          <ImageLightbox images={presto.screens} index={openImage} onIndexChange={setOpenImage} />
-        </div>
-
-        {/* Tech Stack */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-200">Technology Stack</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-              <div className="flex items-center gap-3 mb-4">
-                <SiSupabase className="text-2xl text-emerald-600 dark:text-emerald-400" />
-                <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Backend</h3>
-              </div>
-              <ul className="space-y-2">
-                {presto.backendStack.map((tech, idx) => (
-                  <li key={idx} className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-emerald-500 rounded-full" />
-                    <span className="text-gray-700 dark:text-gray-300">{tech}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg">
-              <div className="flex items-center gap-3 mb-4">
-                <SiReact className="text-2xl text-cyan-600 dark:text-cyan-400" />
-                <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-200">Frontend</h3>
-              </div>
-              <ul className="space-y-2">
-                {presto.frontendStack.map((tech, idx) => (
-                  <li key={idx} className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-cyan-500 rounded-full" />
-                    <span className="text-gray-700 dark:text-gray-300">{tech}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
-
-        {/* Features */}
-        <div className="mb-12">
-          <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-gray-200">Key Features</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {presto.features.map((f, idx) => {
-              const colors = colorMap[f.color].split(" ");
-              const gradientBg = `bg-gradient-to-br ${colors[0]} ${colors[1]} ${colors[2]} ${colors[3]}`;
-              const border = `border ${colors[4]} ${colors[5]}`;
-              const iconColor = colors[6];
-              return (
-                <div key={idx} className={`${gradientBg} ${border} p-5 rounded-xl`}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className={`text-xl ${iconColor}`}>{f.icon}</span>
-                    <h3 className="font-semibold text-gray-800 dark:text-gray-200">{f.title}</h3>
-                  </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">{f.desc}</p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-
-        {/* Challenges & Solutions */}
-        <div className="mb-12 grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div className="bg-gradient-to-br from-rose-50 to-orange-50 dark:from-rose-900/10 dark:to-orange-900/10 p-6 rounded-xl border border-rose-100 dark:border-rose-800/30">
-            <h3 className="text-xl font-bold mb-4 text-rose-600 dark:text-rose-400">Challenges</h3>
-            <ul className="space-y-3">
-              {presto.challenges.map((c, idx) => (
-                <li key={idx} className="flex items-start gap-3">
-                  <div className="mt-1 w-2 h-2 bg-rose-500 rounded-full flex-shrink-0" />
-                  <span className="text-gray-700 dark:text-gray-300">{c}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/10 dark:to-teal-900/10 p-6 rounded-xl border border-emerald-100 dark:border-emerald-800/30">
-            <h3 className="text-xl font-bold mb-4 text-emerald-600 dark:text-emerald-400">Solutions</h3>
-            <ul className="space-y-3">
-              {presto.solutions.map((s, idx) => (
-                <li key={idx} className="flex items-start gap-3">
-                  <div className="mt-1 w-2 h-2 bg-emerald-500 rounded-full flex-shrink-0" />
-                  <span className="text-gray-700 dark:text-gray-300">{s}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  return <ProjectDetailLayout project={presto} />;
 }

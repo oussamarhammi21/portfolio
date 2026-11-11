@@ -1,262 +1,205 @@
 import { Link } from "react-router-dom";
-import { Card, CardContent, CardHeader } from "./ui/card";
-import { FiCode, FiSearch, FiStar } from "react-icons/fi";
+import { useState } from "react";
+import { FiCode, FiSearch } from "react-icons/fi";
 import { GiLogicGateXor } from "react-icons/gi";
 import { PiHashStraightFill } from "react-icons/pi";
 import { LuFileJson } from "react-icons/lu";
 import { SiJsonwebtokens } from "react-icons/si";
 import { MdQrCode, MdQrCodeScanner } from "react-icons/md";
 import { BiTime } from "react-icons/bi";
-import { CometCard } from "./ui/comet-card";
 import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
-import { useState } from "react";
-import { settings } from "@/config/settings";
-const tools = [
+import Slider, { SectionHeader } from "./Slider";
+import { useI18n, type Bi } from "@/i18n/LanguageProvider";
+import { cn } from "@/lib/utils";
+
+type Category = "programming" | "data" | "encoding" | "security" | "utilities";
+
+const categoryLabel: Record<Category, Bi> = {
+  programming: { en: "Programming", fr: "Programmation" },
+  data: { en: "Data", fr: "Données" },
+  encoding: { en: "Encoding", fr: "Encodage" },
+  security: { en: "Security", fr: "Sécurité" },
+  utilities: { en: "Utilities", fr: "Utilitaires" },
+};
+
+const iconClass = "text-3xl text-emerald-600";
+
+const tools: { name: Bi; description: Bi; link: string; icon: JSX.Element; category: Category; tags: string[]; beta?: boolean }[] = [
   {
-    name: "Algorithm Complexity Analyzer",
-    description: "Analyze time and space complexity of algorithms",
-    link: "/algorithm-complexity-analyzer",
-    icon: <BiTime className="inline-block text-3xl text-emerald-600" />,
-    category: "Programming",
-    tags: ["algorithm", "complexity", "big-o", "performance", "analysis"],
-    popular: true,
-    inDevelopment: true,
-  },
-  {
-    name: "JSON Formatter & Viewer",
-    description: "Format, validate and view JSON data",
+    name: { en: "JSON Formatter", fr: "Formateur JSON" },
+    description: { en: "Format, validate and explore JSON", fr: "Formater, valider et explorer du JSON" },
     link: "/json-formatter",
-    icon: <LuFileJson className="inline-block text-3xl text-emerald-600" />,
-    category: "Data Processing",
+    icon: <LuFileJson className={iconClass} />,
+    category: "data",
     tags: ["json", "format", "validate"],
-    popular: true,
-    inDevelopment: false,
   },
   {
-    name: "Base64 Encoder/Decoder",
-    description: "Encode and decode Base64 strings",
+    name: { en: "Base64 Encoder / Decoder", fr: "Encodeur / décodeur Base64" },
+    description: { en: "Encode and decode Base64 text", fr: "Encoder et décoder du texte en Base64" },
     link: "/base64-tool",
-    icon: <FiCode className="inline-block text-3xl text-emerald-600" />,
-    category: "Encoding",
+    icon: <FiCode className={iconClass} />,
+    category: "encoding",
     tags: ["base64", "encode", "decode"],
-    popular: true,
-    inDevelopment: false,
   },
   {
-    name: "JWT Decoder",
-    description: "Decode and analyze JWT tokens",
+    name: { en: "JWT Decoder", fr: "Décodeur JWT" },
+    description: { en: "Read the header and claims of a JWT, in your browser", fr: "Lire l'en-tête et les claims d'un JWT, dans ton navigateur" },
     link: "/jwt-decoder",
-    icon: (
-      <SiJsonwebtokens className="inline-block text-3xl text-emerald-600" />
-    ),
-    category: "Security",
-    tags: ["jwt", "token", "security"],
-    popular: false,
-    inDevelopment: false,
+    icon: <SiJsonwebtokens className={iconClass} />,
+    category: "security",
+    tags: ["jwt", "token"],
   },
   {
-    name: "Bitwise Visualizer",
-    description: "Visualize bitwise operations",
-    link: "/bitwise-visualizer",
-    icon: <GiLogicGateXor className="inline-block text-3xl text-emerald-600" />,
-    category: "Programming",
-    tags: ["bitwise", "binary", "operations"],
-    popular: false,
-    inDevelopment: false,
-  },
-  {
-    name: "Hash Generator",
-    description: "Generate MD5, SHA1, SHA256 hashes",
+    name: { en: "Hash Generator", fr: "Générateur de hachage" },
+    description: { en: "MD5, SHA-1 and SHA-256 hashes", fr: "Empreintes MD5, SHA-1 et SHA-256" },
     link: "/hash-generator",
-    icon: (
-      <PiHashStraightFill className="inline-block text-3xl text-emerald-600" />
-    ),
-    category: "Security",
+    icon: <PiHashStraightFill className={iconClass} />,
+    category: "security",
     tags: ["hash", "md5", "sha256"],
-    popular: false,
-    inDevelopment: false,
   },
   {
-    name: "QR Code Generator",
-    description: "Generate QR codes for text, URLs, and more",
+    name: { en: "Bitwise Visualizer", fr: "Visualiseur bit à bit" },
+    description: { en: "See bitwise operations bit by bit", fr: "Voir les opérations bit à bit, bit par bit" },
+    link: "/bitwise-visualizer",
+    icon: <GiLogicGateXor className={iconClass} />,
+    category: "programming",
+    tags: ["bitwise", "binary"],
+  },
+  {
+    name: { en: "Algorithm Complexity Analyzer", fr: "Analyseur de complexité" },
+    description: { en: "Estimate time and space complexity", fr: "Estimer la complexité en temps et en espace" },
+    link: "/algorithm-complexity-analyzer",
+    icon: <BiTime className={iconClass} />,
+    category: "programming",
+    tags: ["algorithm", "complexity", "big-o"],
+    beta: true,
+  },
+  {
+    name: { en: "QR Code Generator", fr: "Générateur de code QR" },
+    description: { en: "QR codes for text, links and more", fr: "Codes QR pour du texte, des liens et plus" },
     link: "/qr-generator",
-    icon: <MdQrCode className="inline-block text-3xl text-emerald-600" />,
-    category: "Utilities",
-    tags: ["qr", "code", "generator"],
-    popular: true,
-    inDevelopment: false,
+    icon: <MdQrCode className={iconClass} />,
+    category: "utilities",
+    tags: ["qr", "generator"],
   },
   {
-    name: "QR Code Scanner",
-    description: "Scan QR codes using camera or image upload",
+    name: { en: "QR Code Scanner", fr: "Lecteur de code QR" },
+    description: { en: "Scan with your camera or an image", fr: "Scanner avec la caméra ou une image" },
     link: "/qr-scanner",
-    icon: (
-      <MdQrCodeScanner className="inline-block text-3xl text-emerald-600" />
-    ),
-    category: "Utilities",
+    icon: <MdQrCodeScanner className={iconClass} />,
+    category: "utilities",
     tags: ["qr", "scanner", "camera"],
-    popular: false,
-    inDevelopment: false,
   },
 ];
-export default function ToolsForDev() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
 
-  // Filter tools based on search query and selected category
-  const filteredTools = tools.filter((tool) => {
-    const matchesSearch =
-      tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tool.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tool.tags.some((tag) =>
-        tag.toLowerCase().includes(searchQuery.toLowerCase())
+function ToolCard({ tool }: { tool: (typeof tools)[number] }) {
+  const { t } = useI18n();
+  return (
+    <Link
+      to={tool.link}
+      className="group relative h-full flex flex-col items-center text-center gap-2 rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/60 p-5 shadow-sm hover:border-emerald-300 dark:hover:border-emerald-700 hover:shadow-md transition-all"
+    >
+      {tool.beta && (
+        <Badge className="absolute top-2 right-2 bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-100 text-[10px]">
+          Beta
+        </Badge>
+      )}
+      <span className="transition-transform group-hover:scale-110">{tool.icon}</span>
+      <span className="font-semibold text-sm leading-tight group-hover:text-emerald-600">{t(tool.name)}</span>
+      <span className="text-xs text-neutral-500 dark:text-neutral-400">{t(tool.description)}</span>
+      <Badge variant="secondary" className="mt-auto text-[10px]">
+        {t(categoryLabel[tool.category])}
+      </Badge>
+    </Link>
+  );
+}
+
+/** "slider" on the home page, searchable "grid" on /devtools. */
+export default function ToolsForDev({ variant = "grid" }: { variant?: "slider" | "grid" }) {
+  const { t } = useI18n();
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState<Category | "all">("all");
+
+  const header = (
+    <SectionHeader
+      id="devtools"
+      title={t({ en: "Dev tools", fr: "Outils pour développeurs" })}
+      subtitle={t({
+        en: "Free tools that run in your browser. Nothing you paste is sent anywhere.",
+        fr: "Outils gratuits qui roulent dans ton navigateur. Rien de ce que tu colles n'est envoyé ailleurs.",
+      })}
+    />
+  );
+
+  if (variant === "slider") {
+    return (
+      <section id="devtools" aria-labelledby="devtools-title" className="py-12">
+        {header}
+        <Slider
+          label={t({ en: "Dev tools", fr: "Outils pour développeurs" })}
+          itemClassName="basis-[70%] sm:basis-[calc((100%-2rem)/3)] lg:basis-[calc((100%-3rem)/4)]"
+        >
+          {tools.map((tool) => (
+            <ToolCard key={tool.link} tool={tool} />
+          ))}
+        </Slider>
+      </section>
+    );
+  }
+
+  const q = query.trim().toLowerCase();
+  const filtered = tools.filter((tool) => {
+    const matchesQuery =
+      !q ||
+      [tool.name.en, tool.name.fr, tool.description.en, tool.description.fr, ...tool.tags].some((s) =>
+        s.toLowerCase().includes(q)
       );
-
-    const matchesCategory =
-      selectedCategory === "All" || tool.category === selectedCategory;
-
-    return matchesSearch && matchesCategory;
+    return matchesQuery && (category === "all" || tool.category === category);
   });
-
-  // Get unique categories
-  const categories = ["All", ...new Set(tools.map((tool) => tool.category))];
+  const categories = ["all", ...new Set(tools.map((tool) => tool.category))] as (Category | "all")[];
 
   return (
-    <div id="devtools">
-      <section className="p-4 md:p-8 bg-gradient-to-b max-w-6xl mx-auto transition-colors duration-300">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4">DEV TOOLS</h1>
-          <p className="text-gray-600 dark:text-gray-400 mb-6">
-            A collection of essential tools to enhance your development workflow
-            and boost productivity.
-          </p>
-
-          {/* Search Bar */}
-          {settings.devTools.enableSearch && (
-            <div className="relative mb-6">
-              <FiSearch
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                size={20}
-              />
-              <Input
-                type="text"
-                placeholder="Search tools... (e.g., json, encode, qr)"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 w-full max-w-md"
-              />
-            </div>
-          )}
-
-          {/* Category Filters */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            <Badge variant="outline" className="text-sm">
-              {filteredTools.length}{" "}
-              {filteredTools.length === 1 ? "tool" : "tools"} available
-            </Badge>
-            {categories.map((category) => {
-              const count =
-                category === "All"
-                  ? tools.length
-                  : tools.filter((tool) => tool.category === category).length;
-              const isSelected = selectedCategory === category;
-
-              return (
-                <Badge
-                  key={category}
-                  variant={isSelected ? "default" : "secondary"}
-                  className={`text-xs cursor-pointer transition-colors hover:bg-emerald-100 hover:text-emerald-800 dark:hover:bg-emerald-900 dark:hover:text-emerald-100 ${
-                    isSelected ? "bg-emerald-600 text-white" : ""
-                  }`}
-                  onClick={() => setSelectedCategory(category)}
-                >
-                  {category}: {count}
-                </Badge>
-              );
-            })}
-          </div>
+    <section id="devtools" aria-labelledby="devtools-title" className="py-8 max-w-6xl mx-auto px-4 sm:px-6">
+      {header}
+      <div className="relative mb-4 max-w-md">
+        <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" size={18} />
+        <Input
+          type="search"
+          placeholder={t({ en: "Search: json, encode, qr…", fr: "Rechercher : json, encoder, qr…" })}
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="pl-10"
+          aria-label={t({ en: "Search tools", fr: "Rechercher un outil" })}
+        />
+      </div>
+      <div className="flex flex-wrap gap-2 mb-6">
+        {categories.map((c) => (
+          <button
+            key={c}
+            type="button"
+            onClick={() => setCategory(c)}
+            aria-pressed={category === c}
+            className={cn(
+              "rounded-full px-3 py-1 text-xs font-medium transition-colors",
+              category === c
+                ? "bg-emerald-600 text-white"
+                : "bg-neutral-100 dark:bg-neutral-800 hover:bg-emerald-100 dark:hover:bg-emerald-900"
+            )}
+          >
+            {c === "all" ? t({ en: "All", fr: "Tous" }) : t(categoryLabel[c])}
+          </button>
+        ))}
+      </div>
+      {filtered.length === 0 ? (
+        <p className="py-12 text-center text-neutral-500">{t({ en: "No tool found", fr: "Aucun outil trouvé" })}</p>
+      ) : (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {filtered.map((tool) => (
+            <ToolCard key={tool.link} tool={tool} />
+          ))}
         </div>
-
-        <div className="space-y-6 border-l-2 border-dotted border-emerald-300 pl-6 py-3 rounded-2xl">
-          {filteredTools.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500 dark:text-gray-400 text-lg mb-2">
-                No tools found
-              </p>
-              <p className="text-gray-400 dark:text-gray-500 text-sm">
-                Try adjusting your search query
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredTools.map((tool) => (
-                <Link
-                  key={tool.name}
-                  to={tool.link}
-                  className="block text-center mt-1"
-                  title={`${tool.name} - ${tool.description}`}
-                  rel="noopener noreferrer"
-                >
-                  <CometCard className="h-full">
-                    <Card className="shadow-sm hover:text-emerald-600 transition-all duration-300 border-neutral-200 dark:border-neutral-800 h-full group relative flex flex-col min-h-[200px]">
-                      {/* Popular Badge */}
-                      {tool.popular && (
-                        <Badge
-                          title="Popular"
-                          className="absolute top-2 right-2 bg-emerald-100 text-emerald-800 dark:bg-emerald-900 hover:bg-emerald-200 dark:text-emerald-100 text-xs"
-                        >
-                          <FiStar size={12} />
-                        </Badge>
-                      )}
-
-                      {/* Beta Badge */}
-                      {tool.inDevelopment && (
-                        <Badge
-                          title="Beta"
-                          className={`absolute top-2 ${
-                            tool.popular ? "right-16" : "right-2"
-                          } bg-orange-100 text-orange-800 dark:bg-orange-900 hover:bg-orange-200 dark:text-orange-100 text-xs`}
-                        >
-                          Beta
-                        </Badge>
-                      )}
-
-                      <CardHeader className="font-semibold text-md flex flex-col items-center justify-center gap-2 p-6 flex-shrink-0">
-                        <div className="flex flex-col items-center justify-center gap-2">
-                          <div className="transition-transform duration-300 group-hover:scale-110 group-hover:rotate-3">
-                            {tool.icon}
-                          </div>
-                          <span className="text-center text-md font-semibold leading-tight">
-                            {tool.name}
-                          </span>
-                        </div>
-                      </CardHeader>
-
-                      {/* Description and Category */}
-                      {settings.devTools.showDescriptions && (
-                        <CardContent className="px-6 pb-4 flex-grow flex flex-col justify-between">
-                          <p className="text-xs text-gray-500 dark:text-gray-400 text-center mb-2 flex-grow">
-                            {tool.description}
-                          </p>
-                          <div className="flex justify-center mt-auto">
-                            <Badge
-                              variant="secondary"
-                              className="text-xs muted"
-                            >
-                              {tool.category}
-                            </Badge>
-                          </div>
-                        </CardContent>
-                      )}
-                    </Card>
-                  </CometCard>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
-      </section>
-    </div>
+      )}
+    </section>
   );
 }

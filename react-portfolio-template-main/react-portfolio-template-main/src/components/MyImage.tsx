@@ -32,12 +32,12 @@ const FloatingImage: React.FC<FloatingImageProps> = ({
     }
   }, [mainImage, altImage, showAlt]);
 
-  // Handle scroll-based parallax effect
+  // Handle scroll-based parallax effect (capped so the photo never drifts over the next section)
   useEffect(() => {
     const handleScroll = () => {
-      setScrollY(window.scrollY);
+      setScrollY(Math.min(window.scrollY, 400));
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -106,12 +106,12 @@ const FloatingImage: React.FC<FloatingImageProps> = ({
         {/* Main image */}
         <img
           src={currentSrc}
-          alt="Rhammi Oussama- Software Developer"
+          alt="Oussama Rhammi"
           width={384}
           height={384}
-          loading="lazy"
+          decoding="async"
           className={`
-                        relative z-10 w-96 h-96 object-cover rounded-2xl md:rounded-3xl 
+                        relative z-10 w-56 h-56 sm:w-72 sm:h-72 lg:w-96 lg:h-96 object-cover rounded-2xl md:rounded-3xl 
                         transition-all duration-500 
                         ${fade ? "blur-md grayscale" : "blur-0 grayscale-0"}
                         group-hover:brightness-110 group-hover:contrast-105

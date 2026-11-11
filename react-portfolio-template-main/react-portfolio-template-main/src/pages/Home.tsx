@@ -1,33 +1,21 @@
-import { TracingBeam } from "@/components/ui/tracing-beam";
-import SkillsSection from "@/components/SkillsSection";
-import AboutMe from "@/components/AboutMe";
-import ProjectsSection from "@/components/ProjectSection";
-import { TextReveal } from "@/components/magicui/text-reveal";
-import ExperienceSection from "@/components/Experience";
-import Contact from "./Contact";
-import ToolsForDev from "@/components/DevToolsSection";
 import HeroSection from "@/components/HeroSection";
-import { SiFuturelearn } from "react-icons/si";
-import { GiGroundbreaker } from "react-icons/gi";
+import AboutMe from "@/components/AboutMe";
+import ExperienceSection from "@/components/Experience";
+import SkillsSection from "@/components/SkillsSection";
+import ProjectsSection from "@/components/ProjectSection";
+import ToolsForDev from "@/components/DevToolsSection";
+import Contact from "./Contact";
 
 export default function Home(): JSX.Element {
   return (
-    <div>
+    <main className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8 overflow-x-clip">
       <HeroSection />
-      <TracingBeam className="px-6">
-        <AboutMe />
-        <ExperienceSection />
-        <SkillsSection />
-        <ProjectsSection />
-
-        <TextReveal>
-          I learn
-          <SiFuturelearn /> fast—mostly because I break
-          <GiGroundbreaker /> things faster.
-        </TextReveal>
-        <ToolsForDev />
-        <Contact />
-      </TracingBeam>
-    </div>
+      <AboutMe />
+      <ExperienceSection />
+      <ProjectsSection />
+      <SkillsSection />
+      <ToolsForDev variant="slider" />
+      <Contact />
+    </main>
   );
 }

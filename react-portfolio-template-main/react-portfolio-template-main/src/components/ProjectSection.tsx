@@ -1,288 +1,103 @@
-import { SiAngular, SiDotnet, SiFastapi, SiGithub, SiGoogleplay, SiNextdotjs, SiPwa, SiQuarkus, SiReact, SiSupabase } from "react-icons/si";
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
-import { GoLinkExternal } from "react-icons/go";
-import { CardContainer } from "./ui/3d-card";
-import { FaBrain, FaDatabase, FaLeaf, FaUsers, FaUserShield } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { FiArrowUpRight } from "react-icons/fi";
+import { SiAngular, SiDotnet } from "react-icons/si";
+import { Badge } from "./ui/badge";
+import Slider, { SectionHeader } from "./Slider";
+import { useI18n } from "@/i18n/LanguageProvider";
+import { projects, statusLabel, type ProjectItem, type ProjectStatus } from "@/content/projects";
+import { cn } from "@/lib/utils";
 
-interface ProjectCardProps {
-  title: string;
-  description: string;
-  techStack: string[];
-  imageUrl?: string;
-  icons?: JSX.Element[];
-  github?: string;
-  liveUrl?: string;
-  playstore?: string;
-  live?: boolean;
-  duration?: string;
-}
+const statusColor: Record<ProjectStatus, string> = {
+  production: "bg-emerald-500",
+  live: "bg-emerald-500",
+  deploying: "bg-blue-500",
+  development: "bg-amber-500",
+  completed: "bg-neutral-400",
+};
 
-function ProjectCard(props: ProjectCardProps) {
-  const {
-    title,
-    description,
-    techStack,
-    imageUrl,
-    icons,
-    live,
-    github,
-    liveUrl,
-    playstore,
-    duration,
-  } = props;
-  const cardContent = (
-    <CardContainer className="inter-var h-full">
-      <Card className="max-w-sm w-full h-full shadow-md hover:shadow-lg transition-shadow duration-300 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:border-white/[0.2] border-black/[0.1] flex flex-col">
-        <CardHeader className="flex-shrink-0">
-          {imageUrl ? (
-            <img
-              src={imageUrl}
-              alt={title}
-              className="w-full h-auto object-cover rounded-2xl mb-4"
-            />
-          ) : (
-            <div className="w-full aspect-video rounded-2xl mb-4 flex items-center justify-center gap-4 text-4xl text-gray-700 dark:text-gray-300 bg-gradient-to-br from-emerald-100 to-blue-100 dark:from-gray-800 dark:to-gray-900">
-              {icons}
-            </div>
-          )}
-          {duration && <div className="text-xs text-muted-foreground">{duration}</div>}
-          <CardTitle className="flex items-center gap-2">
-            {title}
-            {live && (
-              <span className="inline-block h-2 w-2 rounded-2xl bg-emerald-500 -translate-y-0.5"></span>
-            )}
-          </CardTitle>
-          <CardDescription className="line-clamp-3">
-            {description}
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="flex-grow">
-          <div className="flex flex-wrap gap-2">
-            {techStack.map((tech, index) => (
-              <Badge
-                key={index}
-                variant="outline"
-                className="font-normal rounded-2xl"
-              >
-                {tech}
-              </Badge>
-            ))}
+function ProjectCard({ project }: { project: ProjectItem }) {
+  const { t } = useI18n();
+  const external = project.href && !project.href.startsWith("/");
+
+  const body = (
+    <article className="group h-full flex flex-col overflow-hidden rounded-2xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900/60 shadow-sm hover:shadow-lg hover:border-emerald-300 dark:hover:border-emerald-700 transition-all">
+      <div className="aspect-video overflow-hidden bg-gradient-to-br from-emerald-100 to-blue-100 dark:from-neutral-800 dark:to-neutral-900">
+        {project.imageUrl ? (
+          <img
+            src={project.imageUrl}
+            alt={project.title}
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        ) : (
+          <div className="h-full w-full grid place-items-center text-4xl text-neutral-600 dark:text-neutral-300">
+            <span className="flex gap-4">
+              <SiAngular />
+              <SiDotnet />
+            </span>
           </div>
-        </CardContent>
-        <CardFooter className="flex justify-between flex-shrink-0 mt-auto">
-          {github && (
-            <Button variant="ghost" size="sm" asChild>
-              <a href={github} target="_blank" rel="noopener noreferrer">
-                <SiGithub />
-                GitHub
-              </a>
-            </Button>
+        )}
+      </div>
+
+      <div className="flex flex-1 flex-col p-5">
+        <div className="flex items-center justify-between gap-2 text-xs text-neutral-500">
+          <span>{t(project.period)}</span>
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap">
+            <span className={cn("h-2 w-2 rounded-full", statusColor[project.status])} />
+            {t(statusLabel[project.status])}
+          </span>
+        </div>
+        <h3 className="mt-2 flex items-center gap-1 text-lg font-bold text-neutral-900 dark:text-white">
+          {project.title}
+          {project.href && (
+            <FiArrowUpRight className="text-neutral-400 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-emerald-500" />
           )}
-          {playstore && (
-            <Button variant="ghost" size="sm" asChild>
-              <a href={playstore} target="_blank" rel="noopener noreferrer">
-                <SiGoogleplay />
-                App
-              </a>
-            </Button>
-          )}
-          {liveUrl && !liveUrl.startsWith("/") && (
-            <GoLinkExternal className="text-emerald-500" />
-          )}
-        </CardFooter>
-      </Card>
-    </CardContainer>
-  );
-
-  if (!liveUrl) return cardContent;
-
-  // Internal detail pages open in the same tab, external links in a new one
-  return liveUrl.startsWith("/") ? (
-    <Link to={liveUrl} className="block h-full">
-      {cardContent}
-    </Link>
-  ) : (
-    <a href={liveUrl} target="_blank" rel="noopener noreferrer" className="block h-full">
-      {cardContent}
-    </a>
-  );
-}
-
-const projects = [
-  {
-    id: "installation-presto",
-    title: "Tarif – Service Business Manager",
-    description: "Configurable PWA for small service teams: public request page, quotes, jobs, inventory and partner accounting. In production at Installation Presto, my TV-mounting business.",
-    techStack: [
-      "React 19",
-      "TypeScript",
-      "Vite",
-      "Supabase",
-      "PostgreSQL",
-      "PWA",
-      "Vercel",
-    ],
-    imageUrl: "/assets/tarif/thumb.jpg",
-    icons: [
-      <SiReact key="react" />,
-      <SiSupabase key="supabase" />,
-      <SiPwa key="pwa" />,
-    ],
-    role: "Co-founder & Full-Stack Developer",
-    duration: "Personal project • 2026 – Present",
-    liveUrl: "/projects/presto",
-  },
-  {
-  id: "lab-management-system", // ID pour le routing
-    title: "GRCB Laboratory Management Platform",
-    description: "Full-stack platform for the university's Cement and Concrete Research Group: equipment reservations, inventory and access control. Started as a capstone, now being adopted by the university.",
-    techStack: [
-      "Java 17",
-      "Quarkus",
-      "Angular 17",
-      "PostgreSQL",
-      "Keycloak",
-      "TypeScript",
-      "WebSocket",
-      "SSO / RBAC"
-    ],
-    imageUrl: "/assets/logoProjet1.jpg",
-    icons: [
-      <SiQuarkus key="quarkus" />,
-      <SiAngular key="angular" />,
-      <FaDatabase key="db" />,
-      <FaUserShield key="auth" />
-    ],
-    features: [
-      "Quarkus backend with REST API",
-      "Angular frontend with TypeScript",
-      "PostgreSQL database management",
-      "Keycloak authentication",
-      "Role-based access control"
-    ],
-    role: "Full-Stack Developer",
-    duration: "Capstone → adopted by the university • 2024 – Present",
-    liveUrl: "/projects/1"
-  },
-{
-id: "foldio",
-title: "Foldio",
-description: "AI-enhanced document management platform — query your files in natural language via a secure RAG architecture.",
-techStack: [
-  "Next.js",
-  "FastAPI",
-  "Python",
-  "PostgreSQL",
-  "RAG",
-  "Docling",
-  "Cloudflare R2",
-],
-imageUrl: "/assets/foldio.png",
-icons: [
-  <SiNextdotjs key="next" />,
-  <SiFastapi key="fastapi" />,
-  <FaBrain key="rag" />,
-  <FaLeaf key="foldio" />
-],
-features: [
-  "RAG architecture with semantic search",
-  "Multi-tenant with role-based access control",
-  "Self-hosted LLM included in free tier",
-  "Secure cloud storage (Cloudflare R2)",
-  "Automatic text extraction via Docling"
-],
-role: "Full-Stack Developer",
-duration: "Personal project • 2025",
-liveUrl: "/projects/foldio"
-},
-  {
-    title: "Personal Portfolio",
-    description: "My personal portfolio site",
-    techStack: [
-      "React.js",
-      "Tailwind CSS",
-      "shadcn/ui",
-      "TypeScript",
-      "Acernity",
-      "Vercel",
-    ],
-    imageUrl: "/assets/portfolio-thumb.png",
-    live: true,
-    liveUrl: "https://rhammiouss.vercel.app/",
-  },
-{
-  id: "super-cartes-infinies",
-  title: "Super Infinite Cards",
-  description: "Hearthstone-style card game with real-time multiplayer features",
-  techStack: [
-    "Angular",
-    "TypeScript",
-    ".NET 7",
-    "ASP.NET WebAPI",
-    "SignalR",
-    "Entity Framework Core",
-    "PostgreSQL",
-    "Azure DevOps",
-    "JWT Authentication",
-    "xUnit"
-  ],
-  icons: [
-    <SiAngular key="angular" />,
-    <SiDotnet key="dotnet" />,
-    <FaDatabase key="db" />,
-    <FaUsers key="team" />
-  ],
-  features: [
-    "Real-time multiplayer gameplay with SignalR",
-    "ELO ranking and matchmaking system",
-    "Card collection and deck building",
-    "Complex card powers and spell system",
-    "Spectator mode with live chat",
-    "Full admin panel with ASP.NET MVC"
-  ],
-  role: "Full-Stack Developer",
-  duration: "Post-secondary Capstone Project • 2023",
-   liveUrl: "/projects/2",
-  
-},
-];
-
-export default function ProjectsSection() {
-  return (
-    <div className="pt-5" id="projects">
-      <h1 className="text-3xl font-bold mb-2">PROJECTS</h1>
-      <p className="text-gray-600 dark:text-gray-400 mb-2">
-        A showcase of my work, highlighting the technologies I've used and the
-        problems I've solved.
-      </p>
-      <section className="p-6 md:p-12 bg-gradient-to-b max-w-4xl mx-auto transition-colors duration-300">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-          {projects.map((project, index) => (
-            <div key={index} className="h-full">
-              <ProjectCard
-                title={project.title}
-                description={project.description}
-                techStack={project.techStack}
-                imageUrl={project.imageUrl}
-                icons={project.icons}
-                liveUrl={project.liveUrl}
-                live={project.live}
-                duration={project.duration}
-              />
-            </div>
+        </h3>
+        <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400 leading-relaxed line-clamp-4">
+          {t(project.description)}
+        </p>
+        <div className="mt-auto pt-4 flex flex-wrap gap-1.5">
+          {project.techStack.map((tech) => (
+            <Badge key={tech} variant="outline" className="font-normal rounded-full">
+              {tech}
+            </Badge>
           ))}
         </div>
-      </section>
-    </div>
+      </div>
+      {external && <span className="sr-only">{t({ en: "(opens in a new tab)", fr: "(s'ouvre dans un nouvel onglet)" })}</span>}
+    </article>
   );
-}  
+
+  if (!project.href) return body;
+  return external ? (
+    <a href={project.href} target="_blank" rel="noopener noreferrer" className="block h-full">
+      {body}
+    </a>
+  ) : (
+    <Link to={project.href} className="block h-full">
+      {body}
+    </Link>
+  );
+}
+
+export default function ProjectsSection() {
+  const { t } = useI18n();
+
+  return (
+    <section id="projects" aria-labelledby="projects-title" className="py-12">
+      <SectionHeader
+        id="projects"
+        title={t({ en: "Projects", fr: "Projets" })}
+        subtitle={t({
+          en: "What I built, with what, and where it stands today. Open a card for the details.",
+          fr: "Ce que j'ai bâti, avec quoi, et où ça en est. Ouvre une carte pour les détails.",
+        })}
+      />
+      <Slider label={t({ en: "Projects", fr: "Projets" })}>
+        {projects.map((p) => (
+          <ProjectCard key={p.id} project={p} />
+        ))}
+      </Slider>
+    </section>
+  );
+}

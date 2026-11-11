@@ -21,7 +21,7 @@ export default function DevToolsPage() {
         <link rel="canonical" href="https://rhammiouss.vercel.app/devtools" />
       </Helmet>
 
-      <main className="mt-14">
+      <main>
         <ToolsForDev />
       </main>
     </>

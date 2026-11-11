@@ -4,7 +4,6 @@ import {
   MobileNavMenu,
   MobileNavToggle,
   Navbar,
-  NavbarButton,
   NavbarLogo,
   NavBody,
   NavItems,
@@ -14,109 +13,84 @@ import { Outlet, useLocation } from "react-router-dom";
 import { Switch } from "./ui/switch";
 import { useTheme } from "./theme-provider";
 import { motion, AnimatePresence } from "motion/react";
+import LanguageToggle from "./LanguageToggle";
+import { useI18n } from "@/i18n/LanguageProvider";
 
-// Define the type for navigation items
 interface NavItem {
   name: string;
   link: string;
-  dropdown?: {
-    name: string;
-    link: string;
-  }[];
+  dropdown?: { name: string; link: string }[];
 }
 
 export function NewNavbar() {
   const { theme, setTheme } = useTheme();
-  
+  const { t } = useI18n();
   const location = useLocation();
-
   const isDark = theme === "dark";
+  const toggleTheme = (checked: boolean) => setTheme(checked ? "dark" : "light");
 
-  const toggleTheme = (checked: boolean) => {
-    setTheme(checked ? "dark" : "light");
-  };
-
-  // State to track which mobile dropdown is open
-  const [openMobileDropdown, setOpenMobileDropdown] = useState<number | null>(
-    null
-  );
+  const [openMobileDropdown, setOpenMobileDropdown] = useState<number | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems: NavItem[] = [
+    { name: t({ en: "About", fr: "À propos" }), link: "/#about" },
+    { name: t({ en: "Experience", fr: "Expérience" }), link: "/#experience" },
+    { name: t({ en: "Projects", fr: "Projets" }), link: "/#projects" },
+    { name: t({ en: "Skills", fr: "Compétences" }), link: "/#skills" },
+    { name: t({ en: "Contact", fr: "Contact" }), link: "/#contact" },
     {
-      name: "About",
-      link: "/#about",
-    },
-    {
-      name: "Skills",
-      link: "/#skills",
-    },
-    {
-      name: "Projects",
-      link: "/#projects",
-    },
-
-    {
-      name: "Stats",
-      link: "/stats",
-    },
-    {
-      name: "Contact",
-      link: "/#contact",
-    },
-    {
-      name: "Resources",
+      name: t({ en: "More", fr: "Plus" }),
       link: "#",
       dropdown: [
-        {
-          name: "DevTools",
-          link: "/devtools",
-        },
-        {
-          name: "BS Visualizer",
-          link: "https://binary-search-visualizer-mauve.vercel.app/",
-        },
-        {
-          name: "Java Q & A",
-          link: "/java-interview-question-answers",
-        },
+        { name: t({ en: "Resume", fr: "CV" }), link: "/resume" },
+        { name: t({ en: "Dev tools", fr: "Outils dev" }), link: "/devtools" },
+        { name: "Stats", link: "/stats" },
+        { name: t({ en: "Binary search visualizer", fr: "Visualiseur de recherche binaire" }), link: "https://binary-search-visualizer-mauve.vercel.app/" },
+        { name: t({ en: "Java Q&A", fr: "Questions Java" }), link: "/java-interview-question-answers" },
       ],
     },
   ];
+
   useEffect(() => {
     if (location.hash) {
-      const id = location.hash.replace("#", "");
-      const element = document.getElementById(id);
+      const element = document.getElementById(location.hash.replace("#", ""));
       if (element) {
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: "smooth", block: "start" });
-        }, 100); // small delay after route loads
+        setTimeout(() => element.scrollIntoView({ behavior: "smooth", block: "start" }), 100);
       }
+    } else {
+      window.scrollTo({ top: 0 });
     }
-    }, [location.pathname, location.hash]);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  }, [location.pathname, location.hash]);
+
+  const themeLabel = t({ en: "Dark mode", fr: "Mode sombre" });
 
   return (
     <div className="relative w-full">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:rounded focus:bg-emerald-600 focus:px-3 focus:py-2 focus:text-white"
+      >
+        {t({ en: "Skip to content", fr: "Aller au contenu" })}
+      </a>
       <Navbar>
-        {/* Desktop Navigation */}
+        {/* Desktop */}
         <NavBody>
           <NavbarLogo />
           <NavItems items={navItems} />
-          <div className="flex items-center gap-4">
-            <NavbarButton variant="secondary" className="space-x-2">
-              <Switch checked={isDark} onCheckedChange={toggleTheme} />
-            </NavbarButton>
+          <div className="relative z-[70] flex items-center gap-3">
+            <LanguageToggle />
+            <Switch checked={isDark} onCheckedChange={toggleTheme} aria-label={themeLabel} />
           </div>
         </NavBody>
 
-        {/* Mobile Navigation */}
+        {/* Mobile */}
         <MobileNav>
           <MobileNavHeader>
             <NavbarLogo />
-            <MobileNavToggle
-              isOpen={isMobileMenuOpen}
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            />
+            <div className="flex items-center gap-3">
+              <LanguageToggle />
+              <MobileNavToggle isOpen={isMobileMenuOpen} onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} />
+            </div>
           </MobileNavHeader>
 
           <MobileNavMenu
@@ -130,32 +104,24 @@ export function NewNavbar() {
               <div key={`mobile-link-${idx}`} className="w-full">
                 {item.dropdown ? (
                   <div className="mb-2">
-                    <div
-                      className="relative text-neutral-600 dark:text-neutral-300 font-medium mb-1 flex items-center justify-between cursor-pointer py-2"
-                      onClick={() =>
-                        setOpenMobileDropdown(
-                          openMobileDropdown === idx ? null : idx
-                        )
-                      }
+                    <button
+                      type="button"
+                      aria-expanded={openMobileDropdown === idx}
+                      className="w-full text-neutral-600 dark:text-neutral-300 font-medium mb-1 flex items-center justify-between py-2"
+                      onClick={() => setOpenMobileDropdown(openMobileDropdown === idx ? null : idx)}
                     >
                       <span>{item.name}</span>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        className={`h-4 w-4 transition-transform duration-300 ${
-                          openMobileDropdown === idx ? "rotate-180" : ""
-                        }`}
+                        className={`h-4 w-4 transition-transform duration-300 ${openMobileDropdown === idx ? "rotate-180" : ""}`}
                         fill="none"
                         viewBox="0 0 24 24"
                         stroke="currentColor"
+                        aria-hidden="true"
                       >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M19 9l-7 7-7-7"
-                        />
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                       </svg>
-                    </div>
+                    </button>
                     <AnimatePresence>
                       {openMobileDropdown === idx && (
                         <motion.div
@@ -165,14 +131,14 @@ export function NewNavbar() {
                           transition={{ duration: 0.3 }}
                           className="pl-4 border-l border-emerald-300 dark:border-emerald-700 space-y-2 mt-1 overflow-hidden"
                         >
-                          {item.dropdown.map((dropdownItem, dropIdx) => (
+                          {item.dropdown.map((d) => (
                             <a
-                              key={`mobile-dropdown-${idx}-${dropIdx}`}
-                              href={dropdownItem.link}
+                              key={d.link}
+                              href={d.link}
                               onClick={() => setIsMobileMenuOpen(false)}
-                              className="block text-neutral-600 dark:text-neutral-300 text-sm hover:text-emerald-500 dark:hover:text-emerald-400 py-1"
+                              className="block text-neutral-600 dark:text-neutral-300 text-sm hover:text-emerald-500 py-1"
                             >
-                              {dropdownItem.name}
+                              {d.name}
                             </a>
                           ))}
                         </motion.div>
@@ -183,30 +149,21 @@ export function NewNavbar() {
                   <a
                     href={item.link}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="relative text-neutral-600 dark:text-neutral-300 block mb-2 py-2"
+                    className="text-neutral-600 dark:text-neutral-300 block mb-1 py-2"
                   >
-                    <span className="block">{item.name}</span>
+                    {item.name}
                   </a>
                 )}
               </div>
             ))}
-            <div className="flex w-full flex-col gap-4">
-              <NavbarButton
-                onClick={() => setIsMobileMenuOpen(false)}
-                variant="secondary"
-                className="w-full"
-              >
-                <Switch
-                  checked={isDark}
-                  onCheckedChange={toggleTheme}
-                  className="float-left"
-                />
-              </NavbarButton>
-            </div>
+            <label className="flex w-full items-center justify-between border-t border-neutral-200 dark:border-neutral-800 pt-4 text-sm text-neutral-600 dark:text-neutral-300">
+              {themeLabel}
+              <Switch checked={isDark} onCheckedChange={toggleTheme} aria-label={themeLabel} />
+            </label>
           </MobileNavMenu>
         </MobileNav>
       </Navbar>
-      <div className="min-h-screen pt-4 ">
+      <div id="main" className="min-h-screen pt-20">
         <Outlet />
       </div>
     </div>
