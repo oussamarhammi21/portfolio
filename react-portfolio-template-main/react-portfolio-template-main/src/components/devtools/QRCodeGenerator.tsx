@@ -21,6 +21,7 @@ import { FiDownload, FiClipboard, FiRefreshCw, FiCopy } from "react-icons/fi";
 import { toast } from "../../hooks/use-toast";
 import { Input } from "@/components/ui/input";
 import QRCode from "qrcode";
+import { tx } from "@/i18n/tx";
 
 type ErrorCorrectionLevel = "L" | "M" | "Q" | "H";
 type QRType = "image/png" | "image/jpeg" | "image/webp";
@@ -228,8 +229,8 @@ const QRCodeGenerator: React.FC = () => {
       } catch (error) {
         console.error("Failed to generate QR code:", error);
         toast({
-          title: "Failed to generate QR code",
-          description: "Please check your input and try again.",
+          title: tx("Failed to generate QR code"),
+          description: tx("Please check your input and try again."),
           duration: 3000,
         });
       }
@@ -252,9 +253,9 @@ const QRCodeGenerator: React.FC = () => {
     try {
       const clipboardText = await navigator.clipboard.readText();
       setText(clipboardText);
-      toast({ title: "Pasted from clipboard", duration: 3000 });
+      toast({ title: tx("Pasted from clipboard"), duration: 3000 });
     } catch {
-      toast({ title: "Failed to paste", duration: 3000 });
+      toast({ title: tx("Failed to paste"), duration: 3000 });
     }
   };
 
@@ -289,7 +290,7 @@ const QRCodeGenerator: React.FC = () => {
       console.warn("Failed to clear localStorage:", error);
     }
 
-    toast({ title: "Settings reset to default", duration: 3000 });
+    toast({ title: tx("Settings reset to default"), duration: 3000 });
   };
 
   const handleDownload = () => {
@@ -300,7 +301,7 @@ const QRCodeGenerator: React.FC = () => {
     link.href = qrCodeDataURL;
     link.click();
 
-    toast({ title: "QR code downloaded", duration: 3000 });
+    toast({ title: tx("QR code downloaded"), duration: 3000 });
   };
 
   const handleCopyImage = async () => {
@@ -318,13 +319,13 @@ const QRCodeGenerator: React.FC = () => {
             new ClipboardItem({ [blob.type]: blob }),
           ]);
 
-          toast({ title: "QR code copied to clipboard", duration: 3000 });
+          toast({ title: tx("QR code copied to clipboard"), duration: 3000 });
         },
         qrType,
         0.92
       );
     } catch {
-      toast({ title: "Failed to copy image", duration: 3000 });
+      toast({ title: tx("Failed to copy image"), duration: 3000 });
     }
   };
 
@@ -333,8 +334,8 @@ const QRCodeGenerator: React.FC = () => {
     if (file) {
       if (file.size > 2 * 1024 * 1024) {
         toast({
-          title: "Logo file too large",
-          description: "Please select a file smaller than 2MB",
+          title: tx("Logo file too large"),
+          description: tx("Please select a file smaller than 2MB"),
           duration: 3000,
         });
         return;
@@ -374,8 +375,8 @@ const QRCodeGenerator: React.FC = () => {
     if (sanitized !== color) {
       setDarkColor(sanitized);
       toast({
-        title: "Invalid color format",
-        description: "Foreground color reset to default black (#000000)",
+        title: tx("Invalid color format"),
+        description: tx("Foreground color reset to default black (#000000)"),
         duration: 3000,
       });
     }
@@ -386,8 +387,8 @@ const QRCodeGenerator: React.FC = () => {
     if (sanitized !== color) {
       setLightColor(sanitized);
       toast({
-        title: "Invalid color format",
-        description: "Background color reset to default white (#FFFFFF)",
+        title: tx("Invalid color format"),
+        description: tx("Background color reset to default white (#FFFFFF)"),
         duration: 3000,
       });
     }
@@ -395,10 +396,9 @@ const QRCodeGenerator: React.FC = () => {
 
   return (
     <section className="max-w-screen-xl mx-auto p-4 space-y-4">
-      <h2 className="text-2xl font-bold">QR Code Generator</h2>
+      <h2 className="text-2xl font-bold">{tx("QR Code Generator")}</h2>
       <p className="text-xs text-gray-500">
-        Generate customizable QR codes for text, URLs, and more. 100% secure,
-        all processing happens in your browser.
+        {tx("Generate customizable QR codes for text, URLs, and more. 100% secure, all processing happens in your browser.")}
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -406,7 +406,7 @@ const QRCodeGenerator: React.FC = () => {
         <div className="space-y-6">
           {/* Text Input */}
           <div className="relative">
-            <Label htmlFor="text">Text or URL to Encode</Label>
+            <Label htmlFor="text">{tx("Text or URL to Encode")}</Label>
             <div className="absolute top-[2.2rem] right-1 z-10 flex gap-1">
               <TooltipProvider>
                 <Tooltip>
@@ -422,7 +422,7 @@ const QRCodeGenerator: React.FC = () => {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side="top">
-                    <p>Paste from clipboard</p>
+                    <p>{tx("Paste from clipboard")}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -440,7 +440,7 @@ const QRCodeGenerator: React.FC = () => {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side="top">
-                    <p>Reset all settings</p>
+                    <p>{tx("Reset all settings")}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -448,7 +448,7 @@ const QRCodeGenerator: React.FC = () => {
 
             <Textarea
               id="text"
-              placeholder="Enter text, URL, or any data to generate QR code"
+              placeholder={tx("Enter text, URL, or any data to generate QR code")}
               value={text}
               onChange={(e) => setText(e.target.value)}
               className="mt-2 pr-16"
@@ -459,13 +459,13 @@ const QRCodeGenerator: React.FC = () => {
           {/* Basic Settings */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="size">Size</Label>
+              <Label htmlFor="size">{tx("Size")}</Label>
               <Select
                 value={size.toString()}
                 onValueChange={(val) => setSize(parseInt(val))}
               >
                 <SelectTrigger className="mt-2">
-                  <SelectValue placeholder="Select Size" />
+                  <SelectValue placeholder={tx("Select Size")} />
                 </SelectTrigger>
                 <SelectContent>
                   {SIZE_OPTIONS.map((sizeOption) => (
@@ -473,7 +473,7 @@ const QRCodeGenerator: React.FC = () => {
                       key={sizeOption.value}
                       value={sizeOption.value.toString()}
                     >
-                      {sizeOption.label}
+                      {tx(sizeOption.label)}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -481,13 +481,13 @@ const QRCodeGenerator: React.FC = () => {
             </div>
 
             <div>
-              <Label htmlFor="format">Download Format</Label>
+              <Label htmlFor="format">{tx("Download Format")}</Label>
               <Select
                 value={qrType}
                 onValueChange={(val) => setQrType(val as QRType)}
               >
                 <SelectTrigger className="mt-2">
-                  <SelectValue placeholder="Select Format" />
+                  <SelectValue placeholder={tx("Select Format")} />
                 </SelectTrigger>
                 <SelectContent>
                   {QR_TYPES.map((type) => (
@@ -502,7 +502,7 @@ const QRCodeGenerator: React.FC = () => {
 
           {/* Logo Upload */}
           <div className="space-y-3">
-            <Label>Logo (Optional)</Label>
+            <Label>{tx("Logo (Optional)")}</Label>
             <div className="flex items-center gap-3">
               <div className="flex-1">
                 <Input
@@ -520,7 +520,7 @@ const QRCodeGenerator: React.FC = () => {
                   size="sm"
                   onClick={handleRemoveLogo}
                 >
-                  Remove
+                  {tx("Remove")}
                 </Button>
               )}
             </div>
@@ -528,11 +528,11 @@ const QRCodeGenerator: React.FC = () => {
               <div className="flex items-center gap-3">
                 <img
                   src={logoDataURL}
-                  alt="Logo preview"
+                  alt={tx("Logo preview")}
                   className="w-12 h-12 object-contain border rounded"
                 />
                 <div className="flex-1">
-                  <Label htmlFor="logoSize">Logo Size ({logoSize}%)</Label>
+                  <Label htmlFor="logoSize">{tx("Logo Size (")}{logoSize}%)</Label>
                   <Input
                     id="logoSize"
                     type="range"
@@ -549,11 +549,11 @@ const QRCodeGenerator: React.FC = () => {
 
           {/* Advanced Settings */}
           <div className="space-y-4 p-4 border rounded-lg bg-muted/30">
-            <h3 className="font-semibold text-sm">Advanced Settings</h3>
+            <h3 className="font-semibold text-sm">{tx("Advanced Settings")}</h3>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="darkColor">Foreground Color</Label>
+                <Label htmlFor="darkColor">{tx("Foreground Color")}</Label>
                 <div className="flex items-center gap-2 mt-2">
                   <input
                     type="color"
@@ -572,7 +572,7 @@ const QRCodeGenerator: React.FC = () => {
                 </div>
               </div>
               <div>
-                <Label htmlFor="lightColor">Background Color</Label>
+                <Label htmlFor="lightColor">{tx("Background Color")}</Label>
                 <div className="flex items-center gap-2 mt-2">
                   <input
                     type="color"
@@ -594,7 +594,7 @@ const QRCodeGenerator: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="errorLevel">Error Correction Level</Label>
+                <Label htmlFor="errorLevel">{tx("Error Correction Level")}</Label>
                 <Select
                   value={errorCorrectionLevel}
                   onValueChange={(val) =>
@@ -602,15 +602,15 @@ const QRCodeGenerator: React.FC = () => {
                   }
                 >
                   <SelectTrigger className="mt-2">
-                    <SelectValue placeholder="Select Error Correction" />
+                    <SelectValue placeholder={tx("Select Error Correction")} />
                   </SelectTrigger>
                   <SelectContent>
                     {ERROR_CORRECTION_LEVELS.map((level) => (
                       <SelectItem key={level.value} value={level.value}>
                         <div>
-                          <div className="font-medium">{level.label}</div>
+                          <div className="font-medium">{tx(level.label)}</div>
                           <div className="text-xs text-muted-foreground">
-                            {level.description}
+                            {tx(level.description)}
                           </div>
                         </div>
                       </SelectItem>
@@ -620,7 +620,7 @@ const QRCodeGenerator: React.FC = () => {
               </div>
 
               <div>
-                <Label htmlFor="margin">Margin (quiet zone)</Label>
+                <Label htmlFor="margin">{tx("Margin (quiet zone)")}</Label>
                 <Input
                   id="margin"
                   type="number"
@@ -629,7 +629,7 @@ const QRCodeGenerator: React.FC = () => {
                   value={margin}
                   onChange={(e) => setMargin(parseInt(e.target.value) || 0)}
                   className="mt-2"
-                  placeholder="0 = no margin"
+                  placeholder={tx("0 = no margin")}
                 />
               </div>
             </div>
@@ -639,7 +639,7 @@ const QRCodeGenerator: React.FC = () => {
         {/* QR Code Preview and Actions */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <Label>QR Code Preview</Label>
+            <Label>{tx("QR Code Preview")}</Label>
             {qrCodeDataURL && (
               <div className="flex gap-2">
                 <TooltipProvider>
@@ -651,12 +651,12 @@ const QRCodeGenerator: React.FC = () => {
                         className="flex items-center gap-2"
                       >
                         <FiDownload size={16} />
-                        Download
+                        {tx("Download")}
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
                       <p>
-                        Download QR code as {qrType.split("/")[1].toUpperCase()}
+                        {tx("Download QR code as")} {qrType.split("/")[1].toUpperCase()}
                       </p>
                     </TooltipContent>
                   </Tooltip>
@@ -672,11 +672,11 @@ const QRCodeGenerator: React.FC = () => {
                         className="flex items-center gap-2"
                       >
                         <FiCopy size={16} />
-                        Copy
+                        {tx("Copy")}
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Copy image to clipboard</p>
+                      <p>{tx("Copy image to clipboard")}</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -692,7 +692,7 @@ const QRCodeGenerator: React.FC = () => {
                   {qrCodeDataURL && (
                     <img
                       src={qrCodeDataURL}
-                      alt="Generated QR Code"
+                      alt={tx("Generated QR Code")}
                       className="rounded"
                       style={{ maxWidth: "100%", height: "auto" }}
                     />
@@ -700,7 +700,7 @@ const QRCodeGenerator: React.FC = () => {
                 </div>
               ) : (
                 <div className="text-center text-muted-foreground">
-                  <p>Enter text above to generate QR code</p>
+                  <p>{tx("Enter text above to generate QR code")}</p>
                 </div>
               )}
             </div>

@@ -1,13 +1,14 @@
 import React from "react";
 import BitwiseVisualizer from "@/components/devtools/BitwiseVisualizer";
 import { Helmet } from "react-helmet";
+import { tx } from "@/i18n/tx";
 
 export default function BitwiseVisualizerPage() {
   return (
     <>
       <Helmet>
         <title>
-          Bitwise Operation Visualizer | Online Tool By Rhammi Oussama
+          {tx("Bitwise Operation Visualizer | Online Tool By Rhammi Oussama")}
         </title>
         <meta
           name="description"

@@ -28,6 +28,7 @@ import {
   Legend,
   Cell,
 } from "recharts";
+import { tx } from "@/i18n/tx";
 
 type ComplexityType =
   | "O(1)"
@@ -865,15 +866,21 @@ function generateExplanation(
   spaceComplexity: ComplexityType,
   patterns: string[]
 ): string {
-  let explanation = `Time: ${timeComplexity}, Space: ${spaceComplexity}. `;
+  let explanation = `${tx("Time")}: ${timeComplexity}, ${tx("Space")}: ${spaceComplexity}. `;
 
   if (patterns.length > 0) {
-    explanation += `Analysis: ${patterns.join("; ")}.`;
+    explanation += `${tx("Analysis")}: ${patterns.map(translatePattern).join("; ")}.`;
   } else {
-    explanation += "No significant complexity patterns detected.";
+    explanation += tx("No significant complexity patterns detected.");
   }
 
   return explanation;
+}
+
+/** Patterns are stored in English; "4 levels of nested loops" keeps its number. */
+function translatePattern(pattern: string): string {
+  const m = pattern.match(/^(\d+) levels of nested loops$/);
+  return m ? tx("{n} levels of nested loops").replace("{n}", m[1]) : tx(pattern);
 }
 
 // --- REACT COMPONENT ---
@@ -946,10 +953,9 @@ export default function ComplexityAnalyzer() {
   return (
     <div className="max-w-7xl mx-auto p-6 space-y-6">
       <div className="text-center space-y-2">
-        <h1 className="text-2xl font-bold">Algorithm Complexity Analyzer</h1>
+        <h1 className="text-2xl font-bold">{tx("Algorithm Complexity Analyzer")}</h1>
         <p className="text-gray-600 dark:text-gray-400">
-          Analyze time and space complexity of your algorithms with interactive
-          visualizations
+          {tx("Analyze time and space complexity of your algorithms with interactive visualizations")}
         </p>
       </div>
 
@@ -958,7 +964,7 @@ export default function ComplexityAnalyzer() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Info className="w-5 h-5" />
-            Try Sample Algorithms
+            {tx("Try Sample Algorithms")}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -982,7 +988,7 @@ export default function ComplexityAnalyzer() {
         <Card className="h-fit">
           <CardHeader>
             <CardTitle className="flex items-center justify-between">
-              <span>Code Editor</span>
+              <span>{tx("Code Editor")}</span>
               <div className="flex items-center space-x-2">
                 <Switch
                   checked={autoAnalyze}
@@ -990,7 +996,7 @@ export default function ComplexityAnalyzer() {
                   className="data-[state=checked]:bg-emerald-600"
                 />
                 <span className="text-sm text-gray-600 dark:text-gray-400">
-                  Auto Analyze
+                  {tx("Auto Analyze")}
                 </span>
               </div>
             </CardTitle>
@@ -1018,7 +1024,7 @@ function example(arr) {
             <div className="flex justify-between">
               <div className="space-x-2">
                 <Button onClick={handleReset} variant="outline" size="sm">
-                  <RotateCcw className="w-4 h-4 mr-1" /> Reset
+                  <RotateCcw className="w-4 h-4 mr-1" /> {tx("Reset")}
                 </Button>
                 <Button
                   onClick={handleCopy}
@@ -1026,7 +1032,7 @@ function example(arr) {
                   size="sm"
                   disabled={!result}
                 >
-                  <Copy className="w-4 h-4 mr-1" /> Copy Results
+                  <Copy className="w-4 h-4 mr-1" /> {tx("Copy Results")}
                 </Button>
               </div>
               {!autoAnalyze && (
@@ -1037,7 +1043,7 @@ function example(arr) {
                   disabled={isAnalyzing || !code.trim()}
                 >
                   <TrendingUp className="w-4 h-4 mr-1" />
-                  {isAnalyzing ? "Analyzing..." : "Analyze"}
+                  {isAnalyzing ? tx("Analyzing...") : tx("Analyze")}
                 </Button>
               )}
             </div>
@@ -1052,10 +1058,10 @@ function example(arr) {
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
                 <div className="text-center space-y-2">
                   <h3 className="font-semibold text-lg text-gray-600 dark:text-gray-400">
-                    Analyzing Code...
+                    {tx("Analyzing Code...")}
                   </h3>
                   <p className="text-gray-500 dark:text-gray-500">
-                    Examining patterns and calculating complexity
+                    {tx("Examining patterns and calculating complexity")}
                   </p>
                 </div>
               </CardContent>
@@ -1067,7 +1073,7 @@ function example(arr) {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <TrendingUp className="w-5 h-5" />
-                    Complexity Analysis
+                    {tx("Complexity Analysis")}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -1075,7 +1081,7 @@ function example(arr) {
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <Clock className="w-4 h-4 text-blue-600" />
-                        <span className="font-medium">Time Complexity</span>
+                        <span className="font-medium">{tx("Time Complexity")}</span>
                       </div>
                       <div
                         className="text-2xl font-bold px-3 py-1 rounded-lg text-white text-center"
@@ -1092,7 +1098,7 @@ function example(arr) {
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
                         <HardDrive className="w-4 h-4 text-green-600" />
-                        <span className="font-medium">Space Complexity</span>
+                        <span className="font-medium">{tx("Space Complexity")}</span>
                       </div>
                       <div
                         className="text-2xl font-bold px-3 py-1 rounded-lg text-white text-center"
@@ -1109,7 +1115,7 @@ function example(arr) {
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="font-medium">Language Detected</span>
+                      <span className="font-medium">{tx("Language Detected")}</span>
                       <div className="flex items-center gap-2">
                         <Badge variant="outline" className="text-xs">
                           {result.language}
@@ -1123,7 +1129,7 @@ function example(arr) {
                               : "bg-red-100 text-red-800 text-xs"
                           }
                         >
-                          {result.languageSupport?.toUpperCase()}
+                          {tx(result.languageSupport ?? "").toUpperCase()}
                         </Badge>
                       </div>
                     </div>
@@ -1135,9 +1141,9 @@ function example(arr) {
                     )}
 
                     <div className="flex items-center justify-between">
-                      <span className="font-medium">Confidence Level</span>
+                      <span className="font-medium">{tx("Confidence Level")}</span>
                       <Badge className={getConfidenceColor(result.confidence)}>
-                        {result.confidence.toUpperCase()}
+                        {tx(result.confidence).toUpperCase()}
                       </Badge>
                     </div>
 
@@ -1148,7 +1154,7 @@ function example(arr) {
                     {result.patterns.length > 0 && (
                       <div className="space-y-2">
                         <span className="font-medium text-sm">
-                          Detected Patterns:
+                          {tx("Detected Patterns:")}
                         </span>
                         <div className="flex flex-wrap gap-1">
                           {result.patterns.map((pattern, index) => (
@@ -1157,7 +1163,7 @@ function example(arr) {
                               variant="secondary"
                               className="text-xs"
                             >
-                              {pattern}
+                              {translatePattern(pattern)}
                             </Badge>
                           ))}
                         </div>
@@ -1170,24 +1176,24 @@ function example(arr) {
               {/* Complexity Visualizations */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Performance Visualization</CardTitle>
+                  <CardTitle>{tx("Performance Visualization")}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <Tabs defaultValue="time" className="w-full">
                     <TabsList className="grid w-full grid-cols-2">
-                      <TabsTrigger value="time">Time Complexity</TabsTrigger>
+                      <TabsTrigger value="time">{tx("Time Complexity")}</TabsTrigger>
                       <TabsTrigger value="comparison">
-                        Complexity Comparison
+                        {tx("Complexity Comparison")}
                       </TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="time" className="space-y-4">
                       <div className="text-center">
                         <h3 className="font-semibold text-lg">
-                          {result.timeComplexity} Growth Pattern
+                          {result.timeComplexity} {tx("Growth Pattern")}
                         </h3>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                          {complexityData[result.timeComplexity]?.description}
+                          {tx(complexityData[result.timeComplexity]?.description ?? "")}
                         </p>
                       </div>
                       <div className="w-full aspect-square max-w-md mx-auto">
@@ -1248,10 +1254,10 @@ function example(arr) {
                     <TabsContent value="comparison" className="space-y-4">
                       <div className="text-center">
                         <h3 className="font-semibold text-lg">
-                          Complexity Comparison
+                          {tx("Complexity Comparison")}
                         </h3>
                         <p className="text-sm text-gray-600 dark:text-gray-400">
-                          How your algorithm compares to common complexities
+                          {tx("How your algorithm compares to common complexities")}
                         </p>
                       </div>
                       <div className="w-full aspect-square max-w-md mx-auto">
@@ -1327,11 +1333,10 @@ function example(arr) {
                 <TrendingUp className="w-12 h-12 text-gray-400" />
                 <div className="text-center space-y-2">
                   <h3 className="font-semibold text-lg text-gray-600 dark:text-gray-400">
-                    No Analysis Yet
+                    {tx("No Analysis Yet")}
                   </h3>
                   <p className="text-gray-500 dark:text-gray-500">
-                    Enter your algorithm code to see complexity analysis and
-                    visualizations
+                    {tx("Enter your algorithm code to see complexity analysis and visualizations")}
                   </p>
                 </div>
               </CardContent>

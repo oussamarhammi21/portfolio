@@ -1,3 +1,4 @@
+import { setTxLang } from "./tx";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 
 export type Lang = "en" | "fr";
@@ -32,6 +33,8 @@ const LanguageContext = createContext<LanguageContextValue | null>(null);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>(detectInitialLang);
+  // Keep the dictionary based tx() helper (dev tools) in sync before children render
+  setTxLang(lang);
 
   const setLang = useCallback((next: Lang) => {
     setLangState(next);

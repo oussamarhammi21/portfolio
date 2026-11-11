@@ -18,6 +18,7 @@ import {
 } from "react-icons/gi";
 import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
 import { FiRefreshCw } from "react-icons/fi";
+import { tx } from "@/i18n/tx";
 
 const getBitLength = (n: number) => Math.max(8, n.toString(2).length);
 const toBinary = (n: number, bits: number) => n.toString(2).padStart(bits, "0");
@@ -168,38 +169,37 @@ const BitwiseVisualizer: React.FC = () => {
       <section className="max-w-screen-xl w-full p-4 space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold">Bitwise Operation Visualizer</h2>
+            <h2 className="text-2xl font-bold">{tx("Bitwise Operation Visualizer")}</h2>
             <p className="text-xs text-gray-500">
-              Visualize AND, OR, XOR, NOT, and shift operations in binary.
-              Interactive and in-browser with real-time binary representation.
+              {tx("Visualize AND, OR, XOR, NOT, and shift operations in binary. Interactive and in-browser with real-time binary representation.")}
             </p>
           </div>
           <Button
             variant="ghost"
             onClick={handleReset}
-            title="Reset to default values"
+            title={tx("Reset to default values")}
             className="flex items-center gap-2"
           >
             <FiRefreshCw size={16} />
-            Reset
+            {tx("Reset")}
           </Button>
         </div>
         <div>
-          <Label>Input Mode</Label>
+          <Label>{tx("Input Mode")}</Label>
           <Select value={inputMode} onValueChange={handleInputModeChange}>
             <SelectTrigger>
-              <SelectValue placeholder="Select Input Mode" />
+              <SelectValue placeholder={tx("Select Input Mode")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="dec">Decimal</SelectItem>
-              <SelectItem value="bin">Binary</SelectItem>
-              <SelectItem value="hex">Hexadecimal</SelectItem>
+              <SelectItem value="dec">{tx("Decimal")}</SelectItem>
+              <SelectItem value="bin">{tx("Binary")}</SelectItem>
+              <SelectItem value="hex">{tx("Hexadecimal")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <Label>Input 1</Label>
+            <Label>{tx("Input 1")}</Label>
             <Input
               type="text"
               value={num1}
@@ -221,8 +221,8 @@ const BitwiseVisualizer: React.FC = () => {
             <div>
               <Label>
                 {operation === "LSHIFT" || operation === "RSHIFT"
-                  ? "Shift Amount"
-                  : "Input 2"}
+                  ? tx("Shift Amount")
+                  : tx("Input 2")}
               </Label>
               <Input
                 type="text"
@@ -244,49 +244,49 @@ const BitwiseVisualizer: React.FC = () => {
           )}
         </div>
         <div>
-          <Label>Operation</Label>
+          <Label>{tx("Operation")}</Label>
           <Select
             value={operation}
             onValueChange={(val) => setOperation(val as any)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select Operation" />
+              <SelectValue placeholder={tx("Select Operation")} />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="AND">
                 <span className="flex items-center gap-1">
                   <GiLogicGateAnd />
-                  AND
+                  {tx("AND")}
                 </span>
               </SelectItem>
               <SelectItem value="OR">
                 <span className="flex items-center gap-1">
                   <GiLogicGateOr />
-                  OR
+                  {tx("OR")}
                 </span>
               </SelectItem>
               <SelectItem value="XOR">
                 <span className="flex items-center gap-1">
                   <GiLogicGateXor />
-                  XOR
+                  {tx("XOR")}
                 </span>
               </SelectItem>
               <SelectItem value="NOT">
                 <span className="flex items-center gap-1">
                   <GiLogicGateNot />
-                  NOT
+                  {tx("NOT")}
                 </span>
               </SelectItem>
               <SelectItem value="LSHIFT">
                 <span className="flex items-center gap-1">
                   <BiLeftArrowAlt />
-                  Left Shift
+                  {tx("Left Shift")}
                 </span>
               </SelectItem>
               <SelectItem value="RSHIFT">
                 <span className="flex items-center gap-1">
                   <BiRightArrowAlt />
-                  Right Shift
+                  {tx("Right Shift")}
                 </span>
               </SelectItem>
             </SelectContent>
@@ -294,7 +294,7 @@ const BitwiseVisualizer: React.FC = () => {
         </div>
         <div className="mt-4 space-y-2 font-mono text-sm">
           <div className="flex items-center gap-2">
-            <span className="w-20">Input 1:</span>
+            <span className="w-20">{tx("Input 1:")}</span>
             <span className="mr-2">({n1})</span>
             <div className="flex gap-1 justify-end w-full">
               {Array.from({ length: maxBits }).map((_, idx) => {
@@ -326,8 +326,8 @@ const BitwiseVisualizer: React.FC = () => {
             <div className="flex items-center gap-2">
               <span className="w-20">
                 {operation === "LSHIFT" || operation === "RSHIFT"
-                  ? "Shift Amount:"
-                  : "Input 2:"}
+                  ? tx("Shift Amount:")
+                  : tx("Input 2:")}
               </span>
               <span className="mr-2">({n2})</span>
               <div className="flex gap-1 justify-end w-full">
@@ -358,7 +358,7 @@ const BitwiseVisualizer: React.FC = () => {
             </div>
           )}
           <div className="flex items-center gap-2 font-semibold">
-            <span className="w-20">Result:</span>
+            <span className="w-20">{tx("Result:")}</span>
             <span className="mr-2">({result})</span>
             <div className="flex gap-1 justify-end w-full">
               {Array.from({ length: maxBits }).map((_, idx) => {

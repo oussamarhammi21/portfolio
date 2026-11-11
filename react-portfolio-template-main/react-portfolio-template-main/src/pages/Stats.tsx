@@ -7,9 +7,13 @@ export default function Stats(): JSX.Element {
   const { t } = useI18n();
 
   const rows = [
-    { label: t({ en: "City", fr: "Ville" }), value: t({ en: "Montréal, Québec, Canada", fr: "Montréal, Québec, Canada" }) },
-    { label: t({ en: "Countries visited", fr: "Pays visités" }), value: "6" },
+    { label: t({ en: "Based in", fr: "Basé à" }), value: t({ en: "Montréal, QC · open to relocation", fr: "Montréal, QC · ouvert à la relocalisation" }) },
+    { label: t({ en: "Current role", fr: "Poste actuel" }), value: t({ en: "IT analyst, security governance · Santé Québec", fr: "Analyste informatique en gouvernance de la sécurité · Santé Québec" }) },
+    { label: t({ en: "Coding since", fr: "Je code depuis" }), value: "2020" },
+    { label: t({ en: "Projects in production", fr: "Projets en production" }), value: t({ en: "Tarif (used every day at Installation Presto)", fr: "Tarif (utilisé chaque jour chez Installation Presto)" }) },
+    { label: t({ en: "Currently building", fr: "En construction" }), value: "Foldio" },
     { label: t({ en: "Languages", fr: "Langues" }), value: t({ en: "French, English", fr: "Français, anglais" }) },
+    { label: t({ en: "Countries visited", fr: "Pays visités" }), value: "6" },
   ];
 
   return (

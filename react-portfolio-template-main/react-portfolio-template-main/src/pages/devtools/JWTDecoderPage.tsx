@@ -1,12 +1,13 @@
 import React from "react";
 import JWTDecoder from "@/components/devtools/JWTDecoder";
 import { Helmet } from "react-helmet";
+import { tx } from "@/i18n/tx";
 
 export default function JWTDecoderPage() {
   return (
     <>
       <Helmet>
-        <title>JWT Decoder | Online DevTools By Rhammi Oussama</title>
+        <title>{tx("JWT Decoder | Online DevTools By Rhammi Oussama")}</title>
         <meta
           name="description"
           content="Free online JWT decoder. Instantly decode JWT tokens, view header and payload, privacy-friendly and fast."

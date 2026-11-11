@@ -14,6 +14,7 @@ import * as jsonlint from "jsonlint-mod";
 import { toast } from "@/hooks/use-toast";
 import { FiCopy, FiDownload, FiUpload } from "react-icons/fi";
 import { useTheme } from "../theme-provider";
+import { tx } from "@/i18n/tx";
 
 export default function JSONFormatter() {
   const defaultJson = `{
@@ -123,7 +124,7 @@ export default function JSONFormatter() {
       setRawJson(formatted);
       setMode(mode === "beautify" ? "minify" : "beautify");
     } catch (e) {
-      setError("Invalid JSON for formatting");
+      setError(tx("Invalid JSON for formatting"));
     }
   };
 
@@ -171,13 +172,12 @@ export default function JSONFormatter() {
       <section className="max-w-screen-xl w-full p-4 space-y-2">
         <h2 className="text-2xl font-bold mb-5">JSON Formatter & Viewer</h2>
         <p className="text-xs text-gray-500">
-          Format, view, and copy your JSON data. Paste or upload JSON, view as
-          text or tree, and copy or reset easily.
+          {tx("Format, view, and copy your JSON data. Paste or upload JSON, view as text or tree, and copy or reset easily.")}
         </p>
         <div className="space-y-1">
           {error && (
             <Alert variant="destructive">
-              <AlertTitle>Invalid JSON</AlertTitle>
+              <AlertTitle>{tx("Invalid JSON")}</AlertTitle>
               <AlertDescription>{error}</AlertDescription>
             </Alert>
           )}
@@ -189,14 +189,14 @@ export default function JSONFormatter() {
           >
             <div className="flex items-center justify-between">
               <TabsList>
-                <TabsTrigger value="editor">Editor</TabsTrigger>
-                <TabsTrigger value="tree">Tree View</TabsTrigger>
+                <TabsTrigger value="editor">{tx("Editor")}</TabsTrigger>
+                <TabsTrigger value="tree">{tx("Tree View")}</TabsTrigger>
               </TabsList>
               <div className="flex items-center gap-2">
                 {/* Search input for tree view */}
                 {activeTab === "tree" && (
                   <Input
-                    placeholder="Search keys..."
+                    placeholder={tx("Search keys...")}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="w-40"
@@ -209,7 +209,7 @@ export default function JSONFormatter() {
                   onClick={() => {
                     document.getElementById("json-upload-input")?.click();
                   }}
-                  title="Upload JSON file"
+                  title={tx("Upload JSON file")}
                 >
                   <FiUpload size={16} />
                 </Button>
@@ -220,16 +220,16 @@ export default function JSONFormatter() {
                   style={{ display: "none" }}
                   onChange={(e) => {
                     handleFileUpload(e);
-                    toast({ title: "JSON file uploaded", duration: 3000 });
+                    toast({ title: tx("JSON file uploaded"), duration: 3000 });
                   }}
                 />
                 <Button
                   onClick={() => {
                     exportToFile();
-                    toast({ title: "JSON downloaded", duration: 3000 });
+                    toast({ title: tx("JSON downloaded"), duration: 3000 });
                   }}
                   variant="ghost"
-                  title="Download JSON"
+                  title={tx("Download JSON")}
                 >
                   <FiDownload size={16} />
                 </Button>
@@ -237,9 +237,9 @@ export default function JSONFormatter() {
                   variant="ghost"
                   onClick={() => {
                     navigator.clipboard.writeText(rawJson);
-                    toast({ title: "Copied to clipboard", duration: 3000 });
+                    toast({ title: tx("Copied to clipboard"), duration: 3000 });
                   }}
-                  title="Copy JSON"
+                  title={tx("Copy JSON")}
                 >
                   <FiCopy size={16} />
                 </Button>
@@ -256,11 +256,11 @@ export default function JSONFormatter() {
                     } catch (error) {
                       console.warn("Failed to clear localStorage:", error);
                     }
-                    toast({ title: "JSON reset", duration: 3000 });
+                    toast({ title: tx("JSON reset"), duration: 3000 });
                   }}
-                  title="Reset JSON"
+                  title={tx("Reset JSON")}
                 >
-                  Reset
+                  {tx("Reset")}
                 </Button>
               </div>
             </div>
@@ -279,19 +279,19 @@ export default function JSONFormatter() {
                       );
                       setRawJson(beautified);
                       setError(null);
-                      toast({ title: "Beautified JSON", duration: 3000 });
+                      toast({ title: tx("Beautified JSON"), duration: 3000 });
                     } catch (e) {
-                      setError("Invalid JSON for beautify");
+                      setError(tx("Invalid JSON for beautify"));
                       toast({
-                        title: "Invalid JSON for beautify",
+                        title: tx("Invalid JSON for beautify"),
                         duration: 3000,
                         variant: "destructive",
                       });
                     }
                   }}
-                  title="Beautify JSON"
+                  title={tx("Beautify JSON")}
                 >
-                  Beautify
+                  {tx("Beautify")}
                 </Button>
                 <Editor
                   value={rawJson}

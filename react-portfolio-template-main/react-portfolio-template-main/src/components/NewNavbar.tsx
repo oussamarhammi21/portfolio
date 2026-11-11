@@ -8,7 +8,7 @@ import {
   NavBody,
   NavItems,
 } from "@/components/ui/resizable-navbar";
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import { Switch } from "./ui/switch";
 import { useTheme } from "./theme-provider";
@@ -24,7 +24,7 @@ interface NavItem {
 
 export function NewNavbar() {
   const { theme, setTheme } = useTheme();
-  const { t } = useI18n();
+  const { t, lang } = useI18n();
   const location = useLocation();
   const isDark = theme === "dark";
   const toggleTheme = (checked: boolean) => setTheme(checked ? "dark" : "light");
@@ -164,7 +164,10 @@ export function NewNavbar() {
         </MobileNav>
       </Navbar>
       <div id="main" className="min-h-screen pt-20">
-        <Outlet />
+        {/* Tool pages use tx(), which does not subscribe to the language: remount them when it changes */}
+        <Fragment key={location.pathname === "/" ? "home" : lang}>
+          <Outlet />
+        </Fragment>
       </div>
     </div>
   );

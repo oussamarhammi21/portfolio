@@ -21,6 +21,7 @@ import { Button } from "../ui/button";
 import { FiCopy, FiClipboard, FiRefreshCw } from "react-icons/fi";
 import { toast } from "../../hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
+import { tx } from "@/i18n/tx";
 
 type EncodingType = "utf-8" | "utf-16" | "ascii";
 const ENCODINGS: EncodingType[] = ["utf-8", "utf-16", "ascii"];
@@ -160,9 +161,9 @@ const Base64Tool: React.FC = () => {
     try {
       const text = await navigator.clipboard.readText();
       setInput(text);
-      toast({ title: "Pasted from clipboard", duration: 3000 });
+      toast({ title: tx("Pasted from clipboard"), duration: 3000 });
     } catch {
-      toast({ title: "Failed to paste", duration: 3000 });
+      toast({ title: tx("Failed to paste"), duration: 3000 });
     }
   };
 
@@ -176,15 +177,14 @@ const Base64Tool: React.FC = () => {
     } catch (error) {
       console.warn("Failed to clear localStorage:", error);
     }
-    toast({ title: "Inputs cleared", duration: 3000 });
+    toast({ title: tx("Inputs cleared"), duration: 3000 });
   };
 
   return (
     <section className="max-w-screen-xl mx-auto p-4 space-y-2">
-      <h2 className="text-2xl font-bold">Base64 Encoder / Decoder</h2>
+      <h2 className="text-2xl font-bold">{tx("Base64 Encoder / Decoder")}</h2>
       <p className="text-xs text-gray-500">
-        Convert text to and from Base64 with URL-safe and line-by-line support.
-        100% secure, all processing happens in your browser.
+        {tx("Convert text to and from Base64 with URL-safe and line-by-line support. 100% secure, all processing happens in your browser.")}
       </p>
 
       <Tabs
@@ -193,20 +193,20 @@ const Base64Tool: React.FC = () => {
         className="w-full"
       >
         <TabsList className="w-full grid grid-cols-2">
-          <TabsTrigger value="encode">Encode</TabsTrigger>
-          <TabsTrigger value="decode">Decode</TabsTrigger>
+          <TabsTrigger value="encode">{tx("Encode")}</TabsTrigger>
+          <TabsTrigger value="decode">{tx("Decode")}</TabsTrigger>
         </TabsList>
 
         <div className="flex flex-col gap-4 mt-4">
           {/* Encoding dropdown */}
           <div>
-            <Label htmlFor="encoding">Character Encoding</Label>
+            <Label htmlFor="encoding">{tx("Character Encoding")}</Label>
             <Select
               value={encoding}
               onValueChange={(val) => setEncoding(val as EncodingType)}
             >
               <SelectTrigger className="mt-2 w-[200px]">
-                <SelectValue placeholder="Select Encoding" />
+                <SelectValue placeholder={tx("Select Encoding")} />
               </SelectTrigger>
               <SelectContent>
                 {ENCODINGS.map((enc) => (
@@ -224,7 +224,7 @@ const Base64Tool: React.FC = () => {
                 checked={isUrlSafe}
                 onCheckedChange={setIsUrlSafe}
               />
-              <Label htmlFor="url-safe">Use URL-safe encoding</Label>
+              <Label htmlFor="url-safe">{tx("Use URL-safe encoding")}</Label>
             </div>
           )}
           <div className="flex items-center space-x-2">
@@ -234,13 +234,13 @@ const Base64Tool: React.FC = () => {
               onCheckedChange={setProcessLineByLine}
             />
             <Label htmlFor="line-by-line">
-              {mode == "encode" ? "Encode" : "Decode"} each line separately
+              {mode == "encode" ? tx("Encode") : tx("Decode")} {tx("each line separately")}
             </Label>
           </div>
 
           {/* Input section with paste & reset buttons */}
           <div className="relative">
-            <Label htmlFor="input">Input</Label>
+            <Label htmlFor="input">{tx("Input")}</Label>
             <div className="absolute top-[2.2rem] right-1 z-10 flex gap-1">
               <TooltipProvider>
                 <Tooltip>
@@ -256,7 +256,7 @@ const Base64Tool: React.FC = () => {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side="top">
-                    <p>Paste from clipboard</p>
+                    <p>{tx("Paste from clipboard")}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -274,7 +274,7 @@ const Base64Tool: React.FC = () => {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent side="top">
-                    <p>Reset all</p>
+                    <p>{tx("Reset all")}</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
@@ -282,7 +282,7 @@ const Base64Tool: React.FC = () => {
 
             <Textarea
               id="input"
-              placeholder={`Enter text to ${mode}`}
+              placeholder={mode === "encode" ? tx("Enter text to encode") : tx("Enter text to decode")}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               className="mt-2 pr-16"
@@ -292,7 +292,7 @@ const Base64Tool: React.FC = () => {
 
           {/* Output section with copy button */}
           <div className="relative">
-            <Label htmlFor="output">Output</Label>
+            <Label htmlFor="output">{tx("Output")}</Label>
 
             <TooltipProvider>
               <Tooltip>
@@ -305,14 +305,14 @@ const Base64Tool: React.FC = () => {
                     onClick={() => {
                       if (!output) return;
                       navigator.clipboard.writeText(output);
-                      toast({ title: "Copied to clipboard", duration: 3000 });
+                      toast({ title: tx("Copied to clipboard"), duration: 3000 });
                     }}
                   >
                     <FiCopy size={16} />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent side="top">
-                  <p>Copy to clipboard</p>
+                  <p>{tx("Copy to clipboard")}</p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
@@ -323,9 +323,7 @@ const Base64Tool: React.FC = () => {
               readOnly
               rows={5}
               className="mt-2 pr-10 bg-muted"
-              placeholder={`Base64 ${
-                mode === "encode" ? "encoded" : "decoded"
-              } output`}
+              placeholder={mode === "encode" ? tx("Base64 encoded output") : tx("Base64 decoded output")}
             />
           </div>
         </div>

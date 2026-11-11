@@ -1,13 +1,14 @@
 import React from "react";
 import QRCodeGenerator from "@/components/devtools/QRCodeGenerator";
 import { Helmet } from "react-helmet";
+import { tx } from "@/i18n/tx";
 
 export default function QRCodeGeneratorPage() {
   return (
     <>
       <Helmet>
         <title>
-          QR Code Generator | Free Online Tool By Rhammi Oussama
+          {tx("QR Code Generator | Free Online Tool By Rhammi Oussama")}
         </title>
         <meta
           name="description"

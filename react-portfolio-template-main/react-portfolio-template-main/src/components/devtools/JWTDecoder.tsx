@@ -25,6 +25,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { tx } from "@/i18n/tx";
 
 // Standard JWT claims with descriptions
 const STANDARD_CLAIMS = {
@@ -237,9 +238,9 @@ const JWTDecoder: React.FC = () => {
     try {
       const text = await navigator.clipboard.readText();
       setJwt(text);
-      toast({ title: "Pasted from clipboard", duration: 3000 });
+      toast({ title: tx("Pasted from clipboard"), duration: 3000 });
     } catch {
-      toast({ title: "Failed to paste", duration: 3000 });
+      toast({ title: tx("Failed to paste"), duration: 3000 });
     }
   };
 
@@ -252,7 +253,7 @@ const JWTDecoder: React.FC = () => {
     } catch (error) {
       console.warn("Failed to clear localStorage:", error);
     }
-    toast({ title: "Inputs cleared", duration: 3000 });
+    toast({ title: tx("Inputs cleared"), duration: 3000 });
   };
 
   const handleCopyHeader = async () => {
@@ -261,9 +262,9 @@ const JWTDecoder: React.FC = () => {
         ? JSON.stringify(decoded.header, null, 2)
         : "";
       await navigator.clipboard.writeText(headerText);
-      toast({ title: "Header copied to clipboard", duration: 3000 });
+      toast({ title: tx("Header copied to clipboard"), duration: 3000 });
     } catch {
-      toast({ title: "Failed to copy header", duration: 3000 });
+      toast({ title: tx("Failed to copy header"), duration: 3000 });
     }
   };
 
@@ -273,9 +274,9 @@ const JWTDecoder: React.FC = () => {
         ? JSON.stringify(decoded.payload, null, 2)
         : "";
       await navigator.clipboard.writeText(payloadText);
-      toast({ title: "Payload copied to clipboard", duration: 3000 });
+      toast({ title: tx("Payload copied to clipboard"), duration: 3000 });
     } catch {
-      toast({ title: "Failed to copy payload", duration: 3000 });
+      toast({ title: tx("Failed to copy payload"), duration: 3000 });
     }
   };
 
@@ -291,10 +292,9 @@ const JWTDecoder: React.FC = () => {
     <section className="max-w-screen-xl mx-auto p-4">
       {/* Header */}
       <div className="mb-4">
-        <h2 className="text-2xl font-bold">JWT Decoder</h2>
+        <h2 className="text-2xl font-bold">{tx("JWT Decoder")}</h2>
         <p className="text-xs text-gray-500">
-          Paste your JWT below to decode its header and payload. All processing
-          happens in your browser.
+          {tx("Paste your JWT below to decode its header and payload. All processing happens in your browser.")}
         </p>
       </div>
 
@@ -303,7 +303,7 @@ const JWTDecoder: React.FC = () => {
         {/* Left Side - JWT Input */}
         <div className="flex flex-col space-y-4">
           <div className="relative">
-            <Label htmlFor="jwt-input">JWT Token</Label>
+            <Label htmlFor="jwt-input">{tx("JWT Token")}</Label>
             <div className="absolute top-[2.2rem] right-1 z-10 flex gap-1">
               <Button
                 type="button"
@@ -326,7 +326,7 @@ const JWTDecoder: React.FC = () => {
             </div>
             <Textarea
               id="jwt-input"
-              placeholder="Paste JWT token here"
+              placeholder={tx("Paste JWT token here")}
               value={jwt}
               onChange={(e) => setJwt(e.target.value)}
               className={`mt-2 pr-16 resize-none ${
@@ -348,12 +348,12 @@ const JWTDecoder: React.FC = () => {
                 checked={live}
                 onCheckedChange={setLive}
               />
-              <Label htmlFor="live-decode">Live decode</Label>
+              <Label htmlFor="live-decode">{tx("Live decode")}</Label>
             </div>
             <div style={{ minWidth: 90 }}>
               {!live && (
                 <Button onClick={handleDecode} disabled={!jwt}>
-                  Decode
+                  {tx("Decode")}
                 </Button>
               )}
             </div>
@@ -361,7 +361,7 @@ const JWTDecoder: React.FC = () => {
 
           {/* Error display */}
           {decoded.error && (
-            <p className="text-red-500 text-xs">{decoded.error}</p>
+            <p className="text-red-500 text-xs">{tx(decoded.error)}</p>
           )}
         </div>
 
@@ -369,11 +369,11 @@ const JWTDecoder: React.FC = () => {
         <div className="flex flex-col space-y-6">
           {/* Header Section */}
           <div>
-            <Label>Decoded Header</Label>
+            <Label>{tx("Decoded Header")}</Label>
             <Tabs defaultValue="json" className="mt-2">
               <TabsList className="grid grid-cols-2">
-                <TabsTrigger value="json">JSON</TabsTrigger>
-                <TabsTrigger value="claims">Claims Table</TabsTrigger>
+                <TabsTrigger value="json">{tx("JSON")}</TabsTrigger>
+                <TabsTrigger value="claims">{tx("Claims Table")}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="json" className="mt-2">
@@ -396,7 +396,7 @@ const JWTDecoder: React.FC = () => {
                     }
                     onValueChange={() => {}}
                     highlight={highlightJson}
-                    placeholder="Decoded header will appear here"
+                    placeholder={tx("Decoded header will appear here")}
                     padding={2}
                     readOnly
                     className="text-base bg-transparent border-none text-gray-900 dark:text-gray-100"
@@ -412,9 +412,9 @@ const JWTDecoder: React.FC = () => {
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead className="w-[120px]">Claim</TableHead>
-                            <TableHead className="w-[150px]">Name</TableHead>
-                            <TableHead>Value</TableHead>
+                            <TableHead className="w-[120px]">{tx("Claim")}</TableHead>
+                            <TableHead className="w-[150px]">{tx("Name")}</TableHead>
+                            <TableHead>{tx("Value")}</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -425,30 +425,30 @@ const JWTDecoder: React.FC = () => {
                                 alg: {
                                   name: "Algorithm",
                                   description:
-                                    "The algorithm used to sign the JWT",
+                                    tx("The algorithm used to sign the JWT"),
                                   type: "string",
                                 },
                                 typ: {
                                   name: "Type",
                                   description:
-                                    "The type of token, typically 'JWT'",
+                                    tx("The type of token, typically 'JWT'"),
                                   type: "string",
                                 },
                                 kid: {
                                   name: "Key ID",
                                   description:
-                                    "A hint indicating which key was used to secure the JWS",
+                                    tx("A hint indicating which key was used to secure the JWS"),
                                   type: "string",
                                 },
                                 cty: {
                                   name: "Content Type",
-                                  description: "The content type of the JWT",
+                                  description: tx("The content type of the JWT"),
                                   type: "string",
                                 },
                                 crit: {
                                   name: "Critical",
                                   description:
-                                    "Extensions that must be understood and processed",
+                                    tx("Extensions that must be understood and processed"),
                                   type: "string[]",
                                 },
                               };
@@ -471,8 +471,8 @@ const JWTDecoder: React.FC = () => {
                                   </TableCell>
                                   <TableCell className="text-sm">
                                     {claimInfo
-                                      ? claimInfo.name
-                                      : "Custom Claim"}
+                                      ? tx(claimInfo.name)
+                                      : tx("Custom Claim")}
                                   </TableCell>
                                   <TableCell className="text-sm max-w-[300px] truncate">
                                     {formatClaimValue(key, value)}
@@ -487,7 +487,7 @@ const JWTDecoder: React.FC = () => {
                   </div>
                 ) : (
                   <div className="bg-muted rounded p-4 text-center text-gray-500 min-h-[80px] flex items-center justify-center">
-                    <p>No header claims to display</p>
+                    <p>{tx("No header claims to display")}</p>
                   </div>
                 )}
               </TabsContent>
@@ -496,15 +496,15 @@ const JWTDecoder: React.FC = () => {
 
           {/* Payload Section */}
           <div>
-            <Label>Decoded Payload</Label>
+            <Label>{tx("Decoded Payload")}</Label>
             <Tabs
               value={activeTab}
               onValueChange={setActiveTab}
               className="mt-2"
             >
               <TabsList className="grid grid-cols-2">
-                <TabsTrigger value="json">JSON</TabsTrigger>
-                <TabsTrigger value="claims">Claims Table</TabsTrigger>
+                <TabsTrigger value="json">{tx("JSON")}</TabsTrigger>
+                <TabsTrigger value="claims">{tx("Claims Table")}</TabsTrigger>
               </TabsList>
 
               <TabsContent value="json" className="mt-2">
@@ -528,7 +528,7 @@ const JWTDecoder: React.FC = () => {
                     onValueChange={() => {}}
                     highlight={highlightJson}
                     padding={2}
-                    placeholder="Decoded payload will appear here"
+                    placeholder={tx("Decoded payload will appear here")}
                     readOnly
                     className="text-base bg-transparent border-none text-gray-900 dark:text-gray-100"
                     style={{ fontFamily: "JetBrains Mono" }}
@@ -543,9 +543,9 @@ const JWTDecoder: React.FC = () => {
                       <Table>
                         <TableHeader>
                           <TableRow>
-                            <TableHead className="w-[120px]">Claim</TableHead>
-                            <TableHead className="w-[150px]">Name</TableHead>
-                            <TableHead>Value</TableHead>
+                            <TableHead className="w-[120px]">{tx("Claim")}</TableHead>
+                            <TableHead className="w-[150px]">{tx("Name")}</TableHead>
+                            <TableHead>{tx("Value")}</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -572,8 +572,8 @@ const JWTDecoder: React.FC = () => {
                                   </TableCell>
                                   <TableCell className="text-sm">
                                     {claimInfo
-                                      ? claimInfo.name
-                                      : "Custom Claim"}
+                                      ? tx(claimInfo.name)
+                                      : tx("Custom Claim")}
                                   </TableCell>
                                   <TableCell className="text-sm max-w-[300px] truncate">
                                     {formatClaimValue(key, value)}
@@ -588,7 +588,7 @@ const JWTDecoder: React.FC = () => {
                   </div>
                 ) : (
                   <div className="bg-muted rounded p-4 text-center text-gray-500 min-h-[120px] flex items-center justify-center">
-                    <p>No payload claims to display</p>
+                    <p>{tx("No payload claims to display")}</p>
                   </div>
                 )}
               </TabsContent>

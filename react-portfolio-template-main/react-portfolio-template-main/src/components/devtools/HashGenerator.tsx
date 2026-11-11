@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { FiCopy, FiClipboard, FiRefreshCw } from "react-icons/fi";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
+import { tx } from "@/i18n/tx";
 
 const encodeText = async (text: string, algo: string): Promise<string> => {
   const encoder = new TextEncoder();
@@ -100,24 +101,23 @@ const HashGenerator: React.FC = () => {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(hash);
-    toast({ title: "Copied to clipboard", duration: 3000 });
+    toast({ title: tx("Copied to clipboard"), duration: 3000 });
   };
 
   return (
     <div className="flex items-center justify-center">
       <section className="max-w-screen-xl w-full p-4 space-y-6">
-        <h2 className="text-2xl font-bold mb-5">Hash Generator</h2>
+        <h2 className="text-2xl font-bold mb-5">{tx("Hash Generator")}</h2>
         <p className="text-xs text-gray-500">
-          Generate MD5, SHA-1, SHA-256, and SHA-512 hashes instantly. Secure,
-          in-browser, and supports text input with copy option.
+          {tx("Generate MD5, SHA-1, SHA-256, and SHA-512 hashes instantly. Secure, in-browser, and supports text input with copy option.")}
         </p>
         <div>
-          <Label>Text to hash</Label>
+          <Label>{tx("Text to hash")}</Label>
           <div className="relative">
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Enter text..."
+              placeholder={tx("Enter text...")}
               className="pr-20"
             />
             <Button
@@ -125,7 +125,7 @@ const HashGenerator: React.FC = () => {
               variant="ghost"
               size="sm"
               className="absolute top-2 right-12 z-10 h-6 w-6 p-1"
-              aria-label="Reset"
+              aria-label={tx("Reset")}
               onClick={handleReset}
             >
               <FiRefreshCw size={14} />
@@ -135,11 +135,11 @@ const HashGenerator: React.FC = () => {
               variant="ghost"
               size="sm"
               className="absolute top-2 right-2 z-10 h-6 w-6 p-1"
-              aria-label="Paste"
+              aria-label={tx("Paste")}
               onClick={async () => {
                 const text = await navigator.clipboard.readText();
                 setInput(text);
-                toast({ title: "Pasted from clipboard", duration: 3000 });
+                toast({ title: tx("Pasted from clipboard"), duration: 3000 });
               }}
             >
               <FiClipboard size={14} />
@@ -148,19 +148,19 @@ const HashGenerator: React.FC = () => {
         </div>
 
         <div>
-          <Label>Hash Algorithm</Label>
+          <Label>{tx("Hash Algorithm")}</Label>
           <Select
             value={algorithm}
             onValueChange={(val) => setAlgorithm(val as any)}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select algorithm" />
+              <SelectValue placeholder={tx("Select algorithm")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="MD5">MD5</SelectItem>
-              <SelectItem value="SHA-1">SHA-1</SelectItem>
-              <SelectItem value="SHA-256">SHA-256</SelectItem>
-              <SelectItem value="SHA-512">SHA-512</SelectItem>
+              <SelectItem value="MD5">{tx("MD5")}</SelectItem>
+              <SelectItem value="SHA-1">{tx("SHA-1")}</SelectItem>
+              <SelectItem value="SHA-256">{tx("SHA-256")}</SelectItem>
+              <SelectItem value="SHA-512">{tx("SHA-512")}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -172,13 +172,13 @@ const HashGenerator: React.FC = () => {
                 checked={live}
                 onCheckedChange={(val: boolean) => setLive(val)}
               />
-              <span className="text-sm font-medium">Live conversion</span>
+              <span className="text-sm font-medium">{tx("Live conversion")}</span>
               <div className="w-2 h-2 flex items-center justify-center">
                 {live && (
                   <span
                     className="inline-block w-2 h-2 rounded-full bg-emerald-600 animate-pulse"
                     style={{ animationDuration: "1.2s" }}
-                    title="Live mode active"
+                    title={tx("Live mode active")}
                   ></span>
                 )}
               </div>
@@ -187,20 +187,20 @@ const HashGenerator: React.FC = () => {
           <div className="min-w-[120px] flex items-center justify-end h-10">
             {!live && (
               <Button onClick={generateHash} disabled={!input}>
-                Generate Hash
+                {tx("Generate Hash")}
               </Button>
             )}
           </div>
         </div>
 
         <div className="mt-4">
-          <Label>Output:</Label>
+          <Label>{tx("Output:")}</Label>
           <div className="flex items-center gap-2 mt-1">
             <Textarea
               readOnly
               value={hash}
               className="mt-2 pr-10 bg-muted"
-              placeholder="Hash will appear here..."
+              placeholder={tx("Hash will appear here...")}
             />
             <Button
               variant="outline"

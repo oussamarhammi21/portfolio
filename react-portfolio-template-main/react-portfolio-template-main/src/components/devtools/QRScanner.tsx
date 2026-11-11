@@ -24,6 +24,7 @@ import {
 } from "react-icons/fi";
 import { toast } from "../../hooks/use-toast";
 import QRCode from "qrcode-reader";
+import { tx } from "@/i18n/tx";
 
 interface ScanResult {
   data: string;
@@ -98,15 +99,15 @@ const QRScanner: React.FC = () => {
       startScanning();
 
       toast({
-        title: "Camera started",
-        description: "Position QR code in camera view",
+        title: tx("Camera started"),
+        description: tx("Position QR code in camera view"),
         duration: 3000,
       });
     } catch (error) {
       console.error("Camera access error:", error);
       toast({
-        title: "Camera access denied",
-        description: "Please allow camera access to scan QR codes",
+        title: tx("Camera access denied"),
+        description: tx("Please allow camera access to scan QR codes"),
         duration: 3000,
       });
     }
@@ -126,7 +127,7 @@ const QRScanner: React.FC = () => {
     stopScanning();
 
     toast({
-      title: "Camera stopped",
+      title: tx("Camera stopped"),
       duration: 2000,
     });
   };
@@ -186,8 +187,8 @@ const QRScanner: React.FC = () => {
 
     if (!file.type.startsWith("image/")) {
       toast({
-        title: "Invalid file type",
-        description: "Please select an image file",
+        title: tx("Invalid file type"),
+        description: tx("Please select an image file"),
         duration: 3000,
       });
       return;
@@ -221,8 +222,8 @@ const QRScanner: React.FC = () => {
         qr.callback = (err, value) => {
           if (err) {
             toast({
-              title: "No QR code found",
-              description: "Could not detect a QR code in this image",
+              title: tx("No QR code found"),
+              description: tx("Could not detect a QR code in this image"),
               duration: 3000,
             });
             return;
@@ -236,8 +237,8 @@ const QRScanner: React.FC = () => {
         qr.decode(imageData);
       } catch (error) {
         toast({
-          title: "Scan failed",
-          description: "Error processing the image",
+          title: tx("Scan failed"),
+          description: tx("Error processing the image"),
           duration: 3000,
         });
       }
@@ -264,7 +265,7 @@ const QRScanner: React.FC = () => {
     }
 
     toast({
-      title: "QR Code detected!",
+      title: tx("QR Code detected!"),
       description: `Found: ${data.substring(0, 50)}${
         data.length > 50 ? "..." : ""
       }`,
@@ -274,7 +275,7 @@ const QRScanner: React.FC = () => {
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast({ title: "Copied to clipboard", duration: 2000 });
+    toast({ title: tx("Copied to clipboard"), duration: 2000 });
   };
 
   const openLink = (url: string) => {
@@ -282,7 +283,7 @@ const QRScanner: React.FC = () => {
       const validUrl = url.startsWith("http") ? url : `https://${url}`;
       window.open(validUrl, "_blank");
     } catch (error) {
-      toast({ title: "Invalid URL", duration: 2000 });
+      toast({ title: tx("Invalid URL"), duration: 2000 });
     }
   };
 
@@ -312,15 +313,14 @@ const QRScanner: React.FC = () => {
     setScanHistory([]);
     setScanResult(null);
     localStorage.removeItem("qrScanner_history");
-    toast({ title: "History cleared", duration: 2000 });
+    toast({ title: tx("History cleared"), duration: 2000 });
   };
 
   return (
     <section className="max-w-screen-xl mx-auto p-4 space-y-4">
-      <h2 className="text-2xl font-bold">QR Code Scanner</h2>
+      <h2 className="text-2xl font-bold">{tx("QR Code Scanner")}</h2>
       <p className="text-xs text-gray-500">
-        Scan QR codes using your camera or upload an image. All processing
-        happens locally in your browser.
+        {tx("Scan QR codes using your camera or upload an image. All processing happens locally in your browser.")}
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -331,8 +331,8 @@ const QRScanner: React.FC = () => {
             onValueChange={(val) => setActiveTab(val as "camera" | "upload")}
           >
             <TabsList className="w-full grid grid-cols-2">
-              <TabsTrigger value="camera">Camera Scan</TabsTrigger>
-              <TabsTrigger value="upload">Upload Image</TabsTrigger>
+              <TabsTrigger value="camera">{tx("Camera Scan")}</TabsTrigger>
+              <TabsTrigger value="upload">{tx("Upload Image")}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="camera" className="space-y-4">
@@ -352,7 +352,7 @@ const QRScanner: React.FC = () => {
                           className="mx-auto mb-2 text-muted-foreground"
                         />
                         <p className="text-muted-foreground">
-                          Camera not active
+                          {tx("Camera not active")}
                         </p>
                       </div>
                     </div>
@@ -366,7 +366,7 @@ const QRScanner: React.FC = () => {
                       className="flex items-center gap-2"
                     >
                       <FiPlay size={16} />
-                      Start Camera
+                      {tx("Start Camera")}
                     </Button>
                   ) : (
                     <Button
@@ -375,7 +375,7 @@ const QRScanner: React.FC = () => {
                       className="flex items-center gap-2"
                     >
                       <FiStopCircle size={16} />
-                      Stop Camera
+                      {tx("Stop Camera")}
                     </Button>
                   )}
                 </div>
@@ -393,10 +393,10 @@ const QRScanner: React.FC = () => {
                     className="mx-auto mb-4 text-muted-foreground"
                   />
                   <p className="text-sm text-muted-foreground mb-2">
-                    Click to upload an image containing a QR code
+                    {tx("Click to upload an image containing a QR code")}
                   </p>
                   <p className="text-xs text-muted-foreground">
-                    Supports JPG, PNG, GIF, and other image formats
+                    {tx("Supports JPG, PNG, GIF, and other image formats")}
                   </p>
                   <Input
                     ref={fileInputRef}
@@ -419,7 +419,7 @@ const QRScanner: React.FC = () => {
           {scanResult && (
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-lg">Scan Result</CardTitle>
+                <CardTitle className="text-lg">{tx("Scan Result")}</CardTitle>
                 <div className="flex gap-2">
                   <TooltipProvider>
                     <Tooltip>
@@ -432,7 +432,7 @@ const QRScanner: React.FC = () => {
                           <FiCopy size={16} />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Copy to clipboard</TooltipContent>
+                      <TooltipContent>{tx("Copy to clipboard")}</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
 
@@ -448,7 +448,7 @@ const QRScanner: React.FC = () => {
                             <FiExternalLink size={16} />
                           </Button>
                         </TooltipTrigger>
-                        <TooltipContent>Open link</TooltipContent>
+                        <TooltipContent>{tx("Open link")}</TooltipContent>
                       </Tooltip>
                     </TooltipProvider>
                   )}
@@ -462,7 +462,7 @@ const QRScanner: React.FC = () => {
                   className="resize-none bg-muted"
                 />
                 <p className="text-xs text-muted-foreground mt-2">
-                  Scanned via {scanResult.source} at{" "}
+                  {tx("Scanned via")} {scanResult.source} {tx("at")}{" "}
                   {scanResult.timestamp.toLocaleString()}
                 </p>
               </CardContent>
@@ -472,7 +472,7 @@ const QRScanner: React.FC = () => {
           {/* Scan History */}
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-lg">Scan History</CardTitle>
+              <CardTitle className="text-lg">{tx("Scan History")}</CardTitle>
               {scanHistory.length > 0 && (
                 <Button variant="outline" size="sm" onClick={clearHistory}>
                   <FiRefreshCw size={16} />
@@ -482,7 +482,7 @@ const QRScanner: React.FC = () => {
             <CardContent>
               {scanHistory.length === 0 ? (
                 <p className="text-center text-muted-foreground py-4">
-                  No scans yet. Start scanning to see history here.
+                  {tx("No scans yet. Start scanning to see history here.")}
                 </p>
               ) : (
                 <div className="space-y-2 max-h-64 overflow-y-auto">

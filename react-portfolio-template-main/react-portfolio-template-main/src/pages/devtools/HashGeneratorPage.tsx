@@ -1,12 +1,13 @@
 import React from "react";
 import HashGenerator from "@/components/devtools/HashGenerator";
 import { Helmet } from "react-helmet";
+import { tx } from "@/i18n/tx";
 
 export default function HashGeneratorPage() {
   return (
     <>
       <Helmet>
-        <title>Hash Generator | Online Tool By Rhammi Oussama</title>
+        <title>{tx("Hash Generator | Online Tool By Rhammi Oussama")}</title>
         <meta
           name="description"
           content="Free online hash generator for MD5, SHA-1, SHA-256, and SHA-512. Instantly generate secure hashes for any text input. Fast, interactive, and privacy-friendly."
