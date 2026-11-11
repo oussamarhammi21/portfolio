@@ -1,6 +1,5 @@
-import { Children, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { Children, useEffect, useRef, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { useI18n } from "@/i18n/LanguageProvider";
 
 interface SliderProps {
   children: ReactNode;
@@ -9,165 +8,199 @@ interface SliderProps {
   /** Width of one slide. Defaults to 1 slide on phone, 2 on tablet, 3 on desktop. */
   itemClassName?: string;
   className?: string;
+  /** Scroll by itself (default). Turn off where slides hold videos. */
+  autoPlay?: boolean;
+  /** Auto scroll speed in px per second. */
+  speed?: number;
 }
 
 const DEFAULT_ITEM =
   "basis-[86%] sm:basis-[calc((100%-1.5rem)/2)] lg:basis-[calc((100%-3rem)/3)]";
 
+const COPIES = 3; // middle copy is the "real" one, the two others make the loop seamless
+
 /**
- * Horizontal carousel.
- * Touch: native swipe. Mouse: click and drag like a finger, with a small throw.
- * Keyboard: left and right arrows. Dots show where you are.
+ * Infinite carousel.
+ * Scrolls slowly by itself, loops forever, pauses while the mouse is over it.
+ * Drag with the mouse or a finger to move faster; the throw slows back to the normal speed.
  */
-export default function Slider({ children, label, itemClassName = DEFAULT_ITEM, className }: SliderProps) {
-  const { t } = useI18n();
+export default function Slider({
+  children,
+  label,
+  itemClassName = DEFAULT_ITEM,
+  className,
+  autoPlay = true,
+  speed = 28,
+}: SliderProps) {
+  const viewportRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const slides = Children.toArray(children);
-  const [active, setActive] = useState(0);
-  const [perView, setPerView] = useState(1);
-  const [dragging, setDragging] = useState(false);
-  const drag = useRef({ down: false, moved: false, startX: 0, startScroll: 0, lastX: 0, lastT: 0, velocity: 0 });
+  const count = slides.length;
 
-  const step = () => {
-    const track = trackRef.current;
-    if (!track || track.children.length === 0) return 1;
-    const gap = parseFloat(getComputedStyle(track).columnGap || "0") || 0;
-    return (track.children[0] as HTMLElement).offsetWidth + gap;
-  };
+  const state = useRef({
+    offset: 0, // px into one copy, always in [0, setWidth)
+    setWidth: 0,
+    boost: 0, // extra speed from a throw, px/s, decays to 0
+    hover: false,
+    visible: true,
+    drag: { down: false, moved: false, lastX: 0, lastT: 0, velocity: 0, pointerId: -1 },
+  });
 
-  const measure = useCallback(() => {
-    const track = trackRef.current;
-    if (!track || track.children.length === 0) return;
-    const gap = parseFloat(getComputedStyle(track).columnGap || "0") || 0;
-    const s = (track.children[0] as HTMLElement).offsetWidth + gap;
-    const visible = Math.max(1, Math.floor((track.clientWidth + gap + 1) / s));
-    const max = track.scrollWidth - track.clientWidth;
-    setPerView(visible);
-    const idx = track.scrollLeft >= max - 4 ? slides.length - visible : Math.round(track.scrollLeft / s);
-    setActive(Math.max(0, idx));
-  }, [slides.length]);
-
+  // Measure one copy of the slides
   useEffect(() => {
-    measure();
     const track = trackRef.current;
     if (!track) return;
+    const measure = () => {
+      const first = track.children[0] as HTMLElement | undefined;
+      const firstClone = track.children[count] as HTMLElement | undefined;
+      if (first && firstClone) state.current.setWidth = firstClone.offsetLeft - first.offsetLeft;
+    };
+    measure();
     const ro = new ResizeObserver(measure);
     ro.observe(track);
     return () => ro.disconnect();
-  }, [measure]);
+  }, [count]);
 
-  const goTo = (index: number) => {
+  // Clones are for the eye only: hide them from screen readers and the Tab key
+  useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
-    const i = Math.min(Math.max(index, 0), slides.length - 1);
-    const target = track.children[i] as HTMLElement | undefined;
-    if (target) track.scrollTo({ left: target.offsetLeft - track.offsetLeft, behavior: "smooth" });
-  };
+    [...track.children].forEach((child, i) => {
+      if (i >= count && i < count * 2) return;
+      child.setAttribute("aria-hidden", "true");
+      child.querySelectorAll<HTMLElement>("a, button, input, [tabindex]").forEach((el) => (el.tabIndex = -1));
+    });
+  }, [count, children]);
 
-  // ---- Mouse drag (touch keeps the native swipe) ----
+  // Pause when off screen
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport) return;
+    const io = new IntersectionObserver(([entry]) => (state.current.visible = entry.isIntersecting));
+    io.observe(viewport);
+    return () => io.disconnect();
+  }, []);
+
+  // Animation loop
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const base = autoPlay && !reduced ? speed : 0;
+    let raf = 0;
+    let last = performance.now();
+    let current = base; // smoothed auto speed (eases to 0 on hover)
+
+    const tick = (now: number) => {
+      const s = state.current;
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+      if (s.setWidth > 0 && s.visible) {
+        if (!s.drag.down) {
+          const target = s.hover ? 0 : base;
+          current += (target - current) * Math.min(1, dt * 4);
+          s.offset += (current + s.boost) * dt;
+          s.boost *= Math.pow(0.04, dt); // throw fades out in about a second
+          if (Math.abs(s.boost) < 1) s.boost = 0;
+        }
+        s.offset = ((s.offset % s.setWidth) + s.setWidth) % s.setWidth;
+        if (trackRef.current) trackRef.current.style.transform = `translate3d(${-(s.setWidth + s.offset)}px,0,0)`;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [autoPlay, speed]);
+
+  // ---- Drag (mouse and touch) ----
   const onPointerDown = (e: React.PointerEvent) => {
-    if (e.pointerType !== "mouse" || e.button !== 0) return;
-    const track = trackRef.current!;
-    drag.current = { down: true, moved: false, startX: e.clientX, startScroll: track.scrollLeft, lastX: e.clientX, lastT: performance.now(), velocity: 0 };
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    const d = state.current.drag;
+    Object.assign(d, { down: true, moved: false, lastX: e.clientX, lastT: performance.now(), velocity: 0, pointerId: e.pointerId });
+    state.current.boost = 0;
   };
 
   const onPointerMove = (e: React.PointerEvent) => {
-    const d = drag.current;
-    if (!d.down) return;
-    const dx = e.clientX - d.startX;
-    if (!d.moved && Math.abs(dx) < 6) return;
-    const track = trackRef.current!;
+    const s = state.current;
+    const d = s.drag;
+    if (!d.down || e.pointerId !== d.pointerId) return;
+    const dx = e.clientX - d.lastX;
     if (!d.moved) {
+      if (Math.abs(dx) < 6) return;
       d.moved = true;
-      setDragging(true);
-      track.setPointerCapture(e.pointerId);
+      viewportRef.current?.setPointerCapture(e.pointerId);
     }
-    track.scrollLeft = d.startScroll - dx;
     const now = performance.now();
-    d.velocity = (e.clientX - d.lastX) / Math.max(1, now - d.lastT);
+    const dt = Math.max(1, now - d.lastT) / 1000;
+    s.offset -= dx;
+    d.velocity = d.velocity * 0.6 + (-dx / dt) * 0.4;
     d.lastX = e.clientX;
     d.lastT = now;
   };
 
   const endDrag = (e: React.PointerEvent) => {
-    const d = drag.current;
-    if (!d.down) return;
+    const s = state.current;
+    const d = s.drag;
+    if (!d.down || e.pointerId !== d.pointerId) return;
     d.down = false;
-    if (!d.moved) return;
-    const track = trackRef.current!;
-    if (track.hasPointerCapture(e.pointerId)) track.releasePointerCapture(e.pointerId);
-    setDragging(false);
-    // A quick flick moves at least one slide in the throw direction
-    const s = step();
-    const projected = track.scrollLeft - d.velocity * 150;
-    let target = Math.round(projected / s);
-    const current = d.startScroll / s;
-    if (Math.abs(d.velocity) > 0.35) target = d.velocity < 0 ? Math.max(target, Math.floor(current) + 1) : Math.min(target, Math.ceil(current) - 1);
-    goTo(target);
+    if (viewportRef.current?.hasPointerCapture(e.pointerId)) viewportRef.current.releasePointerCapture(e.pointerId);
+    // Keep the throw: faster in the direction of the swipe, capped
+    if (d.moved && performance.now() - d.lastT < 120) s.boost = Math.max(-2500, Math.min(2500, d.velocity));
   };
 
-  // A drag must not open the link under the cursor
+  // A drag must not open the link under the pointer
   const onClickCapture = (e: React.MouseEvent) => {
-    if (drag.current.moved) {
+    if (state.current.drag.moved) {
       e.preventDefault();
       e.stopPropagation();
-      drag.current.moved = false;
+      state.current.drag.moved = false;
     }
   };
 
-  const pages = Math.max(1, slides.length - perView + 1);
+  const nudge = (dir: 1 | -1) => (state.current.boost += dir * 900);
 
   return (
     <div className={cn("relative", className)} role="region" aria-roledescription="carousel" aria-label={label}>
       <div
-        ref={trackRef}
-        onScroll={measure}
+        ref={viewportRef}
+        tabIndex={0}
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={endDrag}
         onPointerCancel={endDrag}
+        onPointerEnter={(e) => {
+          if (e.pointerType === "mouse") state.current.hover = true;
+        }}
+        onPointerLeave={() => (state.current.hover = false)}
         onClickCapture={onClickCapture}
         onDragStart={(e) => e.preventDefault()}
-        tabIndex={0}
         onKeyDown={(e) => {
-          if (e.key === "ArrowRight") { e.preventDefault(); goTo(active + 1); }
-          if (e.key === "ArrowLeft") { e.preventDefault(); goTo(active - 1); }
+          if (e.key === "ArrowRight") { e.preventDefault(); nudge(1); }
+          if (e.key === "ArrowLeft") { e.preventDefault(); nudge(-1); }
         }}
-        className={cn(
-          "flex gap-6 overflow-x-auto overscroll-x-contain px-1 pt-3 pb-4 -mx-1 no-scrollbar rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500",
-          dragging ? "cursor-grabbing select-none snap-none" : "cursor-grab snap-x snap-mandatory scroll-smooth"
-        )}
+        // Fade the edges so the loop feels endless; vertical room for hover effects
+        style={{
+          overflowX: "clip",
+          touchAction: "pan-y",
+          maskImage: "linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent)",
+          WebkitMaskImage: "linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent)",
+        }}
+        className="py-3 -my-3 cursor-grab active:cursor-grabbing select-none rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
       >
-        {slides.map((slide, i) => (
-          <div
-            key={i}
-            className={cn("shrink-0 grow-0 min-w-0 snap-start flex", itemClassName)}
-            role="group"
-            aria-roledescription="slide"
-            aria-label={`${i + 1} / ${slides.length}`}
-          >
-            <div className="w-full min-w-0 flex flex-col">{slide}</div>
-          </div>
-        ))}
-      </div>
-
-      {pages > 1 && (
-        <div className="mt-2 flex items-center justify-center gap-1.5">
-          {Array.from({ length: pages }, (_, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => goTo(i)}
-              aria-label={`${t({ en: "Go to slide", fr: "Aller à la carte" })} ${i + 1}`}
-              aria-current={i === active}
-              className={cn(
-                "h-2 rounded-full transition-all duration-300",
-                i === active ? "w-6 bg-emerald-500" : "w-2 bg-neutral-300 dark:bg-neutral-700 hover:bg-emerald-300"
-              )}
-            />
-          ))}
+        <div ref={trackRef} className="flex gap-6 will-change-transform">
+          {Array.from({ length: COPIES }, (_, copy) =>
+            slides.map((slide, i) => (
+              <div
+                key={`${copy}-${i}`}
+                className={cn("shrink-0 grow-0 min-w-0 flex", itemClassName)}
+                role={copy === 1 ? "group" : undefined}
+                aria-roledescription={copy === 1 ? "slide" : undefined}
+                aria-label={copy === 1 ? `${i + 1} / ${count}` : undefined}
+              >
+                <div className="w-full min-w-0 flex flex-col">{slide}</div>
+              </div>
+            ))
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
@@ -175,7 +208,7 @@ export default function Slider({ children, label, itemClassName = DEFAULT_ITEM, 
 /** Section title in the original portfolio style. */
 export function SectionHeader({ id, title, subtitle }: { id: string; title: string; subtitle?: string }) {
   return (
-    <div className="mb-2">
+    <div className="mb-4">
       <h2 id={`${id}-title`} className="text-3xl font-bold mb-2 uppercase">
         {title}
       </h2>

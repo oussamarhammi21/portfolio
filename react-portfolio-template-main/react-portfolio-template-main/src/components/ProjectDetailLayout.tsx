@@ -96,7 +96,7 @@ export default function ProjectDetailLayout({ project }: { project: ProjectDetai
       {project.clips && (
         <section className="mb-12">
           <h2 className={h2}>{t({ en: "Walkthrough", fr: "Visite guidée" })}</h2>
-          <Slider label={t({ en: "Video clips", fr: "Extraits vidéo" })} itemClassName="basis-[90%] sm:basis-[calc((100%-1rem)/2)]">
+          <Slider autoPlay={false} label={t({ en: "Video clips", fr: "Extraits vidéo" })} itemClassName="basis-[90%] sm:basis-[calc((100%-1rem)/2)]">
             {project.clips.map((c) => (
               <figure key={c.src} className={card}>
                 <div className="aspect-video overflow-hidden rounded-xl bg-neutral-900">

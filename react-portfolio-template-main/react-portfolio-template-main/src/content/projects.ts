@@ -85,6 +85,6 @@ export const projects: ProjectItem[] = [
     period: { en: "Personal project", fr: "Projet personnel" },
     techStack: ["React", "TypeScript", "Tailwind CSS", "shadcn/ui", "Vercel"],
     imageUrl: "/assets/portfolio-thumb.png",
-    href: "https:rhammiouss.vercel.app",
+    href: "https://rhammiouss.vercel.app",
   },
 ];

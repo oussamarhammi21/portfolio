@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 
 /**
  * Soft light that follows the mouse, behind the content.
- * Follows the pointer exactly (no easing, so no lag). Mouse only, skipped with reduced motion.
+ * Follows the pointer exactly (no easing, so no lag). Mouse only.
  */
 export default function CursorGlow() {
   const glowRef = useRef<HTMLDivElement>(null);
@@ -10,8 +10,9 @@ export default function CursorGlow() {
   useEffect(() => {
     const glow = glowRef.current;
     if (!glow) return;
-    if (!window.matchMedia("(pointer: fine)").matches) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    // Works on touch laptops too: it wakes up on the first real mouse move.
+    // Kept with "reduce motion": the light only follows the pointer, it does not animate.
+    if (!window.matchMedia("(any-pointer: fine)").matches) return;
 
     let x = 0, y = 0, raf = 0;
 
@@ -43,10 +44,10 @@ export default function CursorGlow() {
     <div
       ref={glowRef}
       aria-hidden="true"
-      className="pointer-events-none fixed left-0 top-0 -z-10 h-[600px] w-[600px] rounded-full opacity-0 transition-opacity duration-500 will-change-transform"
+      className="pointer-events-none fixed left-0 top-0 -z-10 h-[600px] w-[600px] rounded-full opacity-0 transition-opacity duration-500 motion-reduce:transition-none will-change-transform"
       style={{
         background:
-          "radial-gradient(circle, rgba(16,185,129,0.16) 0%, rgba(34,211,238,0.07) 35%, rgba(0,0,0,0) 70%)",
+          "radial-gradient(circle, rgba(16,185,129,0.2) 0%, rgba(34,211,238,0.08) 35%, rgba(0,0,0,0) 70%)",
       }}
     />
   );
